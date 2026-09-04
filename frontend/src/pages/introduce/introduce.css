@@ -1,0 +1,221 @@
+/* 메인 */
+:root {
+  --bg-primary: #0a0e14;
+  --bg-secondary: #11161f;
+  --bg-elevated: #1a2029;
+
+  --neon-cyan: #5eead4;
+  --neon-purple: #c084fc;
+  --neon-green: #4ade80;
+  --neon-pink: #f472b6;
+
+  --text-primary: #e5e7eb;
+  --text-secondary: #8b96a5;
+  --text-muted: #545e6b;
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --glow-cyan: 0 0 20px rgba(94, 234, 212, 0.25);
+
+  /* 폰트: pixel은 타이틀/라벨 등 포인트용, mono는 코드/버튼/태그용 */
+  --font-pixel: 'Galmuri11', 'DM Mono', monospace;
+  --font-mono: 'DM Mono', 'Galmuri11', monospace;
+}
+
+.introduce {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+}
+
+.introduce section {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 80px 24px;
+}
+
+.introduce h2 {
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  color: var(--neon-cyan);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+
+.introduce h2::before {
+  content: '// ';
+  color: var(--text-muted);
+}
+
+/* Hero 컴포넌트 */
+.hero {
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hero-greeting {
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.hero-name {
+  font-family: var(--font-pixel);
+  font-size: 48px;
+  letter-spacing: 2px;
+}
+
+.hero-tagline {
+  font-family: var(--font-pixel);
+  font-size: 20px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 560px;
+}
+
+.hero-tagline {
+  font-size: 20px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 560px;
+}
+
+.highlight-cyan {
+  color: var(--neon-cyan);
+}
+.highlight-purple {
+  color: var(--neon-purple);
+}
+
+.hero-cta {
+  margin-top: 40px;
+  display: flex;
+  gap: 16px;
+}
+
+.btn-primary {
+  font-family: var(--font-mono);
+  background: var(--neon-cyan);
+  color: var(--bg-primary);
+  padding: 12px 24px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  box-shadow: var(--glow-cyan);
+  transition: transform 0.2s;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+}
+
+.btn-outline {
+  font-family: var(--font-mono);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  padding: 12px 24px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: border-color 0.2s;
+}
+.btn-outline:hover {
+  border-color: var(--neon-cyan);
+}
+
+/* About 컴포넌트 */
+.about-text {
+  font-size: 17px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  max-width: 640px;
+}
+
+/* Skills 컴포넌트 */
+.skills-code {
+  font-family: var(--font-mono);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 24px;
+  font-size: 15px;
+  line-height: 2;
+}
+
+.skills-line {
+  padding-left: 24px;
+}
+
+.code-keyword {
+  color: var(--neon-purple);
+}
+.code-key {
+  color: var(--neon-cyan);
+}
+.code-string {
+  color: var(--neon-green);
+}
+
+/* Contact 컴포넌트 */
+.contact-links {
+  display: flex;
+  gap: 16px;
+}
+
+/* Projects 컴포넌트 */
+.project-grid {
+  display: grid;
+  gap: 20px;
+}
+
+.project-card {
+  display: block;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 28px;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.project-card:hover {
+  border-color: var(--neon-cyan);
+  box-shadow: var(--glow-cyan);
+  transform: translateY(-3px);
+}
+
+.project-title {
+  font-family: var(--font-pixel);
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.project-desc {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.stack-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.stack-tag {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--neon-purple);
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  padding: 4px 12px;
+}
+
+.project-link-arrow {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--neon-cyan);
+}

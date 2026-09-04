@@ -1,0 +1,55 @@
+* {
+  box-sizing: border-box;
+}
+
+#root {
+  width: 100%;
+  min-height: 100svh;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+
+  font-family:
+    "Pretendard",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  color: #172033;
+  background: #f7f8fc;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+nav {
+  height: 70px;
+  padding: 0 7vw;
+
+  display: flex;
+  align-items: center;
+  gap: 28px;
+
+  background: rgba(255, 255, 255, 0.85);
+  border-bottom: 1px solid #eeeef3;
+
+  backdrop-filter: blur(12px);
+}
+
+nav a {
+  color: #747b8d;
+  font-family: "LINE Seed Sans KR", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+
+  transition: 0.2s;
+}
+
+nav a:hover {
+  color: #6366f1;
+}
