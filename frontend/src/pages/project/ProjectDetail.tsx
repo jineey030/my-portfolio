@@ -95,6 +95,28 @@ function ProjectDetail() {
         </ul>
       </section>
 
+      {/* Technical Highlights */}
+      <section className="project-detail-section">
+        <p className="project-section-label">
+          05 / TECHNICAL HIGHLIGHTS
+        </p>
+
+        <div className="technical-highlights">
+          {project.technicalHighlights.map(
+            (highlight) => (
+              <article
+                key={highlight.title}
+                className="technical-highlight"
+              >
+                <h3>{highlight.title}</h3>
+
+                <p>{highlight.description}</p>
+              </article>
+            )
+          )}
+        </div>
+      </section>
+
       {/* Links */}
       <section className="project-detail-links">
         {project.github && (
