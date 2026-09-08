@@ -21,6 +21,62 @@
   --font-mono: 'DM Mono', 'Galmuri11', monospace;
 }
 
+/* Header */
+
+html {
+  scroll-behavior: smooth;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  z-index: 100;
+
+  background: transparent;
+}
+
+.header-nav {
+  max-width: 960px;
+  height: 64px;
+  margin: 0 auto;
+  padding: 0 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-logo {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--neon-cyan);
+
+  text-decoration: none;
+}
+
+.header-links {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+}
+
+.header-links a {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-secondary);
+
+  text-decoration: none;
+
+  transition: color 0.2s ease;
+}
+
+.header-links a:hover {
+  color: var(--neon-cyan);
+}
+
 .introduce {
   background: var(--bg-primary);
   color: var(--text-primary);
@@ -48,9 +104,34 @@
   color: var(--text-muted);
 }
 
+.introduce nav {
+  max-width: 960px;
+  margin: 0 auto;
+
+  padding: 20px 24px;
+
+  display: flex;
+  justify-content: flex-end;
+  gap: 40px;
+}
+
+.introduce nav a {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  text-decoration: none;
+
+  transition: color 0.2s;
+}
+
+.introduce nav a:hover {
+  color: var(--neon-cyan);
+}
+
 /* Hero 컴포넌트 */
 .hero {
   min-height: 90vh;
+  padding-top: 80px;
+  
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -70,13 +151,6 @@
 
 .hero-tagline {
   font-family: var(--font-pixel);
-  font-size: 20px;
-  color: var(--text-secondary);
-  line-height: 1.6;
-  max-width: 560px;
-}
-
-.hero-tagline {
   font-size: 20px;
   color: var(--text-secondary);
   line-height: 1.6;
