@@ -1,19 +1,46 @@
-import { Routes, Route, BrowserRouter, Link, Navigate } from 'react-router';
+import { Routes, Route, BrowserRouter } from 'react-router';
 import './App.css';
 
-// import page
+// pages
 import Introduce from './pages/introduce/pages';
+import ProjectDetail from './pages/project/ProjectDetail';
+import NotFound from './pages/not-found/NotFound';
+
+// components
+import Navbar from './components/Navbar';
+import ScrollToHash from './components/ScrollToHash';
+import Footer from './components/Footer';
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Introduce />} />
+      <Navbar />
+      <ScrollToHash />
 
-        <Route path="*" element={<div>페이지를 찾을 수 없습니다.</div>}/>
+      <Routes>
+        {/* 메인 페이지 */}
+        <Route
+          path="/"
+          element={<Introduce />}
+        />
+
+        {/* 프로젝트 상세 페이지 */}
+        <Route
+          path="/projects/:projectId"
+          element={<ProjectDetail />}
+        />
+
+        {/* 존재하지 않는 페이지 */}
+        <Route
+          path="*"
+          element={<NotFound />}
+        />
       </Routes>
+
+      {/* Footer */}
+      <Footer />
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;
