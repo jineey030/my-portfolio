@@ -4,6 +4,7 @@ import './App.css';
 // pages
 import Introduce from './pages/introduce/pages';
 import ProjectDetail from './pages/project/ProjectDetail';
+import NotFound from './pages/not-found/NotFound';
 
 // components
 import Navbar from './components/Navbar';
@@ -32,11 +33,7 @@ function App() {
         {/* 존재하지 않는 페이지 */}
         <Route
           path="*"
-          element={
-            <div>
-              페이지를 찾을 수 없습니다.
-            </div>
-          }
+          element={<NotFound />}
         />
       </Routes>
 
