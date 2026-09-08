@@ -7,30 +7,39 @@ function Projects() {
       <h2>Projects</h2>
 
       <div className="project-grid">
-        {PROJECTS.map((p) => (
+        {PROJECTS.map((project) => (
           <Link
-            key={p.id}
-            to={`/projects/${p.id}`}
+            key={project.id}
+            to={`/projects/${project.id}`}
             className="project-card"
           >
-            <h3 className="project-title">
-              {p.title}
-            </h3>
+            <div className="project-card-header">
+              <h3 className="project-title">
+                {project.title}
+              </h3>
 
-            <p className="project-desc">
-              {p.description}
+              <span className="project-arrow">
+                ↗
+              </span>
+            </div>
+
+            <p className="project-description">
+              {project.description}
             </p>
 
-            <div className="stack-tags">
-              {p.stack.map((s) => (
-                <span key={s} className="stack-tag">
-                  {s}
+            <div className="project-stack">
+              {project.stack.map((stack) => (
+                <span
+                  key={stack}
+                  className="project-stack-tag"
+                >
+                  {stack}
                 </span>
               ))}
             </div>
 
-            <span className="project-link-arrow">
-              → 자세히 보기
+            <span className="project-view">
+              View Project →
             </span>
           </Link>
         ))}
