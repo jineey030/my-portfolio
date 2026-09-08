@@ -1,0 +1,16 @@
+.ui-section-title {
+  margin: 0 0 32px;
+
+  color: var(--neon-cyan);
+
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  font-weight: 500;
+
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.ui-section-title-prefix {
+  color: var(--text-muted);
+}
