@@ -10,21 +10,37 @@ function ProjectDetail() {
   );
 
   if (!project) {
-    return <div>프로젝트를 찾을 수 없습니다.</div>;
+    return (
+      <main className="project-detail project-not-found">
+        <p>프로젝트를 찾을 수 없습니다.</p>
+
+        <Link to="/">
+          ← 홈으로 돌아가기
+        </Link>
+      </main>
+    );
   }
 
   return (
     <main className="project-detail">
-      {/* 프로젝트 제목 */}
+      {/* Header */}
       <header className="project-detail-header">
+        <p className="project-detail-label">
+          PROJECT / {project.id}
+        </p>
+
         <h1>{project.title}</h1>
 
-        <p>{project.description}</p>
+        <p className="project-detail-description">
+          {project.description}
+        </p>
       </header>
 
-      {/* 기술 스택 */}
-      <section>
-        <h2>Tech Stack</h2>
+      {/* Tech Stack */}
+      <section className="project-detail-section">
+        <p className="project-section-label">
+          01 / TECH STACK
+        </p>
 
         <div className="stack-tags">
           {project.stack.map((stack) => (
@@ -38,11 +54,13 @@ function ProjectDetail() {
         </div>
       </section>
 
-      {/* 주요 기능 */}
-      <section>
-        <h2>주요 기능</h2>
+      {/* Features */}
+      <section className="project-detail-section">
+        <p className="project-section-label">
+          02 / FEATURES
+        </p>
 
-        <ul>
+        <ul className="project-detail-list">
           {project.features.map((feature) => (
             <li key={feature}>
               {feature}
@@ -51,18 +69,24 @@ function ProjectDetail() {
         </ul>
       </section>
 
-      {/* 담당 역할 */}
-      <section>
-        <h2>담당한 역할</h2>
+      {/* Role */}
+      <section className="project-detail-section">
+        <p className="project-section-label">
+          03 / MY ROLE
+        </p>
 
-        <p>{project.role}</p>
+        <p className="project-detail-text">
+          {project.role}
+        </p>
       </section>
 
-      {/* 개발하면서 해결한 문제 */}
-      <section>
-        <h2>Challenges</h2>
+      {/* Challenges */}
+      <section className="project-detail-section">
+        <p className="project-section-label">
+          04 / CHALLENGES
+        </p>
 
-        <ul>
+        <ul className="project-detail-list">
           {project.challenges.map((challenge) => (
             <li key={challenge}>
               {challenge}
@@ -71,7 +95,7 @@ function ProjectDetail() {
         </ul>
       </section>
 
-      {/* GitHub / Demo 링크 */}
+      {/* Links */}
       <section className="project-detail-links">
         {project.github && (
           <a
@@ -79,7 +103,7 @@ function ProjectDetail() {
             target="_blank"
             rel="noreferrer"
           >
-            GitHub
+            GitHub ↗
           </a>
         )}
 
@@ -89,13 +113,16 @@ function ProjectDetail() {
             target="_blank"
             rel="noreferrer"
           >
-            Live Demo
+            Live Demo ↗
           </a>
         )}
       </section>
 
-      {/* 프로젝트 목록으로 돌아가기 */}
-      <Link to="/#projects">
+      {/* Back */}
+      <Link
+        to="/#projects"
+        className="project-back"
+      >
         ← 프로젝트 목록으로 돌아가기
       </Link>
     </main>
