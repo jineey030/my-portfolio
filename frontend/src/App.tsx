@@ -1,4 +1,4 @@
-import { Routes, Route, BrowserRouter, Link, Navigate } from 'react-router';
+import { Routes, Route, BrowserRouter } from 'react-router';
 import './App.css';
 
 // import page
