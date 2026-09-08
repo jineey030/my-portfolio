@@ -8,6 +8,7 @@ import ProjectDetail from './pages/project/ProjectDetail';
 // components
 import Navbar from './components/Navbar';
 import ScrollToHash from './components/ScrollToHash';
+import Footer from './components/Footer';
 
 function App() {
   return (
@@ -38,6 +39,9 @@ function App() {
           }
         />
       </Routes>
+
+      {/* Footer */}
+      <Footer />
     </BrowserRouter>
   );
 }
