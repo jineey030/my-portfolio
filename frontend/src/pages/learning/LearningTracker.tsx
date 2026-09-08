@@ -1,6 +1,10 @@
 import './LearningTracker.css';
+import { useState } from 'react';
+import { INITIAL_TODOS } from './constants/todos';
 
 function LearningTracker() {
+  const [todos, setTodos] = useState(INITIAL_TODOS);
+
   return (
     <main className="learning-tracker">
       <header className="learning-tracker-header">
@@ -45,79 +49,48 @@ function LearningTracker() {
       {/* Todo */}
       <section className="learning-todo">
         <div className="learning-section-header">
-          <div>
+            <div>
             <p className="learning-section-label">
-              01 / TODO
+                01 / TODO
             </p>
 
             <h2>Todo List</h2>
-          </div>
+            </div>
 
-          <button type="button">
+            <button type="button">
             + Todo 추가
-          </button>
+            </button>
         </div>
 
         <div className="todo-list">
-          <div className="todo-item">
-            <label>
-              <input type="checkbox" />
-              <span>React useEffect 정리</span>
-            </label>
+            {todos.map((todo) => (
+            <div
+                key={todo.id}
+                className={`todo-item ${
+                todo.completed ? 'is-completed' : ''
+                }`}
+            >
+                <label>
+                <input
+                    type="checkbox"
+                    checked={todo.completed}
+                    readOnly
+                />
 
-            <div className="todo-actions">
-              <button type="button">
-                수정
-              </button>
+                <span>{todo.title}</span>
+                </label>
 
-              <button type="button">
-                삭제
-              </button>
+                <div className="todo-actions">
+                <button type="button">
+                    수정
+                </button>
+
+                <button type="button">
+                    삭제
+                </button>
+                </div>
             </div>
-          </div>
-
-          <div className="todo-item is-completed">
-            <label>
-              <input
-                type="checkbox"
-                defaultChecked
-              />
-
-              <span>
-                Spring Boot REST API 공부
-              </span>
-            </label>
-
-            <div className="todo-actions">
-              <button type="button">
-                수정
-              </button>
-
-              <button type="button">
-                삭제
-              </button>
-            </div>
-          </div>
-
-          <div className="todo-item">
-            <label>
-              <input type="checkbox" />
-
-              <span>
-                MariaDB 연동
-              </span>
-            </label>
-
-            <div className="todo-actions">
-              <button type="button">
-                수정
-              </button>
-
-              <button type="button">
-                삭제
-              </button>
-            </div>
-          </div>
+            ))}
         </div>
       </section>
     </main>
