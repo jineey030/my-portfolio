@@ -130,7 +130,7 @@ html {
 /* Hero 컴포넌트 */
 .hero {
   min-height: 90vh;
-  padding-top: 80px;
+  padding-top: 140px;
   
   display: flex;
   flex-direction: column;
