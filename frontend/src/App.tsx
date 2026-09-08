@@ -3,6 +3,7 @@ import './App.css';
 
 // import page
 import Introduce from './pages/introduce/pages';
+import ProjectDetail from './pages/project/ProjectDetail';
 
 function App() {
   return (
@@ -10,7 +11,15 @@ function App() {
       <Routes>
         <Route path="/" element={<Introduce />} />
 
-        <Route path="*" element={<div>페이지를 찾을 수 없습니다.</div>}/>
+        <Route
+          path="/projects/:projectId"
+          element={<ProjectDetail />}
+        />
+
+        <Route
+          path="*"
+          element={<div>페이지를 찾을 수 없습니다.</div>}
+        />
       </Routes>
     </BrowserRouter>
   )
