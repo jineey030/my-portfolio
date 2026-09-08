@@ -6,12 +6,13 @@ import Introduce from './pages/introduce/pages';
 import ProjectDetail from './pages/project/ProjectDetail';
 
 // components
-import ScrollToHash from './pages/project/components/ScrollToHash';
+import Navbar from './components/Navbar';
+import ScrollToHash from './components/ScrollToHash';
 
 function App() {
   return (
     <BrowserRouter>
-      {/* hash 기반 스크롤 처리 */}
+      <Navbar />
       <ScrollToHash />
 
       <Routes>
