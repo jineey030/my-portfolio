@@ -10,10 +10,11 @@ const NAV_ITEMS = [
 
 function Navbar() {
   const [activeSection, setActiveSection] = useState('');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const location = useLocation();
 
   useEffect(() => {
-    // 프로젝트 상세 페이지에서는 active 상태 제거
     if (location.pathname !== '/') {
       setActiveSection('');
       return;
@@ -21,11 +22,11 @@ function Navbar() {
 
     const handleScroll = () => {
       const scrollPosition = window.scrollY + 120;
+
       const pageBottom =
         window.innerHeight + window.scrollY >=
         document.documentElement.scrollHeight - 10;
 
-      // 페이지 맨 아래까지 내려왔다면 Contact 활성화
       if (pageBottom) {
         setActiveSection('contact');
         return;
@@ -48,7 +49,6 @@ function Navbar() {
       setActiveSection(currentSection);
     };
 
-    // 처음 페이지에 들어왔을 때도 실행
     handleScroll();
 
     window.addEventListener('scroll', handleScroll, {
@@ -60,14 +60,27 @@ function Navbar() {
     };
   }, [location.pathname]);
 
+  const handleMenuClick = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
     <nav className="navbar">
       <div className="navbar-inner">
-        <Link to="/" className="navbar-logo">
+        <Link
+          to="/"
+          className="navbar-logo"
+          onClick={handleMenuClick}
+        >
           YEJIN
         </Link>
 
-        <div className="navbar-links">
+        {/* Desktop / Mobile 메뉴 */}
+        <div
+          className={`navbar-links ${
+            isMenuOpen ? 'is-open' : ''
+          }`}
+        >
           {NAV_ITEMS.map((item) => (
             <a
               key={item.id}
@@ -77,11 +90,31 @@ function Navbar() {
                   ? 'active'
                   : ''
               }
+              onClick={handleMenuClick}
             >
               {item.label}
             </a>
           ))}
         </div>
+
+        {/* 모바일 메뉴 버튼 */}
+        <button
+          type="button"
+          className={`navbar-menu-button ${
+            isMenuOpen ? 'is-open' : ''
+          }`}
+          onClick={() =>
+            setIsMenuOpen((prev) => !prev)
+          }
+          aria-label={
+            isMenuOpen ? '메뉴 닫기' : '메뉴 열기'
+          }
+          aria-expanded={isMenuOpen}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
       </div>
     </nav>
   );
