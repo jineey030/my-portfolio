@@ -4,6 +4,27 @@ import { INITIAL_TODOS } from './constants/todos';
 
 function LearningTracker() {
   const [todos, setTodos] = useState(INITIAL_TODOS);
+  const [isAdding, setIsAdding] = useState(false);
+  const [newTodo, setNewTodo] = useState('');
+
+  const handleAddTodo = () => {
+    const title = newTodo.trim();
+
+    if (!title) {
+      return;
+    }
+
+    const todo = {
+      id: Date.now(),
+      title,
+      completed: false,
+    };
+
+    setTodos((prev) => [...prev, todo]);
+
+    setNewTodo('');
+    setIsAdding(false);
+  };
 
   return (
     <main className="learning-tracker">
@@ -49,48 +70,91 @@ function LearningTracker() {
       {/* Todo */}
       <section className="learning-todo">
         <div className="learning-section-header">
-            <div>
+          <div>
             <p className="learning-section-label">
-                01 / TODO
+              01 / TODO
             </p>
 
             <h2>Todo List</h2>
-            </div>
+          </div>
 
-            <button type="button">
-            + Todo 추가
+          {!isAdding && (
+            <button
+              type="button"
+              onClick={() => setIsAdding(true)}
+            >
+              + Todo 추가
             </button>
+          )}
         </div>
 
-        <div className="todo-list">
-            {todos.map((todo) => (
-            <div
-                key={todo.id}
-                className={`todo-item ${
-                todo.completed ? 'is-completed' : ''
-                }`}
+        {/* Todo 추가 */}
+        {isAdding && (
+          <div className="todo-add-form">
+            <input
+              type="text"
+              value={newTodo}
+              onChange={(event) =>
+                setNewTodo(event.target.value)
+              }
+              placeholder="할 일을 입력하세요"
+              autoFocus
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  handleAddTodo();
+                }
+              }}
+            />
+
+            <button
+              type="button"
+              onClick={handleAddTodo}
             >
-                <label>
+              추가
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setNewTodo('');
+                setIsAdding(false);
+              }}
+            >
+              취소
+            </button>
+          </div>
+        )}
+
+        {/* Todo 목록 */}
+        <div className="todo-list">
+          {todos.map((todo) => (
+            <div
+              key={todo.id}
+              className={`todo-item ${
+                todo.completed ? 'is-completed' : ''
+              }`}
+            >
+              <label>
                 <input
-                    type="checkbox"
-                    checked={todo.completed}
-                    readOnly
+                  type="checkbox"
+                  checked={todo.completed}
+                  readOnly
                 />
 
                 <span>{todo.title}</span>
-                </label>
+              </label>
 
-                <div className="todo-actions">
+              <div className="todo-actions">
                 <button type="button">
-                    수정
+                  수정
                 </button>
 
                 <button type="button">
-                    삭제
+                  삭제
                 </button>
-                </div>
+              </div>
             </div>
-            ))}
+          ))}
         </div>
       </section>
     </main>
