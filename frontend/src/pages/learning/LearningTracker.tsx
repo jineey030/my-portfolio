@@ -7,11 +7,12 @@ function LearningTracker() {
   const [isAdding, setIsAdding] = useState(false);
   const [newTodo, setNewTodo] = useState('');
 
-  const [editingId, setEditingId] = useState<number | null>(
-    null
-  );
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
 
+  const [deletingId, setDeleeingId] = useState<number | null>(null);
+
+  // 추가
   const handleAddTodo = () => {
     const title = newTodo.trim();
 
@@ -31,6 +32,7 @@ function LearningTracker() {
     setIsAdding(false);
   };
 
+  // 완료 표시
   const handleToggleTodo = (id: number) => {
     setTodos((prev) =>
       prev.map((todo) =>
@@ -44,6 +46,7 @@ function LearningTracker() {
     );
   };
 
+  // 수정
   const handleStartEdit = (
     id: number,
     title: string
@@ -76,6 +79,21 @@ function LearningTracker() {
     );
 
     handleCancelEdit();
+  };
+
+  // 삭제
+  const handleDeleteTodo = (id: number) => {
+    const shouldDelete = window.confirm(
+      '이 Todo를 삭제하시겠습니까?'
+    );
+
+    if (!shouldDelete) {
+      return;
+    }
+
+    setTodos((prev) =>
+      prev.filter((todo) => todo.id !== id)
+    );
   };
 
   return (
@@ -249,7 +267,9 @@ function LearningTracker() {
                       수정
                     </button>
 
-                    <button type="button">
+                    <button type="button"
+                      onClick={() => handleDeleteTodo(todo.id)}
+                    >
                       삭제
                     </button>
                   </div>
