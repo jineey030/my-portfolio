@@ -109,7 +109,7 @@ function LearningTracker() {
     }
   };
 
-  // 수정
+  // 수정 대상 체크
   const handleStartEdit = (
     id: number,
     title: string
@@ -123,25 +123,51 @@ function LearningTracker() {
     setEditingTitle('');
   };
 
-  const handleSaveEdit = (id: number) => {
+  // [PUT] Todo 수정
+  const handleSaveEdit = async (id: number) => {
     const title = editingTitle.trim();
 
     if (!title) {
       return;
     }
 
-    setTodos((prev) =>
-      prev.map((todo) =>
-        todo.id === id
-          ? {
-              ...todo,
-              title,
-            }
-          : todo
-      )
-    );
+    const todo = todos.find((todo) => todo.id === id);
 
-    handleCancelEdit();
+    if (!todo) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/todos/${id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            title,
+            completed: todo.completed,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Todo 수정에 실패했습니다.');
+      }
+
+      const updatedTodo: Todo = await response.json();
+
+      setTodos((prev) =>
+        prev.map((todo) =>
+          todo.id === id ? updatedTodo : todo
+        )
+      );
+
+      handleCancelEdit();
+    } catch (error) {
+      console.error('Todo 수정 실패:', error);
+    }
   };
 
   // 삭제
