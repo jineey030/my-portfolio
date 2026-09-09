@@ -1,10 +1,12 @@
 import { Link } from 'react-router';
 import { PROJECTS } from '../constants/projects';
+import SectionTitle from '../../../components/ui/SectionTitle';
+import Tag from '../../../components/ui/Tag';
 
 function Projects() {
   return (
     <section id="projects">
-      <h2>Projects</h2>
+      <SectionTitle>Projects</SectionTitle>
 
       <div className="project-grid">
         {PROJECTS.map((project) => (
@@ -29,12 +31,9 @@ function Projects() {
 
             <div className="project-stack">
               {project.stack.map((stack) => (
-                <span
-                  key={stack}
-                  className="project-stack-tag"
-                >
+                <Tag key={stack}>
                   {stack}
-                </span>
+                </Tag>
               ))}
             </div>
 

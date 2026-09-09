@@ -4,6 +4,7 @@ import './App.css';
 // pages
 import Introduce from './pages/introduce/pages';
 import ProjectDetail from './pages/project/ProjectDetail';
+import LearningTracker from './pages/learning/LearningTracker';
 import NotFound from './pages/not-found/NotFound';
 
 // components
@@ -28,6 +29,12 @@ function App() {
         <Route
           path="/projects/:projectId"
           element={<ProjectDetail />}
+        />
+
+        {/* Tracker */}
+        <Route
+          path="/learning"
+          element={<LearningTracker />}
         />
 
         {/* 존재하지 않는 페이지 */}

@@ -90,20 +90,6 @@ html {
   padding: 80px 24px;
 }
 
-.introduce h2 {
-  font-family: var(--font-pixel);
-  font-size: 14px;
-  color: var(--neon-cyan);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 32px;
-}
-
-.introduce h2::before {
-  content: '// ';
-  color: var(--text-muted);
-}
-
 .introduce nav {
   max-width: 960px;
   margin: 0 auto;

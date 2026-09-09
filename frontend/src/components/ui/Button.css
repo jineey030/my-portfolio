@@ -1,0 +1,52 @@
+.ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 12px 24px;
+
+  border-radius: 6px;
+
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+/* Primary */
+
+.ui-button-primary {
+  border: 1px solid var(--neon-cyan);
+
+  background: var(--neon-cyan);
+  color: var(--bg-primary);
+
+  box-shadow: var(--glow-cyan);
+}
+
+.ui-button-primary:hover {
+  transform: translateY(-2px);
+}
+
+/* Outline */
+
+.ui-button-outline {
+  border: 1px solid var(--border-subtle);
+
+  background: transparent;
+  color: var(--text-primary);
+}
+
+.ui-button-outline:hover {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+
+  transform: translateY(-2px);
+}
