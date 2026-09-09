@@ -30,6 +30,8 @@ function LearningTracker() {
 
   const [studyLogActionError, setStudyLogActionError] = useState('');
 
+  const [isStudyLogSubmitting, setIsStudyLogSubmitting] = useState(false);
+
   // [Get] todo list 가져오기
   useEffect(() => {
     const fetchTodos = async () => {
@@ -284,6 +286,7 @@ function LearningTracker() {
     }
 
     setStudyLogActionError('');
+    setIsStudyLogSubmitting(true);
 
     try {
       const response = await fetch(
@@ -315,6 +318,8 @@ function LearningTracker() {
     } catch (error) {
       console.error('Study Log 추가 실패:', error);
       setStudyLogActionError('Study Log 추가에 실패했습니다.');
+    } finally {
+      setIsStudyLogSubmitting(false);
     }
   };
 
@@ -347,6 +352,7 @@ function LearningTracker() {
     }
 
     setStudyLogActionError('');
+    setIsStudyLogSubmitting(true);
 
     try {
       const response = await fetch(
@@ -379,6 +385,8 @@ function LearningTracker() {
     } catch (error) {
       console.error('Study Log 수정 실패:', error);
       setStudyLogActionError('Study Log 수정에 실패했습니다.');
+    } finally {
+      setIsStudyLogSubmitting(false);
     }
   };
 
@@ -393,6 +401,7 @@ function LearningTracker() {
     }
 
     setStudyLogActionError('');
+    setIsStudyLogSubmitting(true);
 
     try {
       const response = await fetch(
@@ -412,6 +421,8 @@ function LearningTracker() {
     } catch (error) {
       console.error('Study Log 삭제 실패:', error);
       setStudyLogActionError('Study Log 삭제에 실패했습니다.');
+    } finally {
+      setIsStudyLogSubmitting(false);
     }
   };
 
@@ -649,8 +660,9 @@ function LearningTracker() {
           <button
             type="button"
             onClick={handleAddStudyLog}
+            disabled={isStudyLogSubmitting}
           >
-            기록 추가
+            {isStudyLogSubmitting ? '추가 중...' : '기록 추가'}
           </button>
         </div>
 
@@ -693,8 +705,9 @@ function LearningTracker() {
                       <button
                         type="button"
                         onClick={() => handleSaveStudyLog(log.id)}
+                        disabled={isStudyLogSubmitting}
                       >
-                        저장
+                        {isStudyLogSubmitting ? '저장 중...' : '저장'}
                       </button>
 
                       <button
@@ -718,8 +731,9 @@ function LearningTracker() {
                       <button
                         type="button"
                         onClick={() => handleDeleteStudyLog(log.id)}
+                        disabled={isStudyLogSubmitting}
                       >
-                        삭제
+                        {isStudyLogSubmitting ? '삭제 중...' : '삭제'}
                       </button>
                     </>
                   )}
