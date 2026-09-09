@@ -17,6 +17,9 @@ function LearningTracker() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [studyLog, setStudyLog] = useState('');
+  const [studyLogs, setStudyLogs] = useState<{date: string; content: string;}[]>([]);
+
   // [get] todo list 가져오기
   useEffect(() => {
     const fetchTodos = async () => {
@@ -433,6 +436,70 @@ function LearningTracker() {
                   </>
                 )}
               </div>
+            ))
+          )}
+        </div>
+      </section>
+
+      <section className="learning-study-log">
+        <div className="learning-section-header">
+          <div>
+            <p className="learning-section-label">
+              02 / STUDY LOG
+            </p>
+
+            <h2>Study Log</h2>
+          </div>
+        </div>
+
+        <div className="study-log-form">
+          <textarea
+            value={studyLog}
+            onChange={(event) =>
+              setStudyLog(event.target.value)
+            }
+            placeholder="오늘 공부한 내용을 기록하세요"
+            rows={5}
+          />
+
+          <button
+            type="button"
+            onClick={() => {
+              const log = studyLog.trim();
+
+              if (!log) {
+                return;
+              }
+
+              setStudyLogs((prev) => [
+                ...prev,
+                {
+                  date: new Date().toISOString().split('T')[0],
+                  content: log,
+                },
+              ]);
+
+              setStudyLog('');
+            }}
+          >
+            기록 추가
+          </button>
+        </div>
+
+        <div className="study-log-list">
+          {studyLogs.length === 0 ? (
+            <p className="study-log-empty">
+              아직 작성된 학습 기록이 없습니다.
+            </p>
+          ) : (
+            studyLogs.map((log, index) => (
+              <article
+                key={index}
+                className="study-log-item"
+              >
+                <time>{log.date}</time>
+                <p>{log.content}</p>
+              </article>
             ))
           )}
         </div>
