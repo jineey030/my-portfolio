@@ -34,6 +34,36 @@
 | **Database** | MariaDB |
 | **Tooling** | Gradle (Kotlin DSL), oxlint |
 
+## // project structure
+
+```text
+my-portfolio/
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   └── ...
+│   └── package.json
+│
+├── backend/
+│   ├── src/
+│   │   └── main/
+│   │       └── kotlin/
+│   │           └── com/devlog/backend/
+│   │               └── todo/
+│   ├── build.gradle.kts
+│   └── ...
+│
+└── README.md
+```
+
+### Frontend
+React 기반 SPA로 포트폴리오 페이지와 Learning Tracker UI를 구성합니다.
+
+### Backend
+Kotlin + Spring Boot 기반 REST API 서버입니다.
+Controller → Service → Repository → JPA → MariaDB 구조로 Todo CRUD를 처리합니다.
+
 ## // getting started
 
 ### 1. Frontend 실행
