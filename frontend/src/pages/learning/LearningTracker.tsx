@@ -1,8 +1,41 @@
 import './LearningTracker.css';
+import { useState } from 'react';
+import type {
+  Todo,
+  StudyLogData
+} from './types/learning';
 import StudyLog from './components/StudyLog';
 import TodoList from './components/TodoList';
+import DashboardCard from './components/DashboardCard';
 
 function LearningTracker() {
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [studyLogs, setStudyLogs] = useState<StudyLogData[]>([])
+
+  const handleTodosChange = (todos: Todo[]) => {
+    setTodos(todos);
+  };
+
+  const handleStudyLogsChange = (
+    studyLogs: StudyLogData[]
+  ) => {
+    setStudyLogs(studyLogs);
+  };
+
+  const completedTodoCount = todos.filter(
+    (todo) => todo.completed
+  ).length;
+
+  const totalTodoCount = todos.length;
+  const studyLogCount = studyLogs.length;
+  const studyDays = new Set(
+    studyLogs.map((log) => log.date)
+  ).size;
+
+  const todoProgress =
+    totalTodoCount === 0
+      ? 0 : Math.round( (completedTodoCount / totalTodoCount) * 100);
+
   return (
     <main className="learning-tracker">
       <header className="learning-tracker-header">
@@ -19,34 +52,32 @@ function LearningTracker() {
 
       {/* 학습 현황 */}
       <section className="learning-summary">
-        <div className="learning-summary-card">
-          <span className="learning-summary-label">
-            REACT
-          </span>
+        <DashboardCard
+          label="TODO"
+          value={`${todoProgress}%`}
+          description={`${completedTodoCount} / ${totalTodoCount} completed`}
+        />
 
-          <strong>65%</strong>
-        </div>
+        <DashboardCard
+          label="STUDY LOG"
+          value={String(studyLogCount)}
+          description="learning records"
+        />
 
-        <div className="learning-summary-card">
-          <span className="learning-summary-label">
-            KOTLIN
-          </span>
-
-          <strong>40%</strong>
-        </div>
-
-        <div className="learning-summary-card">
-          <span className="learning-summary-label">
-            STUDY TIME
-          </span>
-
-          <strong>12h 30m</strong>
-        </div>
+        <DashboardCard
+          label="STUDY DAYS"
+          value={String(studyDays)}
+          description="unique study days"
+        />
       </section>
 
-      <TodoList />
+      <TodoList
+        onTodosChange={handleTodosChange}
+      />
 
-      <StudyLog />
+      <StudyLog
+        onStudyLogsChange={handleStudyLogsChange}
+      />
     </main>
   );
 }
