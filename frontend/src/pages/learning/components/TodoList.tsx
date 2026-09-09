@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react';
 import type { Todo } from '../types/learning';
 
-function TodoList() {
+interface TodoListProps {
+  onTodosChange: (todos: Todo[]) => void;
+}
+
+function TodoList({
+  onTodosChange
+}: TodoListProps) {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -42,6 +48,11 @@ function TodoList() {
 
     fetchTodos();
   }, []);
+
+  // 부모에게 전달용
+  useEffect(() => {
+    onTodosChange(todos);
+  }, [todos, onTodosChange]);
 
   // [PUT] 완료 상태 체크
   const handleToggleTodo = async (id: number) => {
