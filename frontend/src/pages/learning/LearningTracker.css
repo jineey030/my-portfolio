@@ -349,3 +349,144 @@
   line-height: 1.8;
   text-align: center;
 }
+
+/* Study Log */
+
+.learning-study-log {
+  margin-top: 64px;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 48px;
+}
+
+.study-log-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.study-log-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 16px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  line-height: 1.7;
+  resize: vertical;
+  outline: none;
+}
+
+.study-log-form textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.study-log-form textarea:focus {
+  border-color: var(--neon-cyan);
+  box-shadow: var(--glow-cyan);
+}
+
+.study-log-form button {
+  align-self: flex-end;
+  padding: 10px 16px;
+  border: 1px solid var(--neon-cyan);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--neon-cyan);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.study-log-form button:hover {
+  background: var(--neon-cyan);
+  color: var(--bg-primary);
+}
+
+.study-log-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.study-log-item {
+  position: relative;
+  padding: 20px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  background: var(--bg-secondary);
+}
+
+.study-log-item + .study-log-item {
+  margin-top: 12px;
+}
+
+.study-log-item time {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--neon-cyan);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+.study-log-item p {
+  margin: 0;
+  padding-right: 60px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.study-log-item button {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  padding: 6px 10px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.study-log-item button:hover {
+  border-color: var(--neon-pink);
+  color: var(--neon-pink);
+}
+
+.study-log-empty {
+  margin: 0;
+  padding: 40px 0;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.8;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .study-log-form button {
+    width: 100%;
+  }
+
+  .study-log-item {
+    padding: 16px;
+  }
+
+  .study-log-item p {
+    padding-right: 0;
+    padding-bottom: 36px;
+  }
+
+  .study-log-item button {
+    top: auto;
+    right: 16px;
+    bottom: 16px;
+  }
+}
