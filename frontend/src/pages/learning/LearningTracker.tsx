@@ -70,18 +70,43 @@ function LearningTracker() {
     }
   };
 
-  // 완료 표시
-  const handleToggleTodo = (id: number) => {
-    setTodos((prev) =>
-      prev.map((todo) =>
-        todo.id === id
-          ? {
-              ...todo,
-              completed: !todo.completed,
-            }
-          : todo
-      )
-    );
+  // [PUT] 완료 상태 체크
+  const handleToggleTodo = async (id: number) => {
+    const todo = todos.find((todo) => todo.id === id);
+
+    if (!todo) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/todos/${id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            title: todo.title,
+            completed: !todo.completed,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Todo 상태 변경에 실패했습니다.');
+      }
+
+      const updatedTodo: Todo = await response.json();
+
+      setTodos((prev) =>
+        prev.map((todo) =>
+          todo.id === id ? updatedTodo : todo
+        )
+      );
+    } catch (error) {
+      console.error('Todo 상태 변경 실패:', error);
+    }
   };
 
   // 수정
