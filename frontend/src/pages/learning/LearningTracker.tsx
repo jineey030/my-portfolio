@@ -170,8 +170,8 @@ function LearningTracker() {
     }
   };
 
-  // 삭제
-  const handleDeleteTodo = (id: number) => {
+  // [DELETE] 삭제
+  const handleDeleteTodo = async (id: number) => {
     const shouldDelete = window.confirm(
       '이 Todo를 삭제하시겠습니까?'
     );
@@ -180,9 +180,24 @@ function LearningTracker() {
       return;
     }
 
-    setTodos((prev) =>
-      prev.filter((todo) => todo.id !== id)
-    );
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/todos/${id}`,
+        {
+          method: 'DELETE',
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Todo 삭제에 실패했습니다.');
+      }
+
+      setTodos((prev) =>
+        prev.filter((todo) => todo.id !== id)
+      );
+    } catch (error) {
+      console.error('Todo 삭제 실패:', error);
+    }
   };
 
   return (
