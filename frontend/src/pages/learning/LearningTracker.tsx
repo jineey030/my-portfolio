@@ -33,24 +33,41 @@ function LearningTracker() {
     fetchTodos();
   }, []);
 
-  // 추가
-  const handleAddTodo = () => {
+  // [post] 추가
+  const handleAddTodo = async () => {
     const title = newTodo.trim();
 
     if (!title) {
       return;
     }
 
-    const todo = {
-      id: Date.now(),
-      title,
-      completed: false,
-    };
+    try {
+      const response = await fetch(
+        'http://localhost:8080/api/todos',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            title,
+          }),
+        }
+      );
 
-    setTodos((prev) => [...prev, todo]);
+      if (!response.ok) {
+        throw new Error('Todo 추가에 실패했습니다.');
+      }
 
-    setNewTodo('');
-    setIsAdding(false);
+      const createdTodo: Todo = await response.json();
+
+      setTodos((prev) => [...prev, createdTodo]);
+
+      setNewTodo('');
+      setIsAdding(false);
+    } catch (error) {
+      console.error('Todo 추가 실패:', error);
+    }
   };
 
   // 완료 표시
