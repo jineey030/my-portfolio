@@ -12,6 +12,9 @@ function LearningTracker() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
 
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+
   // [get] todo list 가져오기
   useEffect(() => {
     const fetchTodos = async () => {
@@ -27,6 +30,9 @@ function LearningTracker() {
         setTodos(data);
       } catch (error) {
         console.error('Todo 조회 실패:', error);
+        setError('Todo를 불러오지 못했습니다.');
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -297,90 +303,102 @@ function LearningTracker() {
           </div>
         )}
 
+        {error && (
+          <p className="todo-error">
+            {error}
+          </p>
+        )}
+
         <div className="todo-list">
-          {todos.map((todo) => (
-            <div
-              key={todo.id}
-              className={`todo-item ${
-                todo.completed ? 'is-completed' : ''
-              }`}
-            >
-              {editingId === todo.id ? (
-                <>
-                  <input
-                    type="text"
-                    className="todo-edit-input"
-                    value={editingTitle}
-                    onChange={(event) =>
-                      setEditingTitle(event.target.value)
-                    }
-                    autoFocus
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter') {
-                        handleSaveEdit(todo.id);
-                      }
-
-                      if (event.key === 'Escape') {
-                        handleCancelEdit();
-                      }
-                    }}
-                  />
-
-                  <div className="todo-actions">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handleSaveEdit(todo.id)
-                      }
-                    >
-                      저장
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={handleCancelEdit}
-                    >
-                      취소
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <label>
+          {isLoading ? (
+            <p className="todo-loading">
+              Todo를 불러오는 중...
+            </p>
+          ) : (
+            todos.map((todo) => (
+              <div
+                key={todo.id}
+                className={`todo-item ${
+                  todo.completed ? 'is-completed' : ''
+                }`}
+              >
+                {editingId === todo.id ? (
+                  <>
                     <input
-                      type="checkbox"
-                      checked={todo.completed}
-                      onChange={() =>
-                        handleToggleTodo(todo.id)
+                      type="text"
+                      className="todo-edit-input"
+                      value={editingTitle}
+                      onChange={(event) =>
+                        setEditingTitle(event.target.value)
                       }
+                      autoFocus
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter') {
+                          handleSaveEdit(todo.id);
+                        }
+
+                        if (event.key === 'Escape') {
+                          handleCancelEdit();
+                        }
+                      }}
                     />
 
-                    <span>{todo.title}</span>
-                  </label>
+                    <div className="todo-actions">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleSaveEdit(todo.id)
+                        }
+                      >
+                        저장
+                      </button>
 
-                  <div className="todo-actions">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handleStartEdit(
-                          todo.id,
-                          todo.title
-                        )
-                      }
-                    >
-                      수정
-                    </button>
+                      <button
+                        type="button"
+                        onClick={handleCancelEdit}
+                      >
+                        취소
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={todo.completed}
+                        onChange={() =>
+                          handleToggleTodo(todo.id)
+                        }
+                      />
 
-                    <button type="button"
-                      onClick={() => handleDeleteTodo(todo.id)}
-                    >
-                      삭제
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-          ))}
+                      <span>{todo.title}</span>
+                    </label>
+
+                    <div className="todo-actions">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleStartEdit(
+                            todo.id,
+                            todo.title
+                          )
+                        }
+                      >
+                        수정
+                      </button>
+
+                      <button type="button"
+                        onClick={() => handleDeleteTodo(todo.id)}
+                      >
+                        삭제
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            ))
+          )}
         </div>
       </section>
     </main>
