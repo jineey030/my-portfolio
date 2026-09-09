@@ -33,498 +33,8 @@
   line-height: 1.8;
 }
 
-/* Summary */
-
-.learning-summary {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-bottom: 64px;
-}
-
-.learning-summary-card {
-  padding: 24px;
-  border: 1px solid var(--border-subtle);
-  border-radius: 8px;
-  background: var(--bg-secondary);
-}
-
-.learning-summary-label {
-  display: block;
-  margin-bottom: 16px;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 1px;
-}
-
-.learning-summary-card strong {
-  color: var(--neon-cyan);
-  font-family: var(--font-pixel);
-  font-size: 28px;
-  font-weight: 500;
-}
-
-/* Todo */
-
-.learning-todo {
-  border-top: 1px solid var(--border-subtle);
-  padding-top: 48px;
-}
-
-.learning-section-header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-bottom: 28px;
-}
-
-.learning-section-label {
-  margin: 0 0 12px;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 1px;
-}
-
-.learning-section-header h2 {
-  margin: 0;
-  font-family: var(--font-pixel);
-  font-size: 24px;
-  font-weight: 500;
-}
-
-.learning-section-header button {
-  padding: 10px 16px;
-  border: 1px solid var(--neon-cyan);
-  border-radius: 6px;
-  background: transparent;
-  color: var(--neon-cyan);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  cursor: pointer;
-}
-
-.learning-section-header button:hover {
-  background: var(--neon-cyan);
-  color: var(--bg-primary);
-}
-
-/* Todo list */
-
-.todo-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.todo-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 18px 20px;
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-.todo-item:first-child {
-  border-top: 1px solid var(--border-subtle);
-}
-
-.todo-item label {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: var(--text-secondary);
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.todo-item label span {
-  color: var(--text-secondary);
-}
-
-.todo-item.is-completed label span {
-  color: var(--text-muted);
-  text-decoration: line-through;
-}
-
-.todo-item input {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--neon-cyan);
-}
-
-.todo-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.todo-actions button {
-  padding: 6px 10px;
-  border: 1px solid var(--border-subtle);
-  border-radius: 4px;
-  background: transparent;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  cursor: pointer;
-}
-
-.todo-actions button:hover {
-  border-color: var(--neon-cyan);
-  color: var(--neon-cyan);
-}
-
-/* Todo 추가 */
-
-.todo-add-form {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 20px;
-}
-
-.todo-add-form input {
-  flex: 1;
-  min-width: 0;
-  padding: 11px 14px;
-  border: 1px solid var(--border-subtle);
-  border-radius: 6px;
-  background: var(--bg-secondary);
-  color: var(--text-primary);
-  font-family: 'Inter', sans-serif;
-  font-size: 13px;
-  outline: none;
-}
-
-.todo-add-form input::placeholder {
-  color: var(--text-muted);
-}
-
-.todo-add-form input:focus {
-  border-color: var(--neon-cyan);
-}
-
-.todo-add-form button {
-  padding: 10px 16px;
-  border: 1px solid var(--border-subtle);
-  border-radius: 6px;
-  background: transparent;
-  color: var(--text-secondary);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  cursor: pointer;
-}
-
-.todo-add-form button:first-of-type {
-  border-color: var(--neon-cyan);
-  color: var(--neon-cyan);
-}
-
-.todo-add-form button:hover {
-  border-color: var(--neon-cyan);
-  color: var(--neon-cyan);
-}
-
-/* Todo 수정 */
-
-.todo-edit-input {
-  flex: 1;
-  width: 100%;
-  min-width: 0;
-  padding: 12px 14px;
-  border: 1px solid var(--neon-cyan);
-  border-radius: 6px;
-  background: var(--bg-secondary);
-  color: var(--text-primary);
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  outline: none;
-  box-shadow: var(--glow-cyan);
-}
-
-.todo-edit-input:focus {
-  border-color: var(--neon-cyan);
-}
-
-/* Error */
-
-.todo-error {
-  margin: 0 0 20px;
-  padding: 14px 16px;
-  border: 1px solid rgba(244, 114, 182, 0.35);
-  border-radius: 6px;
-  background: rgba(244, 114, 182, 0.05);
-  color: var(--neon-pink);
-  font-family: var(--font-mono);
-  font-size: 12px;
-}
-
-/* Loading */
-
-.todo-loading {
-  margin: 0;
-  padding: 24px 0;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: 12px;
-}
-
-/* Todo list가 없을 경우 */
-
-.todo-empty {
-  margin: 0;
-  padding: 40px 0;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  line-height: 1.8;
-  text-align: center;
-}
-
-/* Study Log */
-
-.learning-study-log {
-  margin-top: 64px;
-  border-top: 1px solid var(--border-subtle);
-  padding-top: 48px;
-}
-
-.study-log-form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 32px;
-}
-
-.study-log-form textarea {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 16px;
-  border: 1px solid var(--border-subtle);
-  border-radius: 6px;
-  background: var(--bg-secondary);
-  color: var(--text-primary);
-  font-family: 'Inter', sans-serif;
-  font-size: 13px;
-  line-height: 1.7;
-  resize: vertical;
-  outline: none;
-}
-
-.study-log-form textarea::placeholder {
-  color: var(--text-muted);
-}
-
-.study-log-form textarea:focus {
-  border-color: var(--neon-cyan);
-  box-shadow: var(--glow-cyan);
-}
-
-.study-log-form button {
-  align-self: flex-end;
-  padding: 10px 16px;
-  border: 1px solid var(--neon-cyan);
-  border-radius: 6px;
-  background: transparent;
-  color: var(--neon-cyan);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  cursor: pointer;
-}
-
-.study-log-form button:hover {
-  background: var(--neon-cyan);
-  color: var(--bg-primary);
-}
-
-.study-log-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.study-log-item {
-  position: relative;
-  padding: 20px;
-  border: 1px solid var(--border-subtle);
-  border-radius: 6px;
-  background: var(--bg-secondary);
-}
-
-.study-log-item + .study-log-item {
-  margin-top: 12px;
-}
-
-.study-log-item time {
-  display: block;
-  margin-bottom: 12px;
-  color: var(--neon-cyan);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.5px;
-}
-
-.study-log-item p {
-  margin: 0;
-  padding-right: 100px;
-  color: var(--text-secondary);
-  font-size: 13px;
-  line-height: 1.8;
-  white-space: pre-wrap;
-}
-
-/* Study Log 수정 textarea */
-
-.study-log-item > textarea {
-  width: 100%;
-  box-sizing: border-box;
-  min-height: 100px;
-  margin: 0;
-  padding: 12px 14px;
-  border: 1px solid var(--neon-cyan);
-  border-radius: 6px;
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: 'Inter', sans-serif;
-  font-size: 13px;
-  line-height: 1.7;
-  resize: vertical;
-  outline: none;
-  box-shadow: var(--glow-cyan);
-}
-
-.study-log-item > textarea:focus {
-  border-color: var(--neon-cyan);
-}
-
-/* Study Log 버튼 */
-
-.study-log-actions {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  display: flex;
-  gap: 6px;
-}
-
-.study-log-actions button {
-  position: static;
-  padding: 6px 10px;
-  border: 1px solid var(--border-subtle);
-  border-radius: 4px;
-  background: transparent;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  cursor: pointer;
-}
-
-.study-log-actions button:hover {
-  border-color: var(--neon-cyan);
-  color: var(--neon-cyan);
-}
-
-.study-log-empty {
-  margin: 0;
-  padding: 40px 0;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  line-height: 1.8;
-  text-align: center;
-}
-
-/* Mobile */
-
-@media (max-width: 768px) {
-  .learning-tracker {
-    width: calc(100% - 32px);
-    padding: 110px 0 70px;
-  }
-
-  .learning-summary {
-    grid-template-columns: 1fr;
-  }
-
-  .learning-section-header {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .learning-section-header button {
-    width: 100%;
-  }
-
-  .todo-item {
-    align-items: flex-start;
-  }
-
-  .todo-actions {
-    flex-shrink: 0;
-  }
-
-  .study-log-form button {
-    width: 100%;
-  }
-
-  .study-log-item {
-    padding: 16px;
-  }
-
-  .study-log-item p {
-    padding-right: 0;
-    padding-bottom: 36px;
-  }
-
-  .study-log-item > textarea {
-    min-height: 120px;
-    margin-bottom: 48px;
-  }
-
-  .study-log-actions {
-    top: auto;
-    right: 16px;
-    bottom: 16px;
-  }
-}
-
-/* Loading, Error 표시 */
-.study-log-loading,
-.study-log-error {
-  margin: 0;
-  padding: 24px;
-  border: 1px solid var(--border-subtle);
-  border-radius: 6px;
-  background: var(--bg-secondary);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  text-align: center;
-}
-
-.study-log-loading {
-  color: var(--text-muted);
-}
-
-.study-log-error {
-  border-color: rgba(244, 114, 182, 0.35);
-  color: var(--neon-pink);
-}
-
-/* 로그 추가 Error 표시 */
-.study-log-action-error {
-  margin: 0;
-  padding: 8px 12px;
-  border: 1px solid rgba(244, 114, 182, 0.35);
-  border-radius: 4px;
-  background: rgba(244, 114, 182, 0.05);
-  color: var(--neon-pink);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  line-height: 1.5;
-}
-
 /* =========================
-   Dashboard Cards
+   Summary
    ========================= */
 
 .learning-summary {
@@ -577,7 +87,6 @@
 
 .learning-summary-label {
   color: var(--text-muted);
-
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.12em;
@@ -618,15 +127,21 @@
 .dashboard-progress-track {
   flex: 1;
   height: 4px;
+
   overflow: hidden;
+
   border-radius: 999px;
+
   background: rgba(255, 255, 255, 0.08);
 }
 
 .dashboard-progress-bar {
   height: 100%;
+
   border-radius: inherit;
+
   background: var(--neon-cyan);
+
   box-shadow: 0 0 10px rgba(94, 234, 212, 0.5);
 
   transition: width 0.4s ease;
@@ -639,5 +154,712 @@
 
   font-family: var(--font-mono);
   font-size: 10px;
+
   text-align: right;
+}
+
+/* =========================
+   Todo
+   ========================= */
+
+.learning-todo {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 48px;
+}
+
+.learning-section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  margin-bottom: 28px;
+}
+
+.learning-section-label {
+  margin: 0 0 12px;
+
+  color: var(--text-muted);
+
+  font-family: var(--font-mono);
+  font-size: 11px;
+
+  letter-spacing: 1px;
+}
+
+.learning-section-header h2 {
+  margin: 0;
+
+  font-family: var(--font-pixel);
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.learning-section-header button {
+  padding: 10px 16px;
+
+  border: 1px solid var(--neon-cyan);
+  border-radius: 6px;
+
+  background: transparent;
+
+  color: var(--neon-cyan);
+
+  font-family: var(--font-mono);
+  font-size: 11px;
+
+  cursor: pointer;
+}
+
+.learning-section-header button:hover {
+  background: var(--neon-cyan);
+  color: var(--bg-primary);
+}
+
+/* =========================
+   Todo List
+   ========================= */
+
+.todo-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 18px 20px;
+
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.todo-item:first-child {
+  border-top: 1px solid var(--border-subtle);
+}
+
+.todo-item label {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  color: var(--text-secondary);
+
+  font-size: 14px;
+
+  cursor: pointer;
+}
+
+.todo-item label span {
+  color: var(--text-secondary);
+}
+
+.todo-item.is-completed label span {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.todo-item input {
+  width: 16px;
+  height: 16px;
+
+  accent-color: var(--neon-cyan);
+}
+
+.todo-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.todo-actions button {
+  padding: 6px 10px;
+
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+
+  background: transparent;
+
+  color: var(--text-muted);
+
+  font-family: var(--font-mono);
+  font-size: 10px;
+
+  cursor: pointer;
+}
+
+.todo-actions button:hover {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+}
+
+/* =========================
+   Todo 추가
+   ========================= */
+
+.todo-add-form {
+  display: flex;
+  gap: 8px;
+
+  margin-bottom: 20px;
+}
+
+.todo-add-form input {
+  flex: 1;
+  min-width: 0;
+
+  padding: 11px 14px;
+
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+
+  background: var(--bg-secondary);
+
+  color: var(--text-primary);
+
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+
+  outline: none;
+}
+
+.todo-add-form input::placeholder {
+  color: var(--text-muted);
+}
+
+.todo-add-form input:focus {
+  border-color: var(--neon-cyan);
+}
+
+.todo-add-form button {
+  padding: 10px 16px;
+
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+
+  background: transparent;
+
+  color: var(--text-secondary);
+
+  font-family: var(--font-mono);
+  font-size: 11px;
+
+  cursor: pointer;
+}
+
+.todo-add-form button:first-of-type {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+}
+
+.todo-add-form button:hover {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+}
+
+/* =========================
+   Todo 수정
+   ========================= */
+
+.todo-edit-input {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+
+  padding: 12px 14px;
+
+  border: 1px solid var(--neon-cyan);
+  border-radius: 6px;
+
+  background: var(--bg-secondary);
+
+  color: var(--text-primary);
+
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+
+  outline: none;
+
+  box-shadow: var(--glow-cyan);
+}
+
+.todo-edit-input:focus {
+  border-color: var(--neon-cyan);
+}
+
+/* =========================
+   Todo Error
+   ========================= */
+
+.todo-error {
+  margin: 0 0 20px;
+  padding: 14px 16px;
+
+  border: 1px solid rgba(244, 114, 182, 0.35);
+  border-radius: 6px;
+
+  background: rgba(244, 114, 182, 0.05);
+
+  color: var(--neon-pink);
+
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+/* =========================
+   Todo Loading
+   ========================= */
+
+.todo-loading {
+  margin: 0;
+  padding: 24px 0;
+
+  color: var(--text-muted);
+
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+/* =========================
+   Todo Empty
+   ========================= */
+
+.todo-empty {
+  margin: 0;
+  padding: 40px 0;
+
+  color: var(--text-muted);
+
+  font-family: var(--font-mono);
+  font-size: 12px;
+
+  line-height: 1.8;
+
+  text-align: center;
+}
+
+/* =========================
+   Study Log
+   ========================= */
+
+.learning-study-log {
+  margin-top: 64px;
+
+  border-top: 1px solid var(--border-subtle);
+
+  padding-top: 48px;
+}
+
+.study-log-form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 12px;
+
+  margin-bottom: 32px;
+}
+
+.study-log-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 16px;
+
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+
+  background: var(--bg-secondary);
+
+  color: var(--text-primary);
+
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+
+  line-height: 1.7;
+
+  resize: vertical;
+
+  outline: none;
+}
+
+.study-log-form textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.study-log-form textarea:focus {
+  border-color: var(--neon-cyan);
+  box-shadow: var(--glow-cyan);
+}
+
+.study-log-form button {
+  align-self: flex-end;
+
+  padding: 10px 16px;
+
+  border: 1px solid var(--neon-cyan);
+  border-radius: 6px;
+
+  background: transparent;
+
+  color: var(--neon-cyan);
+
+  font-family: var(--font-mono);
+  font-size: 11px;
+
+  cursor: pointer;
+}
+
+.study-log-form button:hover {
+  background: var(--neon-cyan);
+  color: var(--bg-primary);
+}
+
+.study-log-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.study-log-item {
+  position: relative;
+
+  padding: 20px;
+
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+
+  background: var(--bg-secondary);
+}
+
+.study-log-item + .study-log-item {
+  margin-top: 12px;
+}
+
+.study-log-item time {
+  display: block;
+
+  margin-bottom: 12px;
+
+  color: var(--neon-cyan);
+
+  font-family: var(--font-mono);
+  font-size: 11px;
+
+  letter-spacing: 0.5px;
+}
+
+.study-log-item p {
+  margin: 0;
+  padding-right: 100px;
+
+  color: var(--text-secondary);
+
+  font-size: 13px;
+
+  line-height: 1.8;
+
+  white-space: pre-wrap;
+}
+
+/* =========================
+   Study Log 수정
+   ========================= */
+
+.study-log-item > textarea {
+  width: 100%;
+  box-sizing: border-box;
+
+  min-height: 100px;
+
+  margin: 0;
+
+  padding: 12px 14px;
+
+  border: 1px solid var(--neon-cyan);
+  border-radius: 6px;
+
+  background: var(--bg-primary);
+
+  color: var(--text-primary);
+
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+
+  line-height: 1.7;
+
+  resize: vertical;
+
+  outline: none;
+
+  box-shadow: var(--glow-cyan);
+}
+
+.study-log-item > textarea:focus {
+  border-color: var(--neon-cyan);
+}
+
+/* =========================
+   Study Log 버튼
+   ========================= */
+
+.study-log-actions {
+  position: absolute;
+
+  top: 18px;
+  right: 18px;
+
+  display: flex;
+
+  gap: 6px;
+}
+
+.study-log-actions button {
+  position: static;
+
+  padding: 6px 10px;
+
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+
+  background: transparent;
+
+  color: var(--text-muted);
+
+  font-family: var(--font-mono);
+  font-size: 10px;
+
+  cursor: pointer;
+}
+
+.study-log-actions button:hover {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+}
+
+.study-log-empty {
+  margin: 0;
+  padding: 40px 0;
+
+  color: var(--text-muted);
+
+  font-family: var(--font-mono);
+  font-size: 12px;
+
+  line-height: 1.8;
+
+  text-align: center;
+}
+
+/* =========================
+   Loading / Error
+   ========================= */
+
+.study-log-loading,
+.study-log-error {
+  margin: 0;
+
+  padding: 24px;
+
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+
+  background: var(--bg-secondary);
+
+  font-family: var(--font-mono);
+  font-size: 12px;
+
+  text-align: center;
+}
+
+.study-log-loading {
+  color: var(--text-muted);
+}
+
+.study-log-error {
+  border-color: rgba(244, 114, 182, 0.35);
+  color: var(--neon-pink);
+}
+
+/* =========================
+   Study Log Action Error
+   ========================= */
+
+.study-log-action-error {
+  margin: 0;
+
+  padding: 8px 12px;
+
+  border: 1px solid rgba(244, 114, 182, 0.35);
+  border-radius: 4px;
+
+  background: rgba(244, 114, 182, 0.05);
+
+  color: var(--neon-pink);
+
+  font-family: var(--font-mono);
+  font-size: 11px;
+
+  line-height: 1.5;
+}
+
+/* =========================
+   Pagination
+   ========================= */
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  gap: 4px;
+
+  margin-top: 24px;
+  padding-top: 16px;
+
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* =========================
+   Pagination Button
+   ========================= */
+
+.pagination-button {
+  min-width: 30px;
+  height: 30px;
+
+  padding: 0 8px;
+
+  border: 1px solid transparent;
+  border-radius: 4px;
+
+  background: transparent;
+
+  font-family: var(--font-mono);
+  font-size: 10px;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+/* =========================
+   Todo Pagination
+   ========================= */
+
+.pagination-todo {
+  background: transparent;
+}
+
+.pagination-todo .pagination-button {
+  color: var(--text-muted);
+}
+
+.pagination-todo .pagination-button:hover:not(:disabled) {
+  border-color: var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.pagination-todo .pagination-button.active {
+  border-color: var(--neon-cyan);
+  background: rgba(94, 234, 212, 0.06);
+  color: var(--neon-cyan);
+}
+
+/* =========================
+   Study Log Pagination
+   ========================= */
+
+.pagination-study-log {
+  background: var(--bg-primary);
+}
+
+.pagination-study-log .pagination-button {
+  color: var(--text-muted);
+}
+
+.pagination-study-log .pagination-button:hover:not(:disabled) {
+  border-color: rgba(94, 234, 212, 0.25);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-primary);
+}
+
+.pagination-study-log .pagination-button.active {
+  border-color: var(--neon-cyan);
+  background: rgba(94, 234, 212, 0.08);
+  color: var(--neon-cyan);
+  box-shadow: 0 0 10px rgba(94, 234, 212, 0.12);
+}
+
+/* =========================
+   Disabled
+   ========================= */
+
+.pagination-button:disabled {
+  color: var(--text-muted);
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* =========================
+   Mobile
+   ========================= */
+
+@media (max-width: 768px) {
+  .learning-tracker {
+    width: calc(100% - 32px);
+
+    padding: 110px 0 70px;
+  }
+
+  .learning-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .learning-section-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    gap: 20px;
+  }
+
+  .learning-section-header button {
+    width: 100%;
+  }
+
+  .todo-item {
+    align-items: flex-start;
+  }
+
+  .todo-actions {
+    flex-shrink: 0;
+  }
+
+  .study-log-form button {
+    width: 100%;
+  }
+
+  .study-log-item {
+    padding: 16px;
+  }
+
+  .study-log-item p {
+    padding-right: 0;
+    padding-bottom: 36px;
+  }
+
+  .study-log-item > textarea {
+    min-height: 120px;
+    margin-bottom: 48px;
+  }
+
+  .study-log-actions {
+    top: auto;
+    right: 16px;
+    bottom: 16px;
+  }
 }
