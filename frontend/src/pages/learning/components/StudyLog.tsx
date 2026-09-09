@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react';
 import type { StudyLogData } from '../types/learning';
 
-function StudyLog() {
+interface StudyLogProps {
+  onStudyLogsChange: (studyLogs: StudyLogData[]) => void;
+}
+
+function StudyLog({
+  onStudyLogsChange
+}: StudyLogProps) {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const [studyLog, setStudyLog] = useState('');
@@ -41,6 +47,11 @@ function StudyLog() {
 
     fetchStudyLogs();
   }, []);
+
+  // 부모에게 전달용
+  useEffect(() => {
+    onStudyLogsChange(studyLogs);
+  }, [studyLogs, onStudyLogsChange]);
 
   // [POST] Study Log 추가
   const handleAddStudyLog = async () => {
