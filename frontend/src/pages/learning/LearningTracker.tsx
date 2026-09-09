@@ -10,8 +10,6 @@ function LearningTracker() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
 
-  const [deletingId, setDeleeingId] = useState<number | null>(null);
-
   // 추가
   const handleAddTodo = () => {
     const title = newTodo.trim();
