@@ -18,7 +18,7 @@ function LearningTracker() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [studyLog, setStudyLog] = useState('');
-  const [studyLogs, setStudyLogs] = useState<{date: string; content: string;}[]>([]);
+  const [studyLogs, setStudyLogs] = useState<{id: number; date: string; content: string;}[]>([]);
 
   // [Get] todo list 가져오기
   useEffect(() => {
@@ -151,6 +151,36 @@ function LearningTracker() {
       setStudyLog('');
     } catch (error) {
       console.error('Study Log 추가 실패:', error);
+    }
+  };
+
+  // [Delete] StudyLog 삭제
+  const handleDeleteStudyLog = async (id: number) => {
+    const shouldDelete = window.confirm(
+      '이 Study Log를 삭제하시겠습니까?'
+    );
+
+    if (!shouldDelete) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/study-logs/${id}`,
+        {
+          method: 'DELETE',
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Study Log 삭제에 실패했습니다.');
+      }
+
+      setStudyLogs((prev) =>
+        prev.filter((log) => log.id !== id)
+      );
+    } catch (error) {
+      console.error('Study Log 삭제 실패:', error);
     }
   };
 
@@ -545,11 +575,19 @@ function LearningTracker() {
           ) : (
             studyLogs.map((log, index) => (
               <article
-                key={index}
+                key={log.id}
                 className="study-log-item"
               >
                 <time>{log.date}</time>
+
                 <p>{log.content}</p>
+
+                <button
+                  type="button"
+                  onClick={() => handleDeleteStudyLog(log.id)}
+                >
+                  삭제
+                </button>
               </article>
             ))
           )}
