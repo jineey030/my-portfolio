@@ -22,4 +22,12 @@ class StudyLogService(
 
         return studyLogRepository.save(studyLog)
     }
+
+    fun deleteStudyLog(id: Long) {
+        if (!studyLogRepository.existsById(id)) {
+            throw IllegalArgumentException("Study Log not found: $id")
+        }
+
+        studyLogRepository.deleteById(id)
+    }
 }
