@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import type { Todo } from './types/learning';
 
 function LearningTracker() {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  
   const [todos, setTodos] = useState<Todo[]>([]);
   const [isAdding, setIsAdding] = useState(false);
   const [newTodo, setNewTodo] = useState('');
@@ -14,9 +16,7 @@ function LearningTracker() {
   useEffect(() => {
     const fetchTodos = async () => {
       try {
-        const response = await fetch(
-          'http://localhost:8080/api/todos'
-        );
+        const response = await fetch(`${API_BASE_URL}/api/todos`);
 
         if (!response.ok) {
           throw new Error('Todo를 불러오지 못했습니다.');
@@ -43,7 +43,7 @@ function LearningTracker() {
 
     try {
       const response = await fetch(
-        'http://localhost:8080/api/todos',
+        `${API_BASE_URL}/api/todos`,
         {
           method: 'POST',
           headers: {
@@ -80,7 +80,7 @@ function LearningTracker() {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/todos/${id}`,
+        `${API_BASE_URL}/api/todos/${id}`,
         {
           method: 'PUT',
           headers: {
@@ -139,7 +139,7 @@ function LearningTracker() {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/todos/${id}`,
+        `${API_BASE_URL}/api/todos/${id}`,
         {
           method: 'PUT',
           headers: {
@@ -182,7 +182,7 @@ function LearningTracker() {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/todos/${id}`,
+        `${API_BASE_URL}/api/todos/${id}`,
         {
           method: 'DELETE',
         }
