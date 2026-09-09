@@ -15,6 +15,8 @@ function LearningTracker() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // [get] todo list 가져오기
   useEffect(() => {
     const fetchTodos = async () => {
@@ -47,6 +49,9 @@ function LearningTracker() {
       return;
     }
 
+    setError('');
+    setIsSubmitting(true);
+
     try {
       const response = await fetch(
         `${API_BASE_URL}/api/todos`,
@@ -73,6 +78,9 @@ function LearningTracker() {
       setIsAdding(false);
     } catch (error) {
       console.error('Todo 추가 실패:', error);
+      setError('Todo 추가 실패하였습니다.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -83,6 +91,9 @@ function LearningTracker() {
     if (!todo) {
       return;
     }
+
+    setError('');
+    setIsSubmitting(true);
 
     try {
       const response = await fetch(
@@ -112,6 +123,9 @@ function LearningTracker() {
       );
     } catch (error) {
       console.error('Todo 상태 변경 실패:', error);
+      setError('Todo 상태 변경 실패하였습니다.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -143,6 +157,9 @@ function LearningTracker() {
       return;
     }
 
+    setError('');
+    setIsSubmitting(true);
+
     try {
       const response = await fetch(
         `${API_BASE_URL}/api/todos/${id}`,
@@ -173,6 +190,9 @@ function LearningTracker() {
       handleCancelEdit();
     } catch (error) {
       console.error('Todo 수정 실패:', error);
+      setError('Todo 수정 실패하였습니다.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -185,6 +205,9 @@ function LearningTracker() {
     if (!shouldDelete) {
       return;
     }
+
+    setError('');
+    setIsSubmitting(true);
 
     try {
       const response = await fetch(
@@ -203,6 +226,9 @@ function LearningTracker() {
       );
     } catch (error) {
       console.error('Todo 삭제 실패:', error);
+      setError('Todo 삭제 실패하였습니다.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -287,8 +313,9 @@ function LearningTracker() {
             <button
               type="button"
               onClick={handleAddTodo}
+              disabled={isSubmitting}
             >
-              추가
+              {isSubmitting ? '추가 중...' : '추가'}
             </button>
 
             <button
@@ -355,8 +382,9 @@ function LearningTracker() {
                         onClick={() =>
                           handleSaveEdit(todo.id)
                         }
+                        disabled={isSubmitting}
                       >
-                        저장
+                        {isSubmitting ? '저장 중...' : '저장'}
                       </button>
 
                       <button
@@ -394,10 +422,12 @@ function LearningTracker() {
                         수정
                       </button>
 
-                      <button type="button"
+                      <button
+                        type="button"
                         onClick={() => handleDeleteTodo(todo.id)}
+                        disabled={isSubmitting}
                       >
-                        삭제
+                        {isSubmitting ? '삭제 중...' : '삭제'}
                       </button>
                     </div>
                   </>
