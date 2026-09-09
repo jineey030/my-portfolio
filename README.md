@@ -54,17 +54,25 @@ MariaDB에 `devlog` 데이터베이스가 미리 생성되어 있어야 합니�
 cd backend
 
 # 환경변수 설정 (DB 계정 정보)
+## 1. Linux/macOS
 export DB_USERNAME=your_db_username
 export DB_PASSWORD=your_db_password
 
-./gradlew bootRun
+## 2. Powershell
+$env:DB_USERNAME="your_db_username"
+$env:DB_PASSWORD="your_db_password"
+
+.\gradlew bootRun
 ```
 
 기본적으로 `http://localhost:8080` 에서 실행되며, `/api/**` 요청에 대해
 `http://localhost:5173`(프론트엔드)로부터의 CORS 요청을 허용하도록 설정되어 있습니다.
 
-> `application.properties`는 `${DB_USERNAME}`, `${DB_PASSWORD}` 환경변수를 참조합니다.
-> `.env` 파일 대신 실행 전 셸에서 직접 export 하거나, IDE의 Run Configuration에 등록해서 사용하세요.
+> application.properties는 ${DB_USERNAME}, ${DB_PASSWORD} 환경변수를 참조합니다.
+> 백엔드 실행 전에 환경변수를 설정하거나, VS Code 등의 실행 환경에 등록해서 사용하세요.
+
+> 프론트엔드의 API 주소는 `frontend/.env`의 `VITE_API_BASE_URL`을 통해 관리합니다.
+> `.env` 파일에는 실제 환경에 필요한 값을 설정하되, GitHub에는 업로드하지 않습니다.
 
 ## // contact
 
