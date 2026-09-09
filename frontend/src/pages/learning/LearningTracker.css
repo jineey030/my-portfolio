@@ -317,3 +317,35 @@
 .todo-edit-input:focus {
   border-color: var(--neon-cyan);
 }
+
+/* error 표시 */
+.todo-error {
+  margin: 0 0 20px;
+  padding: 14px 16px;
+  border: 1px solid rgba(244, 114, 182, 0.35);
+  border-radius: 6px;
+  background: rgba(244, 114, 182, 0.05);
+  color: var(--neon-pink);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+/* loading 표시 */
+.todo-loading {
+  margin: 0;
+  padding: 24px 0;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+/* todo list가 없을 경우 */
+.todo-empty {
+  margin: 0;
+  padding: 40px 0;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.8;
+  text-align: center;
+}
