@@ -25,6 +25,9 @@ function LearningTracker() {
   const [editingStudyLogId, setEditingStudyLogId] = useState<number | null>(null);
   const [editingStudyLogContent, setEditingStudyLogContent] = useState('');
 
+  const [studyLogError, setStudyLogError] = useState('');
+  const [isStudyLogLoading, setIsStudyLogLoading] = useState(true);
+
   // [Get] todo list 가져오기
   useEffect(() => {
     const fetchTodos = async () => {
@@ -218,6 +221,9 @@ function LearningTracker() {
         setStudyLogs(data);
       } catch (error) {
         console.error('Study Log 조회 실패:', error);
+        setStudyLogError('Study Log를 불러오지 못했습니다.');
+      } finally {
+        setIsStudyLogLoading(false);
       }
     };
 
@@ -498,16 +504,14 @@ function LearningTracker() {
           </div>
         )}
 
-        {error && (
-          <p className="todo-error">
-            {error}
-          </p>
-        )}
-
         <div className="todo-list">
           {isLoading ? (
             <p className="todo-loading">
               Todo를 불러오는 중...
+            </p>
+          ) : error ? (
+            <p className="todo-error">
+              {error}
             </p>
           ) : todos.length === 0 ? (
             <p className="todo-empty">
@@ -636,7 +640,15 @@ function LearningTracker() {
         </div>
 
         <div className="study-log-list">
-          {studyLogs.length === 0 ? (
+          {isStudyLogLoading ? (
+            <p className="study-log-loading">
+              Study Log를 불러오는 중...
+            </p>
+          ) : studyLogError ? (
+            <p className="study-log-error">
+              {studyLogError}
+            </p>
+          ) : studyLogs.length === 0 ? (
             <p className="study-log-empty">
               아직 작성된 학습 기록이 없습니다.
             </p>
