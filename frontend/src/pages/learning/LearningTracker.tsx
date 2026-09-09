@@ -1,10 +1,12 @@
 import './LearningTracker.css';
 import { useEffect, useState } from 'react';
 import type { Todo } from './types/learning';
+import StudyLog from './components/StudyLog';
 
 function LearningTracker() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-  
+
+  // todo list
   const [todos, setTodos] = useState<Todo[]>([]);
   const [isAdding, setIsAdding] = useState(false);
   const [newTodo, setNewTodo] = useState('');
@@ -17,11 +19,13 @@ function LearningTracker() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // [get] todo list 가져오기
+  // [GET] Todo list 가져오기
   useEffect(() => {
     const fetchTodos = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/todos`);
+        const response = await fetch(
+          `${API_BASE_URL}/api/todos`
+        );
 
         if (!response.ok) {
           throw new Error('Todo를 불러오지 못했습니다.');
@@ -41,7 +45,172 @@ function LearningTracker() {
     fetchTodos();
   }, []);
 
-  // [post] 추가
+  // [PUT] 완료 상태 체크
+  const handleToggleTodo = async (id: number) => {
+    const todo = todos.find(
+      (todo) => todo.id === id
+    );
+
+    if (!todo) {
+      return;
+    }
+
+    setError('');
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/todos/${id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            title: todo.title,
+            completed: !todo.completed,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          'Todo 상태 변경에 실패했습니다.'
+        );
+      }
+
+      const updatedTodo: Todo =
+        await response.json();
+
+      setTodos((prev) =>
+        prev.map((todo) =>
+          todo.id === id ? updatedTodo : todo
+        )
+      );
+    } catch (error) {
+      console.error(
+        'Todo 상태 변경 실패:',
+        error
+      );
+      setError(
+        'Todo 상태 변경 실패하였습니다.'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // [SET] 수정 대상 체크
+  const handleStartEdit = (
+    id: number,
+    title: string
+  ) => {
+    setEditingId(id);
+    setEditingTitle(title);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setEditingTitle('');
+  };
+
+  // [PUT] Todo 수정
+  const handleSaveEdit = async (id: number) => {
+    const title = editingTitle.trim();
+
+    if (!title) {
+      return;
+    }
+
+    const todo = todos.find(
+      (todo) => todo.id === id
+    );
+
+    if (!todo) {
+      return;
+    }
+
+    setError('');
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/todos/${id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            title,
+            completed: todo.completed,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          'Todo 수정에 실패했습니다.'
+        );
+      }
+
+      const updatedTodo: Todo =
+        await response.json();
+
+      setTodos((prev) =>
+        prev.map((todo) =>
+          todo.id === id ? updatedTodo : todo
+        )
+      );
+
+      handleCancelEdit();
+    } catch (error) {
+      console.error('Todo 수정 실패:', error);
+      setError('Todo 수정 실패하였습니다.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // [DELETE] Todo 삭제
+  const handleDeleteTodo = async (id: number) => {
+    const shouldDelete = window.confirm(
+      '이 Todo를 삭제하시겠습니까?'
+    );
+
+    if (!shouldDelete) {
+      return;
+    }
+
+    setError('');
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/todos/${id}`,
+        {
+          method: 'DELETE',
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          'Todo 삭제에 실패했습니다.'
+        );
+      }
+
+      setTodos((prev) =>
+        prev.filter((todo) => todo.id !== id)
+      );
+    } catch (error) {
+      console.error('Todo 삭제 실패:', error);
+      setError('Todo 삭제 실패하였습니다.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // [POST] Todo 추가
   const handleAddTodo = async () => {
     const title = newTodo.trim();
 
@@ -67,166 +236,24 @@ function LearningTracker() {
       );
 
       if (!response.ok) {
-        throw new Error('Todo 추가에 실패했습니다.');
+        throw new Error(
+          'Todo 추가에 실패했습니다.'
+        );
       }
 
-      const createdTodo: Todo = await response.json();
+      const createdTodo: Todo =
+        await response.json();
 
-      setTodos((prev) => [...prev, createdTodo]);
+      setTodos((prev) => [
+        ...prev,
+        createdTodo,
+      ]);
 
       setNewTodo('');
       setIsAdding(false);
     } catch (error) {
       console.error('Todo 추가 실패:', error);
       setError('Todo 추가 실패하였습니다.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // [PUT] 완료 상태 체크
-  const handleToggleTodo = async (id: number) => {
-    const todo = todos.find((todo) => todo.id === id);
-
-    if (!todo) {
-      return;
-    }
-
-    setError('');
-    setIsSubmitting(true);
-
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/todos/${id}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            title: todo.title,
-            completed: !todo.completed,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error('Todo 상태 변경에 실패했습니다.');
-      }
-
-      const updatedTodo: Todo = await response.json();
-
-      setTodos((prev) =>
-        prev.map((todo) =>
-          todo.id === id ? updatedTodo : todo
-        )
-      );
-    } catch (error) {
-      console.error('Todo 상태 변경 실패:', error);
-      setError('Todo 상태 변경 실패하였습니다.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // 수정 대상 체크
-  const handleStartEdit = (
-    id: number,
-    title: string
-  ) => {
-    setEditingId(id);
-    setEditingTitle(title);
-  };
-
-  const handleCancelEdit = () => {
-    setEditingId(null);
-    setEditingTitle('');
-  };
-
-  // [PUT] Todo 수정
-  const handleSaveEdit = async (id: number) => {
-    const title = editingTitle.trim();
-
-    if (!title) {
-      return;
-    }
-
-    const todo = todos.find((todo) => todo.id === id);
-
-    if (!todo) {
-      return;
-    }
-
-    setError('');
-    setIsSubmitting(true);
-
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/todos/${id}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            title,
-            completed: todo.completed,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error('Todo 수정에 실패했습니다.');
-      }
-
-      const updatedTodo: Todo = await response.json();
-
-      setTodos((prev) =>
-        prev.map((todo) =>
-          todo.id === id ? updatedTodo : todo
-        )
-      );
-
-      handleCancelEdit();
-    } catch (error) {
-      console.error('Todo 수정 실패:', error);
-      setError('Todo 수정 실패하였습니다.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // [DELETE] 삭제
-  const handleDeleteTodo = async (id: number) => {
-    const shouldDelete = window.confirm(
-      '이 Todo를 삭제하시겠습니까?'
-    );
-
-    if (!shouldDelete) {
-      return;
-    }
-
-    setError('');
-    setIsSubmitting(true);
-
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/todos/${id}`,
-        {
-          method: 'DELETE',
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error('Todo 삭제에 실패했습니다.');
-      }
-
-      setTodos((prev) =>
-        prev.filter((todo) => todo.id !== id)
-      );
-    } catch (error) {
-      console.error('Todo 삭제 실패:', error);
-      setError('Todo 삭제 실패하였습니다.');
     } finally {
       setIsSubmitting(false);
     }
@@ -315,7 +342,9 @@ function LearningTracker() {
               onClick={handleAddTodo}
               disabled={isSubmitting}
             >
-              {isSubmitting ? '추가 중...' : '추가'}
+              {isSubmitting
+                ? '추가 중...'
+                : '추가'}
             </button>
 
             <button
@@ -330,16 +359,14 @@ function LearningTracker() {
           </div>
         )}
 
-        {error && (
-          <p className="todo-error">
-            {error}
-          </p>
-        )}
-
         <div className="todo-list">
           {isLoading ? (
             <p className="todo-loading">
               Todo를 불러오는 중...
+            </p>
+          ) : error ? (
+            <p className="todo-error">
+              {error}
             </p>
           ) : todos.length === 0 ? (
             <p className="todo-empty">
@@ -352,7 +379,9 @@ function LearningTracker() {
               <div
                 key={todo.id}
                 className={`todo-item ${
-                  todo.completed ? 'is-completed' : ''
+                  todo.completed
+                    ? 'is-completed'
+                    : ''
                 }`}
               >
                 {editingId === todo.id ? (
@@ -362,7 +391,9 @@ function LearningTracker() {
                       className="todo-edit-input"
                       value={editingTitle}
                       onChange={(event) =>
-                        setEditingTitle(event.target.value)
+                        setEditingTitle(
+                          event.target.value
+                        )
                       }
                       autoFocus
                       onKeyDown={(event) => {
@@ -384,7 +415,9 @@ function LearningTracker() {
                         }
                         disabled={isSubmitting}
                       >
-                        {isSubmitting ? '저장 중...' : '저장'}
+                        {isSubmitting
+                          ? '저장 중...'
+                          : '저장'}
                       </button>
 
                       <button
@@ -406,7 +439,9 @@ function LearningTracker() {
                         }
                       />
 
-                      <span>{todo.title}</span>
+                      <span>
+                        {todo.title}
+                      </span>
                     </label>
 
                     <div className="todo-actions">
@@ -424,10 +459,14 @@ function LearningTracker() {
 
                       <button
                         type="button"
-                        onClick={() => handleDeleteTodo(todo.id)}
+                        onClick={() =>
+                          handleDeleteTodo(todo.id)
+                        }
                         disabled={isSubmitting}
                       >
-                        {isSubmitting ? '삭제 중...' : '삭제'}
+                        {isSubmitting
+                          ? '삭제 중...'
+                          : '삭제'}
                       </button>
                     </div>
                   </>
@@ -437,6 +476,8 @@ function LearningTracker() {
           )}
         </div>
       </section>
+
+      <StudyLog />
     </main>
   );
 }
