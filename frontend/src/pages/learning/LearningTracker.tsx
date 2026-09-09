@@ -1,14 +1,37 @@
 import './LearningTracker.css';
-import { useState } from 'react';
-import { INITIAL_TODOS } from './constants/todos';
+import { useEffect, useState } from 'react';
+import type { Todo } from './types/learning';
 
 function LearningTracker() {
-  const [todos, setTodos] = useState(INITIAL_TODOS);
+  const [todos, setTodos] = useState<Todo[]>([]);
   const [isAdding, setIsAdding] = useState(false);
   const [newTodo, setNewTodo] = useState('');
 
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
+
+  // [get] todo list 가져오기
+  useEffect(() => {
+    const fetchTodos = async () => {
+      try {
+        const response = await fetch(
+          'http://localhost:8080/api/todos'
+        );
+
+        if (!response.ok) {
+          throw new Error('Todo를 불러오지 못했습니다.');
+        }
+
+        const data: Todo[] = await response.json();
+
+        setTodos(data);
+      } catch (error) {
+        console.error('Todo 조회 실패:', error);
+      }
+    };
+
+    fetchTodos();
+  }, []);
 
   // 추가
   const handleAddTodo = () => {
