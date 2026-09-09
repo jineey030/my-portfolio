@@ -641,7 +641,7 @@ function LearningTracker() {
               아직 작성된 학습 기록이 없습니다.
             </p>
           ) : (
-            studyLogs.map((log, index) => (
+            studyLogs.map((log) => (
               <article
                 key={log.id}
                 className="study-log-item"
