@@ -3,3 +3,9 @@ export interface Todo {
   title: string;
   completed: boolean;
 }
+
+export interface StudyLogData {
+  id: number;
+  date: string;
+  content: string;
+}
