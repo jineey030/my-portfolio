@@ -346,6 +346,8 @@ function LearningTracker() {
       return;
     }
 
+    setStudyLogActionError('');
+
     try {
       const response = await fetch(
         `${API_BASE_URL}/api/study-logs/${id}`,
@@ -376,6 +378,7 @@ function LearningTracker() {
       handleCancelEditStudyLog();
     } catch (error) {
       console.error('Study Log 수정 실패:', error);
+      setStudyLogActionError('Study Log 수정에 실패했습니다.');
     }
   };
 
@@ -388,6 +391,8 @@ function LearningTracker() {
     if (!shouldDelete) {
       return;
     }
+
+    setStudyLogActionError('');
 
     try {
       const response = await fetch(
@@ -406,6 +411,7 @@ function LearningTracker() {
       );
     } catch (error) {
       console.error('Study Log 삭제 실패:', error);
+      setStudyLogActionError('Study Log 삭제에 실패했습니다.');
     }
   };
 
