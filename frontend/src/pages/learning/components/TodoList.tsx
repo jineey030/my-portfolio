@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Todo } from '../types/learning';
+import Pagination from './Pagination';
 
 interface TodoListProps {
   onTodosChange: (todos: Todo[]) => void;
@@ -22,6 +23,23 @@ function TodoList({
   const [isLoading, setIsLoading] = useState(true);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // 페이지네이션
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const ITEMS_PER_PAGE = 5;
+
+  const totalPages = Math.ceil(
+    todos.length / ITEMS_PER_PAGE
+  );
+
+  const startIndex =
+    (currentPage - 1) * ITEMS_PER_PAGE;
+
+  const currentTodos = todos.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
 
   // [GET] Todo list 가져오기
   useEffect(() => {
@@ -53,6 +71,18 @@ function TodoList({
   useEffect(() => {
     onTodosChange(todos);
   }, [todos, onTodosChange]);
+
+  // 삭제 후 페이지네이션
+  useEffect(() => {
+    const nextTotalPages = Math.max(
+      1,
+      Math.ceil(todos.length / ITEMS_PER_PAGE)
+    );
+
+    if (currentPage > nextTotalPages) {
+      setCurrentPage(nextTotalPages);
+    }
+  }, [todos, currentPage]);
 
   // [PUT] 완료 상태 체크
   const handleToggleTodo = async (id: number) => {
@@ -345,7 +375,7 @@ function TodoList({
             새로운 학습 목표를 추가해보세요.
           </p>
         ) : (
-          todos.map((todo) => (
+          currentTodos.map((todo) => (
             <div
               key={todo.id}
               className={`todo-item ${
@@ -445,6 +475,13 @@ function TodoList({
           ))
         )}
       </div>
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+        variant="todo"
+      />
     </section>
   );
 }
