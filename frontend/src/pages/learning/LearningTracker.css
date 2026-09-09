@@ -231,3 +231,63 @@
     flex-shrink: 0;
   }
 }
+
+.todo-add-form {
+  display: flex;
+  gap: 8px;
+
+  margin-bottom: 20px;
+}
+
+.todo-add-form input {
+  flex: 1;
+
+  min-width: 0;
+
+  padding: 11px 14px;
+
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+
+  outline: none;
+}
+
+/* todo 추가 */
+.todo-add-form input::placeholder {
+  color: var(--text-muted);
+}
+
+.todo-add-form input:focus {
+  border-color: var(--neon-cyan);
+}
+
+.todo-add-form button {
+  padding: 10px 16px;
+
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+
+  background: transparent;
+  color: var(--text-secondary);
+
+  font-family: var(--font-mono);
+  font-size: 11px;
+
+  cursor: pointer;
+}
+
+.todo-add-form button:first-of-type {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+}
+
+.todo-add-form button:hover {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+}
