@@ -2,9 +2,10 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router';
 
 function ScrollToHash() {
-  const { hash } = useLocation();
+  const { pathname, hash } = useLocation();
 
   useEffect(() => {
+    // 해시가 없는 페이지로 이동하면 최상단으로 이동
     if (!hash) {
       window.scrollTo(0, 0);
       return;
@@ -12,8 +13,6 @@ function ScrollToHash() {
 
     const id = hash.replace('#', '');
 
-    // Introduce 페이지가 렌더링된 후
-    // 해당 id를 가진 요소를 찾음
     const scrollToElement = () => {
       const element = document.getElementById(id);
 
@@ -29,12 +28,10 @@ function ScrollToHash() {
       return false;
     };
 
-    // 바로 찾을 수 있으면 이동
     if (scrollToElement()) {
       return;
     }
 
-    // 페이지 렌더링 타이밍을 고려해서 한 번 더 시도
     const timer = setTimeout(() => {
       scrollToElement();
     }, 100);
@@ -42,7 +39,7 @@ function ScrollToHash() {
     return () => {
       clearTimeout(timer);
     };
-  }, [hash]);
+  }, [pathname, hash]);
 
   return null;
 }
