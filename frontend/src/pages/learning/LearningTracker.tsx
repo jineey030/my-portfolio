@@ -20,7 +20,7 @@ function LearningTracker() {
   const [studyLog, setStudyLog] = useState('');
   const [studyLogs, setStudyLogs] = useState<{date: string; content: string;}[]>([]);
 
-  // [get] todo list 가져오기
+  // [Get] todo list 가져오기
   useEffect(() => {
     const fetchTodos = async () => {
       try {
@@ -42,6 +42,33 @@ function LearningTracker() {
     };
 
     fetchTodos();
+  }, []);
+
+  // [Get] studylog 가져오기
+  useEffect(() => {
+    const fetchStudyLogs = async () => {
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/api/study-logs`
+        );
+
+        if (!response.ok) {
+          throw new Error('Study Log를 불러오지 못했습니다.');
+        }
+
+        const data: {
+          id: number;
+          date: string;
+          content: string;
+        }[] = await response.json();
+
+        setStudyLogs(data);
+      } catch (error) {
+        console.error('Study Log 조회 실패:', error);
+      }
+    };
+
+    fetchStudyLogs();
   }, []);
 
   // [post] 추가
@@ -84,6 +111,46 @@ function LearningTracker() {
       setError('Todo 추가 실패하였습니다.');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  // [POST] Study Log 추가
+  const handleAddStudyLog = async () => {
+    const content = studyLog.trim();
+
+    if (!content) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/study-logs`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            date: new Date().toISOString().split('T')[0],
+            content,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Study Log 추가에 실패했습니다.');
+      }
+
+      const createdLog = await response.json();
+
+      setStudyLogs((prev) => [
+        ...prev,
+        createdLog,
+      ]);
+
+      setStudyLog('');
+    } catch (error) {
+      console.error('Study Log 추가 실패:', error);
     }
   };
 
@@ -464,23 +531,7 @@ function LearningTracker() {
 
           <button
             type="button"
-            onClick={() => {
-              const log = studyLog.trim();
-
-              if (!log) {
-                return;
-              }
-
-              setStudyLogs((prev) => [
-                ...prev,
-                {
-                  date: new Date().toISOString().split('T')[0],
-                  content: log,
-                },
-              ]);
-
-              setStudyLog('');
-            }}
+            onClick={handleAddStudyLog}
           >
             기록 추가
           </button>
