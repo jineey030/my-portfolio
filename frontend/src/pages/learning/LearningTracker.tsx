@@ -28,6 +28,8 @@ function LearningTracker() {
   const [studyLogError, setStudyLogError] = useState('');
   const [isStudyLogLoading, setIsStudyLogLoading] = useState(true);
 
+  const [studyLogActionError, setStudyLogActionError] = useState('');
+
   // [Get] todo list 가져오기
   useEffect(() => {
     const fetchTodos = async () => {
@@ -281,6 +283,8 @@ function LearningTracker() {
       return;
     }
 
+    setStudyLogActionError('');
+
     try {
       const response = await fetch(
         `${API_BASE_URL}/api/study-logs`,
@@ -310,10 +314,9 @@ function LearningTracker() {
       setStudyLog('');
     } catch (error) {
       console.error('Study Log 추가 실패:', error);
+      setStudyLogActionError('Study Log 추가에 실패했습니다.');
     }
   };
-
-  
 
   // [SET] StudyLog 수정 상태 체크
   const handleStartEditStudyLog = (
@@ -630,6 +633,12 @@ function LearningTracker() {
             placeholder="오늘 공부한 내용을 기록하세요"
             rows={5}
           />
+
+          {studyLogActionError && (
+            <p className="study-log-action-error">
+              {studyLogActionError}
+            </p>
+          )}
 
           <button
             type="button"
