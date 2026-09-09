@@ -53,18 +53,22 @@ function LearningTracker() {
       {/* 학습 현황 */}
       <section className="learning-summary">
         <DashboardCard
+          type="todo"
           label="TODO"
           value={`${todoProgress}%`}
           description={`${completedTodoCount} / ${totalTodoCount} completed`}
+          progress={todoProgress}
         />
 
         <DashboardCard
+          type="study-log"
           label="STUDY LOG"
           value={String(studyLogCount)}
           description="learning records"
         />
 
         <DashboardCard
+          type="study-days"
           label="STUDY DAYS"
           value={String(studyDays)}
           description="unique study days"
