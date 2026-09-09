@@ -30,4 +30,23 @@ class StudyLogService(
 
         studyLogRepository.deleteById(id)
     }
+
+    fun updateStudyLog(
+        id: Long,
+        date: String,
+        content: String
+    ): StudyLog {
+        val studyLog = studyLogRepository.findById(id)
+            .orElseThrow {
+                IllegalArgumentException("Study Log not found: $id")
+            }
+
+        val updatedStudyLog = StudyLog(
+            id = studyLog.id,
+            date = date,
+            content = content
+        )
+
+        return studyLogRepository.save(updatedStudyLog)
+    }
 }
