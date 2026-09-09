@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { StudyLogData } from '../types/learning';
+import Pagination from './Pagination';
 
 interface StudyLogProps {
   onStudyLogsChange: (studyLogs: StudyLogData[]) => void;
@@ -21,6 +22,23 @@ function StudyLog({
 
   const [studyLogActionError, setStudyLogActionError] = useState('');
   const [isStudyLogSubmitting, setIsStudyLogSubmitting] = useState(false);
+
+  // 페이지네이션
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const ITEMS_PER_PAGE = 5;
+
+  const totalPages = Math.ceil(
+    studyLogs.length / ITEMS_PER_PAGE
+  );
+
+  const startIndex =
+    (currentPage - 1) * ITEMS_PER_PAGE;
+
+  const currentStudyLogs = studyLogs.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
 
   // [GET] Study Log 가져오기
   useEffect(() => {
@@ -52,6 +70,18 @@ function StudyLog({
   useEffect(() => {
     onStudyLogsChange(studyLogs);
   }, [studyLogs, onStudyLogsChange]);
+
+  // 삭제 시 페이지네이션
+  useEffect(() => {
+    const nextTotalPages = Math.max(
+      1,
+      Math.ceil(studyLogs.length / ITEMS_PER_PAGE)
+    );
+
+    if (currentPage > nextTotalPages) {
+      setCurrentPage(nextTotalPages);
+    }
+  }, [studyLogs, currentPage]);
 
   // [POST] Study Log 추가
   const handleAddStudyLog = async () => {
@@ -255,7 +285,7 @@ function StudyLog({
             아직 작성된 학습 기록이 없습니다.
           </p>
         ) : (
-          studyLogs.map((log) => (
+          currentStudyLogs.map((log) => (
             <article
               key={log.id}
               className="study-log-item"
@@ -328,6 +358,13 @@ function StudyLog({
           ))
         )}
       </div>
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+        variant="study-log"
+      />
     </section>
   );
 }
