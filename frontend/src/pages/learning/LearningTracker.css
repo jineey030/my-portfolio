@@ -522,3 +522,84 @@
   font-size: 11px;
   line-height: 1.5;
 }
+
+/* =========================
+   Dashboard Cards
+   ========================= */
+
+.learning-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 64px;
+}
+
+.learning-summary-card {
+  position: relative;
+  padding: 24px;
+  min-height: 150px;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+
+  background: var(--bg-secondary);
+
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.learning-summary-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 2px;
+
+  background: var(--neon-cyan);
+
+  opacity: 0.7;
+}
+
+.learning-summary-card:hover {
+  border-color: rgba(94, 234, 212, 0.35);
+  transform: translateY(-3px);
+  box-shadow: var(--glow-cyan);
+}
+
+.learning-summary-label {
+  color: var(--text-muted);
+
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+}
+
+.learning-summary-card strong {
+  margin-top: 16px;
+
+  color: var(--text-primary);
+
+  font-family: var(--font-mono);
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.learning-summary-card p {
+  margin: 12px 0 0;
+
+  color: var(--text-muted);
+
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1.5;
+}
