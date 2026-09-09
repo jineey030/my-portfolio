@@ -314,6 +314,12 @@ function LearningTracker() {
             <p className="todo-loading">
               Todo를 불러오는 중...
             </p>
+          ) : todos.length === 0 ? (
+            <p className="todo-empty">
+              아직 등록된 Todo가 없습니다.
+              <br />
+              새로운 학습 목표를 추가해보세요.
+            </p>
           ) : (
             todos.map((todo) => (
               <div
