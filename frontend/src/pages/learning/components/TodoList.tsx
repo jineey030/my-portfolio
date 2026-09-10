@@ -16,8 +16,12 @@ function TodoList({
   const [isAdding, setIsAdding] = useState(false);
   const [newTodo, setNewTodo] = useState('');
 
+  const [newPriority, setNewPriority] = useState<'high' | 'medium' | 'low'>('medium');
+
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
+
+  const [editingPriority, setEditingPriority] = useState<'high' | 'medium' | 'low'>('medium');
 
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -134,6 +138,7 @@ function TodoList({
           body: JSON.stringify({
             title: todo.title,
             completed: !todo.completed,
+            priority: todo.priority
           }),
         }
       );
@@ -169,15 +174,18 @@ function TodoList({
   // [SET] 수정 대상 체크
   const handleStartEdit = (
     id: number,
-    title: string
+    title: string,
+    priority: 'high' | 'medium' | 'low'
   ) => {
     setEditingId(id);
     setEditingTitle(title);
+    setEditingPriority(priority);
   };
 
   const handleCancelEdit = () => {
     setEditingId(null);
     setEditingTitle('');
+    setEditingPriority('medium');
   };
 
   // [PUT] Todo 수정
@@ -210,6 +218,7 @@ function TodoList({
           body: JSON.stringify({
             title,
             completed: todo.completed,
+            priority: editingPriority
           }),
         }
       );
@@ -297,6 +306,7 @@ function TodoList({
           },
           body: JSON.stringify({
             title,
+            priority: newPriority
           }),
         }
       );
@@ -389,6 +399,19 @@ function TodoList({
             }}
           />
 
+          <select
+            value={newPriority}
+            onChange={(event) =>
+              setNewPriority(
+                event.target.value as 'high' | 'medium' | 'low'
+              )
+            }
+          >
+            <option value="high">높음</option>
+            <option value="medium">보통</option>
+            <option value="low">낮음</option>
+          </select>
+
           <button
             type="button"
             onClick={handleAddTodo}
@@ -467,6 +490,19 @@ function TodoList({
                     }}
                   />
 
+                  <select
+                    value={editingPriority}
+                    onChange={(event) =>
+                      setEditingPriority(
+                        event.target.value as 'high' | 'medium' | 'low'
+                      )
+                    }
+                  >
+                    <option value="high">높음</option>
+                    <option value="medium">보통</option>
+                    <option value="low">낮음</option>
+                  </select>
+
                   <div className="todo-actions">
                     <button
                       type="button"
@@ -499,6 +535,14 @@ function TodoList({
                       }
                     />
 
+                    <span className={`todo-priority ${todo.priority}`}>
+                      {todo.priority === 'high'
+                        ? 'HIGH'
+                        : todo.priority === 'medium'
+                          ? 'MEDIUM'
+                          : 'LOW'}
+                    </span>
+
                     <span>
                       {todo.title}
                     </span>
@@ -510,7 +554,8 @@ function TodoList({
                       onClick={() =>
                         handleStartEdit(
                           todo.id,
-                          todo.title
+                          todo.title,
+                          todo.priority
                         )
                       }
                     >
