@@ -7,9 +7,7 @@ class TodoService(
     private val todoRepository: TodoRepository
 ) {
 
-    fun getTodos(): List<Todo> {
-        return todoRepository.findAll()
-    }
+    fun getTodos(): List<Todo> = todoRepository.findAllByOrderByIdDesc()
 
     fun createTodo(title: String): Todo {
         val todo = Todo(
