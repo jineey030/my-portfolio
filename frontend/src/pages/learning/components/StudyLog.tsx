@@ -273,6 +273,12 @@ function StudyLog({
         />
       </div>
 
+      {searchTerm.trim() && (
+        <p className="study-log-search-result">
+          검색 결과 {filteredStudyLogs.length}개
+        </p>
+      )}
+
       <div className="study-log-form">
         <textarea
           value={studyLog}
