@@ -6,6 +6,7 @@ import Introduce from './pages/introduce/pages';
 import ProjectDetail from './pages/project/ProjectDetail';
 import LearningTracker from './pages/learning/LearningTracker';
 import Learning from './pages/learning/Learning';
+import AdminLayout from './pages/admin/AdminLayout';
 import NotFound from './pages/not-found/NotFound';
 
 // components
@@ -32,17 +33,22 @@ function App() {
           element={<ProjectDetail />}
         />
 
-        {/* 공개 Learning 페이지 */}
+        {/* 공개 Learning */}
         <Route
           path="/learning"
           element={<Learning />}
         />
 
-        {/* 관리자 Learning Tracker */}
+        {/* 관리자 */}
         <Route
           path="/admin"
-          element={<LearningTracker />}
-        />
+          element={<AdminLayout />}
+        >
+          <Route
+            index
+            element={<LearningTracker />}
+          />
+        </Route>
 
         {/* 존재하지 않는 페이지 */}
         <Route
@@ -51,7 +57,6 @@ function App() {
         />
       </Routes>
 
-      {/* Footer */}
       <Footer />
     </BrowserRouter>
   );
