@@ -24,22 +24,48 @@ function TodoList({
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filter]);
+
   // 페이지네이션
   const [currentPage, setCurrentPage] = useState(1);
 
   const ITEMS_PER_PAGE = 5;
 
+  const filteredTodos = todos.filter((todo) => {
+    if (filter === 'active') {
+      return !todo.completed;
+    }
+
+    if (filter === 'completed') {
+      return todo.completed;
+    }
+
+    return true;
+  });
+
   const totalPages = Math.ceil(
-    todos.length / ITEMS_PER_PAGE
+    filteredTodos.length / ITEMS_PER_PAGE
   );
 
   const startIndex =
     (currentPage - 1) * ITEMS_PER_PAGE;
 
-  const currentTodos = todos.slice(
+  const currentTodos = filteredTodos.slice(
     startIndex,
     startIndex + ITEMS_PER_PAGE
   );
+
+  const activeCount = todos.filter(
+    (todo) => !todo.completed
+  ).length;
+
+  const completedCount = todos.filter(
+    (todo) => todo.completed
+  ).length;
 
   // [GET] Todo list 가져오기
   useEffect(() => {
@@ -320,6 +346,32 @@ function TodoList({
         )}
       </div>
 
+      <div className="todo-filter">
+        <button
+          type="button"
+          className={filter === 'all' ? 'active' : ''}
+          onClick={() => setFilter('all')}
+        >
+          전체 {todos.length}
+        </button>
+
+        <button
+          type="button"
+          className={filter === 'active' ? 'active' : ''}
+          onClick={() => setFilter('active')}
+        >
+          미완료 {activeCount}
+        </button>
+
+        <button
+          type="button"
+          className={filter === 'completed' ? 'active' : ''}
+          onClick={() => setFilter('completed')}
+        >
+          완료 {completedCount}
+        </button>
+      </div>
+
       {isAdding && (
         <div className="todo-add-form">
           <input
@@ -373,6 +425,14 @@ function TodoList({
             아직 등록된 Todo가 없습니다.
             <br />
             새로운 학습 목표를 추가해보세요.
+          </p>
+        ) : filteredTodos.length === 0 ? (
+          <p className="todo-empty">
+            {filter === 'active'
+              ? '미완료 Todo가 없습니다.'
+              : '완료된 Todo가 없습니다.'}
+            <br />
+            다른 필터를 선택해보세요.
           </p>
         ) : (
           currentTodos.map((todo) => (
