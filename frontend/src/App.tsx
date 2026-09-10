@@ -5,6 +5,7 @@ import './App.css';
 import Introduce from './pages/introduce/pages';
 import ProjectDetail from './pages/project/ProjectDetail';
 import LearningTracker from './pages/learning/LearningTracker';
+import Learning from './pages/learning/Learning';
 import NotFound from './pages/not-found/NotFound';
 
 // components
@@ -31,9 +32,15 @@ function App() {
           element={<ProjectDetail />}
         />
 
-        {/* Tracker */}
+        {/* 공개 Learning 페이지 */}
         <Route
           path="/learning"
+          element={<Learning />}
+        />
+
+        {/* 관리자 Learning Tracker */}
+        <Route
+          path="/admin"
           element={<LearningTracker />}
         />
 
