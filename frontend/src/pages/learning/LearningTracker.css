@@ -296,6 +296,43 @@
 }
 
 /* =========================
+   Todo Filter
+   ========================= */
+
+.todo-filter {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.todo-filter button {
+  padding: 8px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.todo-filter button:hover {
+  border-color: rgba(94, 234, 212, 0.35);
+  color: var(--text-primary);
+}
+
+.todo-filter button.active {
+  border-color: var(--neon-cyan);
+  background: rgba(94, 234, 212, 0.06);
+  color: var(--neon-cyan);
+  box-shadow: 0 0 10px rgba(94, 234, 212, 0.08);
+}
+
+/* =========================
    Todo 추가
    ========================= */
 
@@ -861,5 +898,13 @@
     top: auto;
     right: 16px;
     bottom: 16px;
+  }
+
+  .todo-filter {
+    width: 100%;
+  }
+
+  .todo-filter button {
+    flex: 1;
   }
 }
