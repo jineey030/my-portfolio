@@ -743,11 +743,14 @@
 /* Study Log Search */
 
 .study-log-search {
+  display: flex;
+  gap: 8px;
   margin-bottom: 20px;
 }
 
 .study-log-search input {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   box-sizing: border-box;
   padding: 11px 14px;
   border: 1px solid var(--border-subtle);
@@ -768,12 +771,21 @@
   box-shadow: var(--glow-cyan);
 }
 
-.study-log-search-result {
-  margin: -8px 0 20px;
-  color: var(--text-muted);
+.study-log-search select {
+  padding: 11px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
   font-family: var(--font-mono);
   font-size: 10px;
-  letter-spacing: 0.5px;
+  cursor: pointer;
+  outline: none;
+}
+
+.study-log-search select:focus {
+  border-color: var(--neon-cyan);
+  box-shadow: var(--glow-cyan);
 }
 
 /* =========================
@@ -942,5 +954,13 @@
 
   .todo-filter button {
     flex: 1;
+  }
+
+  .study-log-search {
+    flex-direction: column;
+  }
+
+  .study-log-search select {
+    width: 100%;
   }
 }
