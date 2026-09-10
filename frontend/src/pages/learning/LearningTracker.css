@@ -33,39 +33,118 @@
   line-height: 1.8;
 }
 
-/* Summary */
+/* =========================
+   Summary
+   ========================= */
 
 .learning-summary {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
   margin-bottom: 64px;
 }
 
 .learning-summary-card {
+  position: relative;
   padding: 24px;
+  min-height: 150px;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
   border: 1px solid var(--border-subtle);
-  border-radius: 8px;
+  border-radius: 6px;
   background: var(--bg-secondary);
+
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.learning-summary-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 2px;
+
+  background: var(--neon-cyan);
+  opacity: 0.7;
+}
+
+.learning-summary-card:hover {
+  border-color: rgba(94, 234, 212, 0.35);
+  transform: translateY(-3px);
+  box-shadow: var(--glow-cyan);
 }
 
 .learning-summary-label {
-  display: block;
-  margin-bottom: 16px;
   color: var(--text-muted);
   font-family: var(--font-mono);
   font-size: 11px;
-  letter-spacing: 1px;
+  letter-spacing: 0.12em;
 }
 
 .learning-summary-card strong {
-  color: var(--neon-cyan);
-  font-family: var(--font-pixel);
-  font-size: 28px;
+  margin-top: 16px;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 32px;
   font-weight: 500;
+  line-height: 1;
 }
 
-/* Todo */
+.learning-summary-card p {
+  margin: 12px 0 0;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+/* =========================
+   Dashboard Progress
+   ========================= */
+
+.dashboard-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.dashboard-progress-track {
+  flex: 1;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dashboard-progress-bar {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--neon-cyan);
+  box-shadow: 0 0 10px rgba(94, 234, 212, 0.5);
+  transition: width 0.4s ease;
+}
+
+.dashboard-progress > span {
+  min-width: 32px;
+  color: var(--neon-cyan);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-align: right;
+}
+
+/* =========================
+   Todo
+   ========================= */
 
 .learning-todo {
   border-top: 1px solid var(--border-subtle);
@@ -103,6 +182,9 @@
   font-family: var(--font-mono);
   font-size: 11px;
   cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
 .learning-section-header button:hover {
@@ -110,7 +192,9 @@
   color: var(--bg-primary);
 }
 
-/* Todo list */
+/* =========================
+   Todo List
+   ========================= */
 
 .todo-list {
   display: flex;
@@ -134,6 +218,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
+
   color: var(--text-secondary);
   font-size: 14px;
   cursor: pointer;
@@ -168,6 +253,9 @@
   font-family: var(--font-mono);
   font-size: 10px;
   cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .todo-actions button:hover {
@@ -175,7 +263,146 @@
   color: var(--neon-cyan);
 }
 
-/* Todo 추가 */
+/* =========================
+   Todo Priority Badge
+   ========================= */
+
+.todo-priority {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 3px 6px;
+
+  border: 1px solid currentColor;
+  border-radius: 4px;
+
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.todo-priority.high {
+  color: #ff6b6b;
+}
+
+.todo-priority.medium {
+  color: #ffd166;
+}
+
+.todo-priority.low {
+  color: #6ee7b7;
+}
+
+/* =========================
+   Todo Priority Select
+   ========================= */
+
+.todo-add-form select,
+.todo-item > select {
+  height: 36px;
+  padding: 0 32px 0 10px;
+
+  border: 1px solid rgba(0, 255, 255, 0.35);
+  border-radius: 4px;
+
+  background: #0b1117;
+  color: #d7faff;
+
+  font-family: inherit;
+  font-size: 12px;
+
+  cursor: pointer;
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.todo-add-form select:hover,
+.todo-item > select:hover {
+  border-color: rgba(0, 255, 255, 0.7);
+}
+
+.todo-add-form select:focus,
+.todo-item > select:focus {
+  border-color: #00ffff;
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.15);
+}
+
+.todo-add-form select option,
+.todo-item > select option {
+  background: #0b1117;
+  color: #d7faff;
+}
+
+/* =========================
+   Todo Filters
+   ========================= */
+
+.todo-filters {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.todo-filter,
+.todo-priority-filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+}
+
+.todo-filter-label {
+  margin-right: 4px;
+
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.todo-filter button,
+.todo-priority-filter button {
+  padding: 7px 11px;
+
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+
+  background: transparent;
+  color: var(--text-muted);
+
+  font-family: var(--font-mono);
+  font-size: 10px;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.todo-filter button:hover,
+.todo-priority-filter button:hover {
+  border-color: rgba(94, 234, 212, 0.35);
+  color: var(--text-primary);
+}
+
+.todo-filter button.active,
+.todo-priority-filter button.active {
+  border-color: var(--neon-cyan);
+  background: rgba(94, 234, 212, 0.06);
+  color: var(--neon-cyan);
+  box-shadow: 0 0 10px rgba(94, 234, 212, 0.08);
+}
+
+/* =========================
+   Todo 추가
+   ========================= */
 
 .todo-add-form {
   display: flex;
@@ -187,12 +414,16 @@
   flex: 1;
   min-width: 0;
   padding: 11px 14px;
+
   border: 1px solid var(--border-subtle);
   border-radius: 6px;
+
   background: var(--bg-secondary);
   color: var(--text-primary);
+
   font-family: 'Inter', sans-serif;
   font-size: 13px;
+
   outline: none;
 }
 
@@ -206,13 +437,22 @@
 
 .todo-add-form button {
   padding: 10px 16px;
+
   border: 1px solid var(--border-subtle);
   border-radius: 6px;
+
   background: transparent;
   color: var(--text-secondary);
+
   font-family: var(--font-mono);
   font-size: 11px;
+
   cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background 0.2s ease;
 }
 
 .todo-add-form button:first-of-type {
@@ -225,19 +465,25 @@
   color: var(--neon-cyan);
 }
 
-/* Todo 수정 */
+/* =========================
+   Todo 수정
+   ========================= */
 
 .todo-edit-input {
   flex: 1;
   width: 100%;
   min-width: 0;
   padding: 12px 14px;
+
   border: 1px solid var(--neon-cyan);
   border-radius: 6px;
+
   background: var(--bg-secondary);
   color: var(--text-primary);
+
   font-family: 'Inter', sans-serif;
   font-size: 14px;
+
   outline: none;
   box-shadow: var(--glow-cyan);
 }
@@ -246,45 +492,62 @@
   border-color: var(--neon-cyan);
 }
 
-/* Error */
+/* =========================
+   Todo Error
+   ========================= */
 
 .todo-error {
   margin: 0 0 20px;
   padding: 14px 16px;
+
   border: 1px solid rgba(244, 114, 182, 0.35);
   border-radius: 6px;
+
   background: rgba(244, 114, 182, 0.05);
   color: var(--neon-pink);
+
   font-family: var(--font-mono);
   font-size: 12px;
 }
 
-/* Loading */
+/* =========================
+   Todo Loading
+   ========================= */
 
 .todo-loading {
   margin: 0;
   padding: 24px 0;
+
   color: var(--text-muted);
+
   font-family: var(--font-mono);
   font-size: 12px;
 }
 
-/* Todo list가 없을 경우 */
+/* =========================
+   Todo Empty
+   ========================= */
 
 .todo-empty {
   margin: 0;
   padding: 40px 0;
+
   color: var(--text-muted);
+
   font-family: var(--font-mono);
   font-size: 12px;
   line-height: 1.8;
+
   text-align: center;
 }
 
-/* Study Log */
+/* =========================
+   Study Log
+   ========================= */
 
 .learning-study-log {
   margin-top: 64px;
+
   border-top: 1px solid var(--border-subtle);
   padding-top: 48px;
 }
@@ -293,6 +556,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+
   margin-bottom: 32px;
 }
 
@@ -300,13 +564,17 @@
   width: 100%;
   box-sizing: border-box;
   padding: 16px;
+
   border: 1px solid var(--border-subtle);
   border-radius: 6px;
+
   background: var(--bg-secondary);
   color: var(--text-primary);
+
   font-family: 'Inter', sans-serif;
   font-size: 13px;
   line-height: 1.7;
+
   resize: vertical;
   outline: none;
 }
@@ -322,14 +590,23 @@
 
 .study-log-form button {
   align-self: flex-end;
+
   padding: 10px 16px;
+
   border: 1px solid var(--neon-cyan);
   border-radius: 6px;
+
   background: transparent;
   color: var(--neon-cyan);
+
   font-family: var(--font-mono);
   font-size: 11px;
+
   cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
 .study-log-form button:hover {
@@ -344,9 +621,12 @@
 
 .study-log-item {
   position: relative;
+
   padding: 20px;
+
   border: 1px solid var(--border-subtle);
   border-radius: 6px;
+
   background: var(--bg-secondary);
 }
 
@@ -357,7 +637,9 @@
 .study-log-item time {
   display: block;
   margin-bottom: 12px;
+
   color: var(--neon-cyan);
+
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.5px;
@@ -366,29 +648,40 @@
 .study-log-item p {
   margin: 0;
   padding-right: 100px;
+
   color: var(--text-secondary);
+
   font-size: 13px;
   line-height: 1.8;
+
   white-space: pre-wrap;
 }
 
-/* Study Log 수정 textarea */
+/* =========================
+   Study Log 수정
+   ========================= */
 
 .study-log-item > textarea {
   width: 100%;
   box-sizing: border-box;
+
   min-height: 100px;
   margin: 0;
   padding: 12px 14px;
+
   border: 1px solid var(--neon-cyan);
   border-radius: 6px;
+
   background: var(--bg-primary);
   color: var(--text-primary);
+
   font-family: 'Inter', sans-serif;
   font-size: 13px;
   line-height: 1.7;
+
   resize: vertical;
   outline: none;
+
   box-shadow: var(--glow-cyan);
 }
 
@@ -396,26 +689,38 @@
   border-color: var(--neon-cyan);
 }
 
-/* Study Log 버튼 */
+/* =========================
+   Study Log 버튼
+   ========================= */
 
 .study-log-actions {
   position: absolute;
   top: 18px;
   right: 18px;
+
   display: flex;
   gap: 6px;
 }
 
 .study-log-actions button {
   position: static;
+
   padding: 6px 10px;
+
   border: 1px solid var(--border-subtle);
   border-radius: 4px;
+
   background: transparent;
   color: var(--text-muted);
+
   font-family: var(--font-mono);
   font-size: 10px;
+
   cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .study-log-actions button:hover {
@@ -426,14 +731,225 @@
 .study-log-empty {
   margin: 0;
   padding: 40px 0;
+
   color: var(--text-muted);
+
   font-family: var(--font-mono);
   font-size: 12px;
   line-height: 1.8;
+
   text-align: center;
 }
 
-/* Mobile */
+/* =========================
+   Loading / Error
+   ========================= */
+
+.study-log-loading,
+.study-log-error {
+  margin: 0;
+  padding: 24px;
+
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+
+  background: var(--bg-secondary);
+
+  font-family: var(--font-mono);
+  font-size: 12px;
+
+  text-align: center;
+}
+
+.study-log-loading {
+  color: var(--text-muted);
+}
+
+.study-log-error {
+  border-color: rgba(244, 114, 182, 0.35);
+  color: var(--neon-pink);
+}
+
+/* =========================
+   Study Log Action Error
+   ========================= */
+
+.study-log-action-error {
+  margin: 0;
+  padding: 8px 12px;
+
+  border: 1px solid rgba(244, 114, 182, 0.35);
+  border-radius: 4px;
+
+  background: rgba(244, 114, 182, 0.05);
+  color: var(--neon-pink);
+
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* =========================
+   Study Log Search
+   ========================= */
+
+.study-log-search {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.study-log-search input {
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+
+  padding: 11px 14px;
+
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+
+  outline: none;
+}
+
+.study-log-search input::placeholder {
+  color: var(--text-muted);
+}
+
+.study-log-search input:focus {
+  border-color: var(--neon-cyan);
+  box-shadow: var(--glow-cyan);
+}
+
+.study-log-search select {
+  padding: 11px 14px;
+
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+
+  font-family: var(--font-mono);
+  font-size: 10px;
+
+  cursor: pointer;
+  outline: none;
+}
+
+.study-log-search select:focus {
+  border-color: var(--neon-cyan);
+  box-shadow: var(--glow-cyan);
+}
+
+/* =========================
+   Pagination
+   ========================= */
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+
+  margin-top: 24px;
+  padding-top: 16px;
+
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* =========================
+   Pagination Button
+   ========================= */
+
+.pagination-button {
+  min-width: 30px;
+  height: 30px;
+  padding: 0 8px;
+
+  border: 1px solid transparent;
+  border-radius: 4px;
+
+  background: transparent;
+
+  font-family: var(--font-mono);
+  font-size: 10px;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+/* =========================
+   Todo Pagination
+   ========================= */
+
+.pagination-todo {
+  background: transparent;
+}
+
+.pagination-todo .pagination-button {
+  color: var(--text-muted);
+}
+
+.pagination-todo .pagination-button:hover:not(:disabled) {
+  border-color: var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.pagination-todo .pagination-button.active {
+  border-color: var(--neon-cyan);
+  background: rgba(94, 234, 212, 0.06);
+  color: var(--neon-cyan);
+}
+
+/* =========================
+   Study Log Pagination
+   ========================= */
+
+.pagination-study-log {
+  background: var(--bg-primary);
+}
+
+.pagination-study-log .pagination-button {
+  color: var(--text-muted);
+}
+
+.pagination-study-log .pagination-button:hover:not(:disabled) {
+  border-color: rgba(94, 234, 212, 0.25);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-primary);
+}
+
+.pagination-study-log .pagination-button.active {
+  border-color: var(--neon-cyan);
+  background: rgba(94, 234, 212, 0.08);
+  color: var(--neon-cyan);
+  box-shadow: 0 0 10px rgba(94, 234, 212, 0.12);
+}
+
+/* =========================
+   Disabled
+   ========================= */
+
+.pagination-button:disabled {
+  color: var(--text-muted);
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* =========================
+   Mobile
+   ========================= */
 
 @media (max-width: 768px) {
   .learning-tracker {
@@ -486,39 +1002,30 @@
     right: 16px;
     bottom: 16px;
   }
-}
 
-/* Loading, Error 표시 */
-.study-log-loading,
-.study-log-error {
-  margin: 0;
-  padding: 24px;
-  border: 1px solid var(--border-subtle);
-  border-radius: 6px;
-  background: var(--bg-secondary);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  text-align: center;
-}
+  /* Todo Filters */
+  .todo-filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
 
-.study-log-loading {
-  color: var(--text-muted);
-}
+  .todo-filter,
+  .todo-priority-filter {
+    width: 100%;
+  }
 
-.study-log-error {
-  border-color: rgba(244, 114, 182, 0.35);
-  color: var(--neon-pink);
-}
+  .todo-filter button,
+  .todo-priority-filter button {
+    flex: 1;
+  }
 
-/* 로그 추가 Error 표시 */
-.study-log-action-error {
-  margin: 0;
-  padding: 8px 12px;
-  border: 1px solid rgba(244, 114, 182, 0.35);
-  border-radius: 4px;
-  background: rgba(244, 114, 182, 0.05);
-  color: var(--neon-pink);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  line-height: 1.5;
+  /* Study Log Search */
+  .study-log-search {
+    flex-direction: column;
+  }
+
+  .study-log-search select {
+    width: 100%;
+  }
 }

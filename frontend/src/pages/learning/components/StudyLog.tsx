@@ -1,11 +1,24 @@
 import { useEffect, useState } from 'react';
 import type { StudyLogData } from '../types/learning';
+import Pagination from './Pagination';
 
-function StudyLog() {
+interface StudyLogProps {
+  onStudyLogsChange: (studyLogs: StudyLogData[]) => void;
+}
+
+function StudyLog({
+  onStudyLogsChange
+}: StudyLogProps) {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const [studyLog, setStudyLog] = useState('');
   const [studyLogs, setStudyLogs] = useState<StudyLogData[]>([]);
+
+  const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
 
   const [editingStudyLogId, setEditingStudyLogId] = useState<number | null>(null);
   const [editingStudyLogContent, setEditingStudyLogContent] = useState('');
@@ -15,6 +28,44 @@ function StudyLog() {
 
   const [studyLogActionError, setStudyLogActionError] = useState('');
   const [isStudyLogSubmitting, setIsStudyLogSubmitting] = useState(false);
+
+  const [sortOrder, setSortOrder] = useState<'latest' | 'oldest'>('latest');
+
+  // 페이지네이션
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const ITEMS_PER_PAGE = 5;
+
+  const filteredStudyLogs = studyLogs
+    .filter((log) => {
+      const keyword = searchTerm.trim().toLowerCase();
+
+      if (!keyword) {
+        return true;
+      }
+
+      return log.content.toLowerCase().includes(keyword);
+    })
+    .sort((a, b) => {
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+
+      return sortOrder === 'latest'
+        ? dateB - dateA
+        : dateA - dateB;
+    });
+
+  const totalPages = Math.ceil(
+    filteredStudyLogs.length / ITEMS_PER_PAGE
+  );
+
+  const startIndex =
+    (currentPage - 1) * ITEMS_PER_PAGE;
+
+  const currentStudyLogs = filteredStudyLogs.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
 
   // [GET] Study Log 가져오기
   useEffect(() => {
@@ -41,6 +92,23 @@ function StudyLog() {
 
     fetchStudyLogs();
   }, []);
+
+  // 부모에게 전달용
+  useEffect(() => {
+    onStudyLogsChange(studyLogs);
+  }, [studyLogs, onStudyLogsChange]);
+
+  // 삭제 시 페이지네이션
+  useEffect(() => {
+    const nextTotalPages = Math.max(
+      1,
+      Math.ceil(studyLogs.length / ITEMS_PER_PAGE)
+    );
+
+    if (currentPage > nextTotalPages) {
+      setCurrentPage(nextTotalPages);
+    }
+  }, [studyLogs, currentPage]);
 
   // [POST] Study Log 추가
   const handleAddStudyLog = async () => {
@@ -205,6 +273,35 @@ function StudyLog() {
         </div>
       </div>
 
+      <div className="study-log-search">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(event) =>
+            setSearchTerm(event.target.value)
+          }
+          placeholder="학습 기록 검색..."
+        />
+
+        <select
+          value={sortOrder}
+          onChange={(event) =>
+            setSortOrder(
+              event.target.value as 'latest' | 'oldest'
+            )
+          }
+        >
+          <option value="latest">최신순</option>
+          <option value="oldest">오래된순</option>
+        </select>
+      </div>
+
+      {searchTerm.trim() && (
+        <p className="study-log-search-result">
+          검색 결과 {filteredStudyLogs.length}개
+        </p>
+      )}
+
       <div className="study-log-form">
         <textarea
           value={studyLog}
@@ -241,10 +338,16 @@ function StudyLog() {
           </p>
         ) : studyLogs.length === 0 ? (
           <p className="study-log-empty">
-            아직 작성된 학습 기록이 없습니다.
+            아직 학습 기록이 없습니다.
+          </p>
+        ) : filteredStudyLogs.length === 0 ? (
+          <p className="study-log-empty">
+            검색 결과가 없습니다.
+            <br />
+            다른 검색어를 입력해보세요.
           </p>
         ) : (
-          studyLogs.map((log) => (
+          currentStudyLogs.map((log) => (
             <article
               key={log.id}
               className="study-log-item"
@@ -317,6 +420,13 @@ function StudyLog() {
           ))
         )}
       </div>
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+        variant="study-log"
+      />
     </section>
   );
 }

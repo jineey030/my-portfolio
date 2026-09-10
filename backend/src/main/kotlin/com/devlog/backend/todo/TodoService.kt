@@ -7,13 +7,15 @@ class TodoService(
     private val todoRepository: TodoRepository
 ) {
 
-    fun getTodos(): List<Todo> {
-        return todoRepository.findAll()
-    }
+    fun getTodos(): List<Todo> = todoRepository.findAllByOrderByIdDesc()
 
-    fun createTodo(title: String): Todo {
+    fun createTodo(
+        title: String,
+        priority: String
+    ): Todo {
         val todo = Todo(
-            title = title
+            title = title,
+            priority = priority
         )
 
         return todoRepository.save(todo)
@@ -22,7 +24,8 @@ class TodoService(
     fun updateTodo(
         id: Long,
         title: String,
-        completed: Boolean
+        completed: Boolean,
+        priority: String
     ): Todo {
         val todo = todoRepository.findById(id)
             .orElseThrow {
@@ -31,6 +34,7 @@ class TodoService(
 
         todo.title = title
         todo.completed = completed
+        todo.priority = priority
 
         return todoRepository.save(todo)
     }

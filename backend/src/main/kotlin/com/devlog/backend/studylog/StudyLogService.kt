@@ -7,9 +7,7 @@ class StudyLogService(
     private val studyLogRepository: StudyLogRepository
 ) {
 
-    fun getStudyLogs(): List<StudyLog> {
-        return studyLogRepository.findAll()
-    }
+    fun getStudyLogs(): List<StudyLog> = studyLogRepository.findAllByOrderByDateDesc()
 
     fun createStudyLog(
         date: String,

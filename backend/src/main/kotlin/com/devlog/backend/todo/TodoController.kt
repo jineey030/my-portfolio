@@ -27,7 +27,10 @@ class TodoController(
     fun createTodo(
         @RequestBody request: CreateTodoRequest
     ): Todo {
-        return todoService.createTodo(request.title)
+        return todoService.createTodo(
+            title = request.title,
+            priority = request.priority
+        )
     }
 
     @PutMapping("/{id}")
@@ -38,7 +41,8 @@ class TodoController(
         return todoService.updateTodo(
             id = id,
             title = request.title,
-            completed = request.completed
+            completed = request.completed,
+            priority = request.priority
         )
     }
 
@@ -52,10 +56,12 @@ class TodoController(
 }
 
 data class CreateTodoRequest(
-    val title: String
+    val title: String,
+    val priority: String = "medium"
 )
 
 data class UpdateTodoRequest(
     val title: String,
-    val completed: Boolean
+    val completed: Boolean,
+    val priority: String
 )
