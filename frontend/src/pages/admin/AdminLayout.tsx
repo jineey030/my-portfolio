@@ -25,7 +25,7 @@ function AdminLayout() {
         </nav>
 
         <div className="admin-sidebar-footer">
-          <Link to="/learning">
+          <Link to="/">
             ← View Portfolio
           </Link>
         </div>
