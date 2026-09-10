@@ -1,4 +1,4 @@
-import { Link, Outlet } from 'react-router';
+import { NavLink, Outlet } from 'react-router';
 import '../learning/LearningTracker.css';
 
 function AdminLayout() {
@@ -11,23 +11,39 @@ function AdminLayout() {
         </div>
 
         <nav className="admin-nav">
-          <Link to="/admin">
+          <NavLink
+            to="/admin"
+            end
+            className={({ isActive }) =>
+              isActive ? 'active' : ''
+            }
+          >
             Dashboard
-          </Link>
+          </NavLink>
 
-          <Link to="/admin/todos">
+          <NavLink
+            to="/admin/todos"
+            className={({ isActive }) =>
+              isActive ? 'active' : ''
+            }
+          >
             Todos
-          </Link>
+          </NavLink>
 
-          <Link to="/admin/study-logs">
+          <NavLink
+            to="/admin/study-logs"
+            className={({ isActive }) =>
+              isActive ? 'active' : ''
+            }
+          >
             Study Logs
-          </Link>
+          </NavLink>
         </nav>
 
         <div className="admin-sidebar-footer">
-          <Link to="/">
+          <NavLink to="/">
             ← View Portfolio
-          </Link>
+          </NavLink>
         </div>
       </aside>
 
