@@ -32,6 +32,16 @@ function LearningTracker() {
     studyLogs.map((log) => log.date)
   ).size;
 
+  const latestStudyDate =
+    studyLogs.length === 0
+      ? '-'
+      : (
+          studyLogs
+            .map((log) => log.date)
+            .sort()
+            .at(-1) ?? '-'
+        ).slice(0, 10).replace(/-/g, '.');
+
   const todoProgress =
     totalTodoCount === 0
       ? 0 : Math.round( (completedTodoCount / totalTodoCount) * 100);
@@ -72,6 +82,13 @@ function LearningTracker() {
           label="STUDY DAYS"
           value={String(studyDays)}
           description="unique study days"
+        />
+
+        <DashboardCard
+          type="study-days"
+          label="LATEST STUDY"
+          value={latestStudyDate}
+          description="most recent study date"
         />
       </section>
 
