@@ -1132,6 +1132,18 @@
   color: var(--text-primary);
 }
 
+.admin-nav-icon {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  margin-right: 10px;
+  opacity: 0.75;
+}
+
+.admin-nav a.active .admin-nav-icon {
+  opacity: 1;
+}
+
 /* =========================
    Mobile
    ========================= */
