@@ -18,7 +18,7 @@
 ## // about
 
 개발 공부를 하면서 만든 개인 소개 & 학습 기록용 웹사이트입니다.
-프론트엔드는 React 기반 SPA로 자기소개(Hero / About / Projects / Skills / Contact) 페이지를 구성했고,
+프론트엔드는 React 기반 SPA로 자기소개 페이지를 구성했고,
 백엔드는 Spring Boot + JPA + MariaDB로 API 서버를 구축하는 연습을 하고 있습니다.
 
 - 새로운 기술 스택(React 19, Kotlin, Spring Boot 4)을 직접 써보고 익히기 위한 학습용 프로젝트입니다.
