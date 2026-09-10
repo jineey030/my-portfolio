@@ -56,7 +56,6 @@
 
   border: 1px solid var(--border-subtle);
   border-radius: 6px;
-
   background: var(--bg-secondary);
 
   transition:
@@ -75,7 +74,6 @@
   height: 2px;
 
   background: var(--neon-cyan);
-
   opacity: 0.7;
 }
 
@@ -94,9 +92,7 @@
 
 .learning-summary-card strong {
   margin-top: 16px;
-
   color: var(--text-primary);
-
   font-family: var(--font-mono);
   font-size: 32px;
   font-weight: 500;
@@ -105,9 +101,7 @@
 
 .learning-summary-card p {
   margin: 12px 0 0;
-
   color: var(--text-muted);
-
   font-family: var(--font-mono);
   font-size: 10px;
   line-height: 1.5;
@@ -127,34 +121,24 @@
 .dashboard-progress-track {
   flex: 1;
   height: 4px;
-
   overflow: hidden;
-
   border-radius: 999px;
-
   background: rgba(255, 255, 255, 0.08);
 }
 
 .dashboard-progress-bar {
   height: 100%;
-
   border-radius: inherit;
-
   background: var(--neon-cyan);
-
   box-shadow: 0 0 10px rgba(94, 234, 212, 0.5);
-
   transition: width 0.4s ease;
 }
 
 .dashboard-progress > span {
   min-width: 32px;
-
   color: var(--neon-cyan);
-
   font-family: var(--font-mono);
   font-size: 10px;
-
   text-align: right;
 }
 
@@ -171,24 +155,19 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-
   margin-bottom: 28px;
 }
 
 .learning-section-label {
   margin: 0 0 12px;
-
   color: var(--text-muted);
-
   font-family: var(--font-mono);
   font-size: 11px;
-
   letter-spacing: 1px;
 }
 
 .learning-section-header h2 {
   margin: 0;
-
   font-family: var(--font-pixel);
   font-size: 24px;
   font-weight: 500;
@@ -196,18 +175,16 @@
 
 .learning-section-header button {
   padding: 10px 16px;
-
   border: 1px solid var(--neon-cyan);
   border-radius: 6px;
-
   background: transparent;
-
   color: var(--neon-cyan);
-
   font-family: var(--font-mono);
   font-size: 11px;
-
   cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
 .learning-section-header button:hover {
@@ -228,11 +205,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   gap: 20px;
-
   padding: 18px 20px;
-
   border-bottom: 1px solid var(--border-subtle);
 }
 
@@ -243,13 +217,10 @@
 .todo-item label {
   display: flex;
   align-items: center;
-
   gap: 12px;
 
   color: var(--text-secondary);
-
   font-size: 14px;
-
   cursor: pointer;
 }
 
@@ -265,7 +236,6 @@
 .todo-item input {
   width: 16px;
   height: 16px;
-
   accent-color: var(--neon-cyan);
 }
 
@@ -276,18 +246,16 @@
 
 .todo-actions button {
   padding: 6px 10px;
-
   border: 1px solid var(--border-subtle);
   border-radius: 4px;
-
   background: transparent;
-
   color: var(--text-muted);
-
   font-family: var(--font-mono);
   font-size: 10px;
-
   cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .todo-actions button:hover {
@@ -295,12 +263,18 @@
   color: var(--neon-cyan);
 }
 
+/* =========================
+   Todo Priority Badge
+   ========================= */
+
 .todo-priority {
   display: inline-block;
   margin-right: 8px;
   padding: 3px 6px;
+
   border: 1px solid currentColor;
   border-radius: 4px;
+
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -319,21 +293,29 @@
 }
 
 /* =========================
-   priority
+   Todo Priority Select
    ========================= */
+
 .todo-add-form select,
 .todo-item > select {
   height: 36px;
   padding: 0 32px 0 10px;
+
   border: 1px solid rgba(0, 255, 255, 0.35);
   border-radius: 4px;
+
   background: #0b1117;
   color: #d7faff;
+
   font-family: inherit;
   font-size: 12px;
+
   cursor: pointer;
   outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .todo-add-form select:hover,
@@ -354,36 +336,64 @@
 }
 
 /* =========================
-   Todo Filter
+   Todo Filters
    ========================= */
 
-.todo-filter {
+.todo-filters {
   display: flex;
-  gap: 6px;
-  margin-bottom: 20px;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
 }
 
-.todo-filter button {
-  padding: 8px 12px;
-  border: 1px solid var(--border-subtle);
-  border-radius: 4px;
-  background: transparent;
+.todo-filter,
+.todo-priority-filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+}
+
+.todo-filter-label {
+  margin-right: 4px;
+
   color: var(--text-muted);
   font-family: var(--font-mono);
   font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.todo-filter button,
+.todo-priority-filter button {
+  padding: 7px 11px;
+
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+
+  background: transparent;
+  color: var(--text-muted);
+
+  font-family: var(--font-mono);
+  font-size: 10px;
+
   cursor: pointer;
+
   transition:
     border-color 0.2s ease,
     color 0.2s ease,
     background 0.2s ease;
 }
 
-.todo-filter button:hover {
+.todo-filter button:hover,
+.todo-priority-filter button:hover {
   border-color: rgba(94, 234, 212, 0.35);
   color: var(--text-primary);
 }
 
-.todo-filter button.active {
+.todo-filter button.active,
+.todo-priority-filter button.active {
   border-color: var(--neon-cyan);
   background: rgba(94, 234, 212, 0.06);
   color: var(--neon-cyan);
@@ -397,21 +407,18 @@
 .todo-add-form {
   display: flex;
   gap: 8px;
-
   margin-bottom: 20px;
 }
 
 .todo-add-form input {
   flex: 1;
   min-width: 0;
-
   padding: 11px 14px;
 
   border: 1px solid var(--border-subtle);
   border-radius: 6px;
 
   background: var(--bg-secondary);
-
   color: var(--text-primary);
 
   font-family: 'Inter', sans-serif;
@@ -435,13 +442,17 @@
   border-radius: 6px;
 
   background: transparent;
-
   color: var(--text-secondary);
 
   font-family: var(--font-mono);
   font-size: 11px;
 
   cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background 0.2s ease;
 }
 
 .todo-add-form button:first-of-type {
@@ -462,21 +473,18 @@
   flex: 1;
   width: 100%;
   min-width: 0;
-
   padding: 12px 14px;
 
   border: 1px solid var(--neon-cyan);
   border-radius: 6px;
 
   background: var(--bg-secondary);
-
   color: var(--text-primary);
 
   font-family: 'Inter', sans-serif;
   font-size: 14px;
 
   outline: none;
-
   box-shadow: var(--glow-cyan);
 }
 
@@ -496,7 +504,6 @@
   border-radius: 6px;
 
   background: rgba(244, 114, 182, 0.05);
-
   color: var(--neon-pink);
 
   font-family: var(--font-mono);
@@ -529,7 +536,6 @@
 
   font-family: var(--font-mono);
   font-size: 12px;
-
   line-height: 1.8;
 
   text-align: center;
@@ -543,14 +549,12 @@
   margin-top: 64px;
 
   border-top: 1px solid var(--border-subtle);
-
   padding-top: 48px;
 }
 
 .study-log-form {
   display: flex;
   flex-direction: column;
-
   gap: 12px;
 
   margin-bottom: 32px;
@@ -559,23 +563,19 @@
 .study-log-form textarea {
   width: 100%;
   box-sizing: border-box;
-
   padding: 16px;
 
   border: 1px solid var(--border-subtle);
   border-radius: 6px;
 
   background: var(--bg-secondary);
-
   color: var(--text-primary);
 
   font-family: 'Inter', sans-serif;
   font-size: 13px;
-
   line-height: 1.7;
 
   resize: vertical;
-
   outline: none;
 }
 
@@ -597,13 +597,16 @@
   border-radius: 6px;
 
   background: transparent;
-
   color: var(--neon-cyan);
 
   font-family: var(--font-mono);
   font-size: 11px;
 
   cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
 .study-log-form button:hover {
@@ -633,14 +636,12 @@
 
 .study-log-item time {
   display: block;
-
   margin-bottom: 12px;
 
   color: var(--neon-cyan);
 
   font-family: var(--font-mono);
   font-size: 11px;
-
   letter-spacing: 0.5px;
 }
 
@@ -651,7 +652,6 @@
   color: var(--text-secondary);
 
   font-size: 13px;
-
   line-height: 1.8;
 
   white-space: pre-wrap;
@@ -666,25 +666,20 @@
   box-sizing: border-box;
 
   min-height: 100px;
-
   margin: 0;
-
   padding: 12px 14px;
 
   border: 1px solid var(--neon-cyan);
   border-radius: 6px;
 
   background: var(--bg-primary);
-
   color: var(--text-primary);
 
   font-family: 'Inter', sans-serif;
   font-size: 13px;
-
   line-height: 1.7;
 
   resize: vertical;
-
   outline: none;
 
   box-shadow: var(--glow-cyan);
@@ -700,12 +695,10 @@
 
 .study-log-actions {
   position: absolute;
-
   top: 18px;
   right: 18px;
 
   display: flex;
-
   gap: 6px;
 }
 
@@ -718,13 +711,16 @@
   border-radius: 4px;
 
   background: transparent;
-
   color: var(--text-muted);
 
   font-family: var(--font-mono);
   font-size: 10px;
 
   cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .study-log-actions button:hover {
@@ -740,7 +736,6 @@
 
   font-family: var(--font-mono);
   font-size: 12px;
-
   line-height: 1.8;
 
   text-align: center;
@@ -753,7 +748,6 @@
 .study-log-loading,
 .study-log-error {
   margin: 0;
-
   padding: 24px;
 
   border: 1px solid var(--border-subtle);
@@ -782,23 +776,22 @@
 
 .study-log-action-error {
   margin: 0;
-
   padding: 8px 12px;
 
   border: 1px solid rgba(244, 114, 182, 0.35);
   border-radius: 4px;
 
   background: rgba(244, 114, 182, 0.05);
-
   color: var(--neon-pink);
 
   font-family: var(--font-mono);
   font-size: 11px;
-
   line-height: 1.5;
 }
 
-/* Study Log Search */
+/* =========================
+   Study Log Search
+   ========================= */
 
 .study-log-search {
   display: flex;
@@ -810,13 +803,18 @@
   flex: 1;
   min-width: 0;
   box-sizing: border-box;
+
   padding: 11px 14px;
+
   border: 1px solid var(--border-subtle);
   border-radius: 6px;
+
   background: var(--bg-secondary);
   color: var(--text-primary);
+
   font-family: 'Inter', sans-serif;
   font-size: 13px;
+
   outline: none;
 }
 
@@ -831,12 +829,16 @@
 
 .study-log-search select {
   padding: 11px 14px;
+
   border: 1px solid var(--border-subtle);
   border-radius: 6px;
+
   background: var(--bg-secondary);
   color: var(--text-secondary);
+
   font-family: var(--font-mono);
   font-size: 10px;
+
   cursor: pointer;
   outline: none;
 }
@@ -854,7 +856,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-
   gap: 4px;
 
   margin-top: 24px;
@@ -870,7 +871,6 @@
 .pagination-button {
   min-width: 30px;
   height: 30px;
-
   padding: 0 8px;
 
   border: 1px solid transparent;
@@ -954,7 +954,6 @@
 @media (max-width: 768px) {
   .learning-tracker {
     width: calc(100% - 32px);
-
     padding: 110px 0 70px;
   }
 
@@ -964,9 +963,7 @@
 
   .learning-section-header {
     align-items: flex-start;
-
     flex-direction: column;
-
     gap: 20px;
   }
 
@@ -1006,14 +1003,24 @@
     bottom: 16px;
   }
 
-  .todo-filter {
+  /* Todo Filters */
+  .todo-filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .todo-filter,
+  .todo-priority-filter {
     width: 100%;
   }
 
-  .todo-filter button {
+  .todo-filter button,
+  .todo-priority-filter button {
     flex: 1;
   }
 
+  /* Study Log Search */
   .study-log-search {
     flex-direction: column;
   }
