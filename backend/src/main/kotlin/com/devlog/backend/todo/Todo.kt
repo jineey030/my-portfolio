@@ -14,5 +14,7 @@ class Todo(
 
     var title: String,
 
-    var completed: Boolean = false
+    var completed: Boolean = false,
+
+    var priority: String = "medium"
 )
