@@ -14,13 +14,17 @@ import Navbar from './components/Navbar';
 import ScrollToHash from './components/ScrollToHash';
 import Footer from './components/Footer';
 
+// context
+import { LearningProvider } from './pages/learning/context/LearningContext';
+
 function App() {
   return (
     <BrowserRouter>
       <Navbar />
       <ScrollToHash />
 
-      <Routes>
+      <LearningProvider>
+        <Routes>
         {/* 메인 페이지 */}
         <Route
           path="/"
@@ -56,7 +60,7 @@ function App() {
           element={<NotFound />}
         />
       </Routes>
-
+      </LearningProvider>
       <Footer />
     </BrowserRouter>
   );
