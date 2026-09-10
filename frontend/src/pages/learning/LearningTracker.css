@@ -295,6 +295,79 @@
   color: var(--neon-cyan);
 }
 
+.todo-priority {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 3px 6px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.todo-priority.high {
+  color: #ff6b6b;
+}
+
+.todo-priority.medium {
+  color: #ffd166;
+}
+
+.todo-priority.low {
+  color: #6ee7b7;
+}
+
+/* =========================
+   priority
+   ========================= */
+.todo-add-form select,
+.todo-item > select {
+  height: 36px;
+  padding: 0 32px 0 10px;
+  border: 1px solid rgba(0, 255, 255, 0.35);
+  border-radius: 4px;
+  background: #0b1117;
+  color: #d7faff;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.todo-add-form select:hover,
+.todo-item > select:hover {
+  border-color: rgba(0, 255, 255, 0.7);
+}
+
+.todo-add-form select:focus,
+.todo-item > select:focus {
+  border-color: #00ffff;
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.15);
+}
+
+.todo-add-form select option,
+.todo-item > select option {
+  background: #0b1117;
+  color: #d7faff;
+}
+
+.todo-add-form select[value="high"],
+.todo-item > select[value="high"] {
+  color: #ff6b6b;
+}
+
+.todo-add-form select[value="medium"],
+.todo-item > select[value="medium"] {
+  color: #ffd166;
+}
+
+.todo-add-form select[value="low"],
+.todo-item > select[value="low"] {
+  color: #6ee7b7;
+}
+
 /* =========================
    Todo Filter
    ========================= */
