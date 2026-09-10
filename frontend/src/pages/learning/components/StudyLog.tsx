@@ -265,10 +265,6 @@ function StudyLog({
     <section className="learning-study-log">
       <div className="learning-section-header">
         <div>
-          <p className="learning-section-label">
-            02 / STUDY LOG
-          </p>
-
           <h2>Study Log</h2>
         </div>
       </div>
