@@ -14,6 +14,12 @@ function StudyLog({
   const [studyLog, setStudyLog] = useState('');
   const [studyLogs, setStudyLogs] = useState<StudyLogData[]>([]);
 
+  const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
   const [editingStudyLogId, setEditingStudyLogId] = useState<number | null>(null);
   const [editingStudyLogContent, setEditingStudyLogContent] = useState('');
 
@@ -28,14 +34,24 @@ function StudyLog({
 
   const ITEMS_PER_PAGE = 5;
 
+  const filteredStudyLogs = studyLogs.filter((log) => {
+    const keyword = searchTerm.trim().toLowerCase();
+
+    if (!keyword) {
+      return true;
+    }
+
+    return log.content.toLowerCase().includes(keyword);
+  });
+
   const totalPages = Math.ceil(
-    studyLogs.length / ITEMS_PER_PAGE
+    filteredStudyLogs.length / ITEMS_PER_PAGE
   );
 
   const startIndex =
     (currentPage - 1) * ITEMS_PER_PAGE;
 
-  const currentStudyLogs = studyLogs.slice(
+  const currentStudyLogs = filteredStudyLogs.slice(
     startIndex,
     startIndex + ITEMS_PER_PAGE
   );
@@ -244,6 +260,17 @@ function StudyLog({
 
           <h2>Study Log</h2>
         </div>
+      </div>
+
+      <div className="study-log-search">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(event) =>
+            setSearchTerm(event.target.value)
+          }
+          placeholder="학습 기록 검색..."
+        />
       </div>
 
       <div className="study-log-form">
