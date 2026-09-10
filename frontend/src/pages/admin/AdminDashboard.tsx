@@ -1,17 +1,16 @@
-import { useState } from 'react';
-import type {
-  Todo,
-  StudyLogData
-} from '../learning/types/learning';
 import DashboardCard from '../learning/components/DashboardCard';
+import { useLearning } from '../learning/context/LearningContext';
 
 function AdminDashboard() {
-  const [todos] = useState<Todo[]>([]);
-  const [studyLogs] = useState<StudyLogData[]>([]);
+  const {
+    todos,
+    studyLogs
+  } = useLearning();
 
-  const completedTodoCount = todos.filter(
-    (todo) => todo.completed
-  ).length;
+  const completedTodoCount =
+    todos.filter(
+      (todo) => todo.completed
+    ).length;
 
   const totalTodoCount = todos.length;
   const studyLogCount = studyLogs.length;
@@ -36,7 +35,9 @@ function AdminDashboard() {
     totalTodoCount === 0
       ? 0
       : Math.round(
-          (completedTodoCount / totalTodoCount) * 100
+          (completedTodoCount /
+            totalTodoCount) *
+            100
         );
 
   return (
