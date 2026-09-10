@@ -1006,16 +1006,19 @@
   position: sticky;
   top: 0;
 
-  height: 100vh;
-  box-sizing: border-box;
-
   display: flex;
   flex-direction: column;
 
+  width: 220px;
+  height: 100vh;
+  box-sizing: border-box;
+
   padding: 32px 20px;
 
-  border-right: 1px solid var(--border-subtle);
+  border-right: 1px solid #1d2933;
   background: #080d13;
+
+  overflow: hidden;
 }
 
 .admin-content {
@@ -1028,33 +1031,104 @@
   background: #0b1117;
 }
 
+.admin-nav {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 6px;
+  width: 100%;
+  margin-top: 36px;
+}
+
 .admin-nav a {
-  display: block;
+  display: flex !important;
+  align-items: center;
+  flex: 0 0 auto;
+  width: 100% !important;
+  min-width: 100%;
+  min-height: 40px;
   box-sizing: border-box;
 
-  width: 100%;
-  padding: 11px 12px;
+  padding: 0 14px;
 
   border: 1px solid transparent;
-  border-radius: 4px;
+  border-radius: 5px;
 
   background: transparent;
-  color: var(--text-muted);
+  color: #9aa6b2;
 
   font-family: var(--font-mono);
   font-size: 11px;
-
+  line-height: 1;
   text-decoration: none;
 
   transition:
     color 0.2s ease,
-    border-color 0.2s ease,
-    background 0.2s ease;
+    background 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .admin-nav a:hover {
-  border-color: var(--border-subtle);
-  background: rgba(255, 255, 255, 0.03);
+  border-color: #26343f;
+  background: #101820;
+  color: #d0d7dd;
+}
+
+.admin-nav a.active {
+  display: flex !important;
+  width: 100% !important;
+  min-width: 100%;
+
+  border-color: transparent;
+  background: transparent;
+  color: var(--neon-cyan);
+  font-weight: 600;
+
+  box-shadow: none;
+}
+
+.admin-nav a.active:hover {
+  border-color: transparent;
+  background: transparent;
+  color: var(--neon-cyan);
+}
+
+.admin-sidebar-header {
+  padding: 4px 4px 0;
+}
+
+.admin-sidebar-header p {
+  margin: 0 0 8px;
+  color: var(--neon-cyan);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+}
+
+.admin-sidebar-header span {
+  display: block;
+  color: var(--text-primary);
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+}
+
+.admin-sidebar-footer {
+  margin-top: auto;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.admin-sidebar-footer a {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.admin-sidebar-footer a:hover {
   color: var(--text-primary);
 }
 
@@ -1140,4 +1214,3 @@
     width: 100%;
   }
 }
-
