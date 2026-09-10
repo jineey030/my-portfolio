@@ -13,6 +13,8 @@ import ProjectDetail from './pages/project/ProjectDetail';
 import Learning from './pages/learning/Learning';
 
 import AdminLogin from './pages/admin/AdminLogin';
+import AdminRoute from './pages/admin/AdminRoute';
+
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminTodos from './pages/admin/AdminTodos';
@@ -70,22 +72,26 @@ function AppContent() {
           {/* 관리자 */}
           <Route
             path="/admin"
-            element={<AdminLayout />}
+            element={<AdminRoute />}
           >
             <Route
-              index
-              element={<AdminDashboard />}
-            />
+              element={<AdminLayout />}
+            >
+              <Route
+                index
+                element={<AdminDashboard />}
+              />
 
-            <Route
-              path="todos"
-              element={<AdminTodos />}
-            />
+              <Route
+                path="todos"
+                element={<AdminTodos />}
+              />
 
-            <Route
-              path="study-logs"
-              element={<AdminStudyLogs />}
-            />
+              <Route
+                path="study-logs"
+                element={<AdminStudyLogs />}
+              />
+            </Route>
           </Route>
 
           {/* 존재하지 않는 페이지 */}
