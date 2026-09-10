@@ -400,6 +400,7 @@ function TodoList({
           />
 
           <select
+            className={`todo-priority-select ${newPriority}`}
             value={newPriority}
             onChange={(event) =>
               setNewPriority(
@@ -491,6 +492,7 @@ function TodoList({
                   />
 
                   <select
+                    className={`todo-priority-select ${editingPriority}`}
                     value={editingPriority}
                     onChange={(event) =>
                       setEditingPriority(
