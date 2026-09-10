@@ -415,10 +415,6 @@ function TodoList({
     <section className="learning-todo">
       <div className="learning-section-header">
         <div>
-          <p className="learning-section-label">
-            01 / TODO
-          </p>
-
           <h2>Todo List</h2>
         </div>
 
