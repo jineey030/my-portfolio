@@ -309,7 +309,13 @@ function StudyLog({
           </p>
         ) : studyLogs.length === 0 ? (
           <p className="study-log-empty">
-            아직 작성된 학습 기록이 없습니다.
+            아직 학습 기록이 없습니다.
+          </p>
+        ) : filteredStudyLogs.length === 0 ? (
+          <p className="study-log-empty">
+            검색 결과가 없습니다.
+            <br />
+            다른 검색어를 입력해보세요.
           </p>
         ) : (
           currentStudyLogs.map((log) => (
