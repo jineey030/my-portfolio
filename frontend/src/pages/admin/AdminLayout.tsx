@@ -18,7 +18,23 @@ function AdminLayout() {
               isActive ? 'active' : ''
             }
           >
-            Dashboard
+            <svg
+              className="admin-nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+            </svg>
+
+            <span>Dashboard</span>
           </NavLink>
 
           <NavLink
@@ -27,7 +43,20 @@ function AdminLayout() {
               isActive ? 'active' : ''
             }
           >
-            Todos
+            <svg
+              className="admin-nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M5 12l4 4L19 6" />
+            </svg>
+
+            <span>Todos</span>
           </NavLink>
 
           <NavLink
@@ -36,7 +65,23 @@ function AdminLayout() {
               isActive ? 'active' : ''
             }
           >
-            Study Logs
+            <svg
+              className="admin-nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="4" y="3" width="16" height="18" rx="2" />
+              <path d="M8 7h8" />
+              <path d="M8 11h8" />
+              <path d="M8 15h5" />
+            </svg>
+
+            <span>Study Logs</span>
           </NavLink>
         </nav>
 
