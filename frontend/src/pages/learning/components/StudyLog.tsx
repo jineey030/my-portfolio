@@ -29,20 +29,31 @@ function StudyLog({
   const [studyLogActionError, setStudyLogActionError] = useState('');
   const [isStudyLogSubmitting, setIsStudyLogSubmitting] = useState(false);
 
+  const [sortOrder, setSortOrder] = useState<'latest' | 'oldest'>('latest');
+
   // 페이지네이션
   const [currentPage, setCurrentPage] = useState(1);
 
   const ITEMS_PER_PAGE = 5;
 
-  const filteredStudyLogs = studyLogs.filter((log) => {
-    const keyword = searchTerm.trim().toLowerCase();
+  const filteredStudyLogs = studyLogs
+    .filter((log) => {
+      const keyword = searchTerm.trim().toLowerCase();
 
-    if (!keyword) {
-      return true;
-    }
+      if (!keyword) {
+        return true;
+      }
 
-    return log.content.toLowerCase().includes(keyword);
-  });
+      return log.content.toLowerCase().includes(keyword);
+    })
+    .sort((a, b) => {
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+
+      return sortOrder === 'latest'
+        ? dateB - dateA
+        : dateA - dateB;
+    });
 
   const totalPages = Math.ceil(
     filteredStudyLogs.length / ITEMS_PER_PAGE
@@ -271,6 +282,18 @@ function StudyLog({
           }
           placeholder="학습 기록 검색..."
         />
+
+        <select
+          value={sortOrder}
+          onChange={(event) =>
+            setSortOrder(
+              event.target.value as 'latest' | 'oldest'
+            )
+          }
+        >
+          <option value="latest">최신순</option>
+          <option value="oldest">오래된순</option>
+        </select>
       </div>
 
       {searchTerm.trim() && (
