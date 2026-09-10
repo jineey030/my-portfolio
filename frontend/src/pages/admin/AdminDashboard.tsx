@@ -1,11 +1,65 @@
+import { useEffect } from 'react';
+
+import { apiFetch } from '../../api/api';
+
 import DashboardCard from '../learning/components/DashboardCard';
 import { useLearning } from '../learning/context/LearningContext';
+
+import type {
+  Todo,
+  StudyLogData
+} from '../learning/types/learning';
 
 function AdminDashboard() {
   const {
     todos,
-    studyLogs
+    studyLogs,
+    setTodos,
+    setStudyLogs
   } = useLearning();
+
+  // Dashboard 진입 시 DB 데이터 조회
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const [
+          todosResponse,
+          studyLogsResponse
+        ] = await Promise.all([
+          apiFetch('/api/todos'),
+          apiFetch('/api/study-logs')
+        ]);
+
+        if (!todosResponse.ok) {
+          throw new Error(
+            'Todo를 불러오지 못했습니다.'
+          );
+        }
+
+        if (!studyLogsResponse.ok) {
+          throw new Error(
+            'Study Log를 불러오지 못했습니다.'
+          );
+        }
+
+        const todosData: Todo[] =
+          await todosResponse.json();
+
+        const studyLogsData: StudyLogData[] =
+          await studyLogsResponse.json();
+
+        setTodos(todosData);
+        setStudyLogs(studyLogsData);
+      } catch (error) {
+        console.error(
+          'Dashboard 데이터 조회 실패:',
+          error
+        );
+      }
+    };
+
+    fetchDashboardData();
+  }, [setTodos, setStudyLogs]);
 
   const completedTodoCount =
     todos.filter(
