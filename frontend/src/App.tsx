@@ -4,10 +4,13 @@ import './App.css';
 // pages
 import Introduce from './pages/introduce/pages';
 import ProjectDetail from './pages/project/ProjectDetail';
-import LearningTracker from './pages/learning/LearningTracker';
 import Learning from './pages/learning/Learning';
-import AdminLayout from './pages/admin/AdminLayout';
 import NotFound from './pages/not-found/NotFound';
+
+import AdminLayout from './pages/admin/AdminLayout';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminTodos from './pages/admin/AdminTodos';
+import AdminStudyLogs from './pages/admin/AdminStudyLogs';
 
 // components
 import Navbar from './components/Navbar';
@@ -50,7 +53,17 @@ function App() {
         >
           <Route
             index
-            element={<LearningTracker />}
+            element={<AdminDashboard />}
+          />
+
+          <Route
+            path="todos"
+            element={<AdminTodos />}
+          />
+
+          <Route
+            path="study-logs"
+            element={<AdminStudyLogs />}
           />
         </Route>
 
