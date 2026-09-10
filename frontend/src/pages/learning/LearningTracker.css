@@ -353,21 +353,6 @@
   color: #d7faff;
 }
 
-.todo-add-form select[value="high"],
-.todo-item > select[value="high"] {
-  color: #ff6b6b;
-}
-
-.todo-add-form select[value="medium"],
-.todo-item > select[value="medium"] {
-  color: #ffd166;
-}
-
-.todo-add-form select[value="low"],
-.todo-item > select[value="low"] {
-  color: #6ee7b7;
-}
-
 /* =========================
    Todo Filter
    ========================= */
