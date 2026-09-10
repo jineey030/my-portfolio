@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { apiFetch } from '../../../api/api';
+
 import type { Todo } from '../types/learning';
 import Pagination from './Pagination';
 
@@ -9,8 +11,6 @@ interface TodoListProps {
 function TodoList({
   onTodosChange
 }: TodoListProps) {
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
   const [todos, setTodos] = useState<Todo[]>([]);
 
   const [isAdding, setIsAdding] = useState(false);
@@ -93,8 +93,8 @@ function TodoList({
   useEffect(() => {
     const fetchTodos = async () => {
       try {
-        const response = await fetch(
-          `${API_BASE_URL}/api/todos`
+        const response = await apiFetch(
+          `/api/todos`
         );
 
         if (!response.ok) {
@@ -165,8 +165,8 @@ function TodoList({
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/todos/${id}`,
+      const response = await apiFetch(
+        `/api/todos/${id}`,
         {
           method: 'PUT',
           headers: {
@@ -254,8 +254,8 @@ function TodoList({
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/todos/${id}`,
+      const response = await apiFetch(
+        `/api/todos/${id}`,
         {
           method: 'PUT',
           headers: {
@@ -320,8 +320,8 @@ function TodoList({
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/todos/${id}`,
+      const response = await apiFetch(
+        `/api/todos/${id}`,
         {
           method: 'DELETE',
         }
@@ -365,8 +365,8 @@ function TodoList({
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/todos`,
+      const response = await apiFetch(
+        `/api/todos`,
         {
           method: 'POST',
           headers: {
@@ -415,10 +415,6 @@ function TodoList({
     <section className="learning-todo">
       <div className="learning-section-header">
         <div>
-          <p className="learning-section-label">
-            01 / TODO
-          </p>
-
           <h2>Todo List</h2>
         </div>
 

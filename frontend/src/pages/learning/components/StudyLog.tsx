@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { apiFetch } from '../../../api/api';
+
 import type { StudyLogData } from '../types/learning';
 import Pagination from './Pagination';
 
@@ -9,8 +11,6 @@ interface StudyLogProps {
 function StudyLog({
   onStudyLogsChange
 }: StudyLogProps) {
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
   const [studyLog, setStudyLog] = useState('');
   const [studyLogs, setStudyLogs] = useState<StudyLogData[]>([]);
 
@@ -71,8 +71,8 @@ function StudyLog({
   useEffect(() => {
     const fetchStudyLogs = async () => {
       try {
-        const response = await fetch(
-          `${API_BASE_URL}/api/study-logs`
+        const response = await apiFetch(
+          `/api/study-logs`
         );
 
         if (!response.ok) {
@@ -122,8 +122,8 @@ function StudyLog({
     setIsStudyLogSubmitting(true);
 
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/study-logs`,
+      const response = await apiFetch(
+        `/api/study-logs`,
         {
           method: 'POST',
           headers: {
@@ -190,8 +190,8 @@ function StudyLog({
     setIsStudyLogSubmitting(true);
 
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/study-logs/${id}`,
+      const response = await apiFetch(
+        `/api/study-logs/${id}`,
         {
           method: 'PUT',
           headers: {
@@ -239,8 +239,8 @@ function StudyLog({
     setIsStudyLogSubmitting(true);
 
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/study-logs/${id}`,
+      const response = await apiFetch(
+        `/api/study-logs/${id}`,
         {
           method: 'DELETE',
         }
@@ -265,10 +265,6 @@ function StudyLog({
     <section className="learning-study-log">
       <div className="learning-section-header">
         <div>
-          <p className="learning-section-label">
-            02 / STUDY LOG
-          </p>
-
           <h2>Study Log</h2>
         </div>
       </div>

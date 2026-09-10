@@ -4,13 +4,20 @@ import type {
   Todo,
   StudyLogData
 } from './types/learning';
+import {
+  useLearning
+} from './context/LearningContext';
 import StudyLog from './components/StudyLog';
 import TodoList from './components/TodoList';
 import DashboardCard from './components/DashboardCard';
 
 function LearningTracker() {
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [studyLogs, setStudyLogs] = useState<StudyLogData[]>([])
+  const {
+    todos,
+    setTodos,
+    studyLogs,
+    setStudyLogs
+  } = useLearning();
 
   const handleTodosChange = (todos: Todo[]) => {
     setTodos(todos);
