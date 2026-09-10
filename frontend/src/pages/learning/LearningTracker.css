@@ -740,6 +740,34 @@
   line-height: 1.5;
 }
 
+/* Study Log Search */
+
+.study-log-search {
+  margin-bottom: 20px;
+}
+
+.study-log-search input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  outline: none;
+}
+
+.study-log-search input::placeholder {
+  color: var(--text-muted);
+}
+
+.study-log-search input:focus {
+  border-color: var(--neon-cyan);
+  box-shadow: var(--glow-cyan);
+}
+
 /* =========================
    Pagination
    ========================= */
