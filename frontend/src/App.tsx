@@ -12,6 +12,7 @@ import Introduce from './pages/introduce/pages';
 import ProjectDetail from './pages/project/ProjectDetail';
 import Learning from './pages/learning/Learning';
 
+import AdminLogin from './pages/admin/AdminLogin';
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminTodos from './pages/admin/AdminTodos';
@@ -58,6 +59,12 @@ function AppContent() {
           <Route
             path="/learning"
             element={<Learning />}
+          />
+
+          {/* 관리자 로그인 */}
+          <Route
+            path="/admin/login"
+            element={<AdminLogin />}
           />
 
           {/* 관리자 */}
