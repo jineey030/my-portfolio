@@ -2,20 +2,25 @@ package com.devlog.backend.auth
 
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.nio.charset.StandardCharsets
 import java.util.Date
 import javax.crypto.SecretKey
 
 @Service
-class JwtService {
+class JwtService(
 
-    private val secret =
-        "devlog-admin-jwt-secret-key-change-this-later"
+    @Value("\${jwt.secret}")
+    private val secret: String
+
+) {
 
     private val secretKey: SecretKey =
         Keys.hmacShaKeyFor(
-            secret.toByteArray(StandardCharsets.UTF_8)
+            secret.toByteArray(
+                StandardCharsets.UTF_8
+            )
         )
 
     private val expiration =
@@ -34,7 +39,9 @@ class JwtService {
             .compact()
     }
 
-    fun extractUsername(token: String): String? {
+    fun extractUsername(
+        token: String
+    ): String? {
         return try {
             Jwts.parser()
                 .verifyWith(secretKey)
@@ -52,16 +59,21 @@ class JwtService {
         username: String
     ): Boolean {
         return try {
-            val extractedUsername = extractUsername(token)
+            val extractedUsername =
+                extractUsername(token)
 
             extractedUsername == username &&
                 !isTokenExpired(token)
+
         } catch (e: Exception) {
             false
         }
     }
 
-    private fun isTokenExpired(token: String): Boolean {
+    private fun isTokenExpired(
+        token: String
+    ): Boolean {
+
         val expirationDate =
             Jwts.parser()
                 .verifyWith(secretKey)

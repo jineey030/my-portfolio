@@ -1,7 +1,17 @@
-import { NavLink, Outlet } from 'react-router';
+import { NavLink, Outlet, useNavigate } from 'react-router';
 import '../learning/LearningTracker.css';
 
 function AdminLayout() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('admin_token');
+
+    navigate('/admin/login', {
+      replace: true
+    });
+  };
+
   return (
     <div className="admin-layout">
       <aside className="admin-sidebar">
@@ -28,10 +38,30 @@ function AdminLayout() {
               strokeLinejoin="round"
               aria-hidden="true"
             >
-              <rect x="3" y="3" width="7" height="7" />
-              <rect x="14" y="3" width="7" height="7" />
-              <rect x="3" y="14" width="7" height="7" />
-              <rect x="14" y="14" width="7" height="7" />
+              <rect
+                x="3"
+                y="3"
+                width="7"
+                height="7"
+              />
+              <rect
+                x="14"
+                y="3"
+                width="7"
+                height="7"
+              />
+              <rect
+                x="3"
+                y="14"
+                width="7"
+                height="7"
+              />
+              <rect
+                x="14"
+                y="14"
+                width="7"
+                height="7"
+              />
             </svg>
 
             <span>Dashboard</span>
@@ -75,7 +105,13 @@ function AdminLayout() {
               strokeLinejoin="round"
               aria-hidden="true"
             >
-              <rect x="4" y="3" width="16" height="18" rx="2" />
+              <rect
+                x="4"
+                y="3"
+                width="16"
+                height="18"
+                rx="2"
+              />
               <path d="M8 7h8" />
               <path d="M8 11h8" />
               <path d="M8 15h5" />
@@ -89,6 +125,14 @@ function AdminLayout() {
           <NavLink to="/">
             ← View Portfolio
           </NavLink>
+
+          <button
+            type="button"
+            className="admin-logout-button"
+            onClick={handleLogout}
+          >
+            ← Sign Out
+          </button>
         </div>
       </aside>
 

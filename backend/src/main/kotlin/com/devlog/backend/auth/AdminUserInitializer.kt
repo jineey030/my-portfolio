@@ -1,12 +1,21 @@
 package com.devlog.backend.auth
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.crypto.password.PasswordEncoder
 
 @Configuration
-class AdminUserInitializer {
+class AdminUserInitializer(
+
+    @Value("\${admin.username}")
+    private val adminUsername: String,
+
+    @Value("\${admin.password}")
+    private val adminPassword: String
+
+) {
 
     @Bean
     fun initAdminUser(
@@ -14,16 +23,22 @@ class AdminUserInitializer {
         passwordEncoder: PasswordEncoder
     ) = CommandLineRunner {
 
-        val username = "admin"
-
-        if (adminUserRepository.findByUsername(username) == null) {
+        if (
+            adminUserRepository.findByUsername(
+                adminUsername
+            ) == null
+        ) {
 
             val encodedPassword =
-                passwordEncoder.encode("admin1234")
-                    ?: error("비밀번호 암호화에 실패했습니다.")
+                passwordEncoder.encode(
+                    adminPassword
+                )
+                    ?: error(
+                        "비밀번호 암호화에 실패했습니다."
+                    )
 
             val adminUser = AdminUser(
-                username = username,
+                username = adminUsername,
                 password = encodedPassword
             )
 
