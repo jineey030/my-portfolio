@@ -1,4 +1,5 @@
 import { Link, Outlet } from 'react-router';
+import '../learning/LearningTracker.css';
 
 function AdminLayout() {
   return (
