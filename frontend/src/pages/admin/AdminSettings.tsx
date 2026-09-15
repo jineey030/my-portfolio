@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../../api/api';
+import './Admin.css';
 
 interface AdminProfile {
   username: string;
