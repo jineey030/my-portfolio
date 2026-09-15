@@ -43,14 +43,28 @@ class AdminProfileController(
     fun changePassword(
         authentication: Authentication,
         @RequestBody request: ChangeAdminPasswordRequest
-    ): ResponseEntity<Void> {
+    ): ResponseEntity<Map<String, String>> {
         val username = authentication.name
 
-        adminProfileService.changePassword(
-            username,
-            request
-        )
+        return try {
+            adminProfileService.changePassword(
+                username,
+                request
+            )
 
-        return ResponseEntity.noContent().build()
+            ResponseEntity.noContent().build()
+
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity
+                .badRequest()
+                .body(
+                    mapOf(
+                        "message" to (
+                            e.message
+                                ?: "비밀번호 변경에 실패했습니다."
+                        )
+                    )
+                )
+        }
     }
 }
