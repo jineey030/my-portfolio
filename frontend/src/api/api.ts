@@ -26,11 +26,24 @@ export async function apiFetch(
     );
   }
 
-  return fetch(
+  const response = await fetch(
     `${API_BASE_URL}${path}`,
     {
       ...options,
       headers,
     }
   );
+
+  // JWT가 없거나 만료된 경우
+  if (response.status === 401) {
+    localStorage.removeItem('admin_token');
+
+    window.location.replace('/admin/login');
+
+    throw new Error(
+      '인증이 만료되었습니다. 다시 로그인해주세요.'
+    );
+  }
+
+  return response;
 }
