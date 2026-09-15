@@ -19,24 +19,39 @@ class JwtAuthenticationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val authHeader = request.getHeader("Authorization")
+        val authHeader =
+            request.getHeader("Authorization")
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response)
+        if (
+            authHeader == null ||
+            !authHeader.startsWith("Bearer ")
+        ) {
+            filterChain.doFilter(
+                request,
+                response
+            )
             return
         }
 
-        val token = authHeader.substring(7)
+        val token =
+            authHeader.substring(7)
 
         try {
-            val username = jwtService.extractUsername(token)
+            val username =
+                jwtService.extractUsername(token)
 
             if (
                 username != null &&
-                SecurityContextHolder.getContext().authentication == null
+                SecurityContextHolder
+                    .getContext()
+                    .authentication == null
             ) {
-                if (jwtService.isTokenValid(token, username)) {
-
+                if (
+                    jwtService.isTokenValid(
+                        token,
+                        username
+                    )
+                ) {
                     val authentication =
                         UsernamePasswordAuthenticationToken(
                             username,
@@ -50,13 +65,27 @@ class JwtAuthenticationFilter(
 
                     SecurityContextHolder
                         .getContext()
-                        .authentication = authentication
+                        .authentication =
+                        authentication
+                } else {
+                    response.sendError(
+                        HttpServletResponse.SC_UNAUTHORIZED,
+                        "Invalid JWT token"
+                    )
+                    return
                 }
             }
         } catch (e: Exception) {
-            // 유효하지 않은 JWT는 인증하지 않고 다음 필터로 넘긴다.
+            response.sendError(
+                HttpServletResponse.SC_UNAUTHORIZED,
+                "Invalid JWT token"
+            )
+            return
         }
 
-        filterChain.doFilter(request, response)
+        filterChain.doFilter(
+            request,
+            response
+        )
     }
 }
