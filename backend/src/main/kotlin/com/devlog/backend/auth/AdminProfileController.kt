@@ -3,6 +3,7 @@ package com.devlog.backend.auth
 import com.devlog.backend.auth.dto.AdminProfileResponse
 import com.devlog.backend.auth.dto.ChangeAdminPasswordRequest
 import com.devlog.backend.auth.dto.UpdateAdminProfileRequest
+import com.devlog.backend.auth.dto.UpdateAdminProfileResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
@@ -12,12 +13,10 @@ import org.springframework.web.bind.annotation.*
 class AdminProfileController(
     private val adminProfileService: AdminProfileService
 ) {
-
     @GetMapping
     fun getProfile(
         authentication: Authentication
     ): ResponseEntity<AdminProfileResponse> {
-
         val username = authentication.name
 
         return ResponseEntity.ok(
@@ -29,8 +28,7 @@ class AdminProfileController(
     fun updateProfile(
         authentication: Authentication,
         @RequestBody request: UpdateAdminProfileRequest
-    ): ResponseEntity<AdminProfileResponse> {
-
+    ): ResponseEntity<UpdateAdminProfileResponse> {
         val username = authentication.name
 
         return ResponseEntity.ok(
@@ -46,7 +44,6 @@ class AdminProfileController(
         authentication: Authentication,
         @RequestBody request: ChangeAdminPasswordRequest
     ): ResponseEntity<Void> {
-
         val username = authentication.name
 
         adminProfileService.changePassword(
