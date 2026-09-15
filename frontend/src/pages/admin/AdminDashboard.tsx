@@ -103,6 +103,26 @@ function AdminDashboard() {
     .sort((a, b) => b.id - a.id)
     .slice(0, 5);
 
+  const monthlyStudyLogs = studyLogs.reduce(
+    (acc, log) => {
+      const month = log.date.slice(0, 7);
+
+      acc[month] = (acc[month] ?? 0) + 1;
+
+      return acc;
+    },
+    {} as Record<string, number>
+  );
+
+  const monthlyStudyLogData = Object.entries(
+    monthlyStudyLogs
+  )
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([month, count]) => ({
+      month: `${Number(month.slice(5))}월`,
+      count
+    }));
+
   return (
     <main className="admin-page">
       <header className="admin-page-header">
@@ -146,6 +166,59 @@ function AdminDashboard() {
           value={latestStudyDate}
           description="most recent study date"
         />
+      </section>
+
+      <section className="admin-monthly-study">
+        <div className="admin-monthly-header">
+          <div>
+            <p className="admin-recent-label">
+              STUDY LOGS
+            </p>
+
+            <h2>Monthly Study Logs</h2>
+          </div>
+        </div>
+
+        {monthlyStudyLogData.length === 0 ? (
+          <p className="admin-recent-empty">
+            Study Log가 없습니다.
+          </p>
+        ) : (
+          <div className="admin-monthly-chart">
+            {monthlyStudyLogData.map((item) => (
+              <div
+                key={item.month}
+                className="admin-monthly-item"
+              >
+                <span className="admin-monthly-count">
+                  {item.count}
+                </span>
+
+                <div className="admin-monthly-bar">
+                  <div
+                    className="admin-monthly-bar-fill"
+                    style={{
+                      height: `${Math.max(
+                        (item.count /
+                          Math.max(
+                            ...monthlyStudyLogData.map(
+                              (data) => data.count
+                            )
+                          )) *
+                          100,
+                        8
+                      )}%`
+                    }}
+                  />
+                </div>
+
+                <span className="admin-monthly-label">
+                  {item.month}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="admin-recent">
