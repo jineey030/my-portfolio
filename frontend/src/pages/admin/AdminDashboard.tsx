@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { Link } from 'react-router';
 
 import { apiFetch } from '../../api/api';
 
@@ -154,7 +155,12 @@ function AdminDashboard() {
               RECENT TODOS
             </p>
 
-            <span>{recentTodos.length}</span>
+            <Link
+              to="/admin/todos"
+              className="admin-recent-link"
+            >
+              전체 보기 →
+            </Link>
           </div>
 
           {recentTodos.length === 0 ? (
@@ -197,8 +203,13 @@ function AdminDashboard() {
             <p className="admin-recent-label">
               RECENT STUDY LOGS
             </p>
-
-            <span>{recentStudyLogs.length}</span>
+            
+            <Link
+                to="/admin/study-logs"
+                className="admin-recent-link"
+              >
+                전체 보기 →
+              </Link>
           </div>
 
           {recentStudyLogs.length === 0 ? (
