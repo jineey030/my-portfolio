@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useNavigate } from 'react-router';
-import '../learning/LearningTracker.css';
+import './Admin.css';
+import '../learning/LearningTracker.css'
 
 function AdminLayout() {
   const navigate = useNavigate();
