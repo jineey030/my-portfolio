@@ -1384,6 +1384,7 @@
   .admin-recent {
     grid-template-columns: 1fr;
   }
+
 }
 
 /* =========================
@@ -1517,4 +1518,164 @@
 
 .admin-recent-link:hover {
   color: var(--accent-primary);
+}
+
+.admin-progress-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+
+  margin-top: 24px;
+  padding: 28px;
+
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+}
+
+.admin-progress-info {
+  min-width: 0;
+}
+
+.admin-progress-info h2 {
+  margin: 10px 0 4px;
+
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 32px;
+}
+
+.admin-progress-info p:last-child {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.admin-progress-circle {
+  --progress: 0deg;
+
+  display: grid;
+  place-items: center;
+
+  width: 120px;
+  height: 120px;
+
+  flex: 0 0 auto;
+
+  border-radius: 50%;
+
+  background:
+    conic-gradient(
+      var(--accent-primary) var(--progress),
+      var(--border-subtle) var(--progress)
+    );
+}
+
+.admin-progress-circle-inner {
+  display: grid;
+  place-items: center;
+
+  width: 88px;
+  height: 88px;
+
+  border-radius: 50%;
+  background: var(--bg-elevated);
+}
+
+.admin-progress-circle-inner strong {
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 20px;
+}
+
+.admin-monthly-study {
+  margin-top: 24px;
+  padding: 24px;
+
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+}
+
+.admin-monthly-header {
+  margin-bottom: 28px;
+}
+
+.admin-monthly-header h2 {
+  margin: 8px 0 0;
+
+  color: var(--text-primary);
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.admin-monthly-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+
+  min-height: 220px;
+  padding: 20px 12px 0;
+
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.admin-monthly-item {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+
+  min-width: 0;
+  height: 200px;
+}
+
+.admin-monthly-count {
+  margin-bottom: 8px;
+
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.admin-monthly-bar {
+  display: flex;
+  align-items: flex-end;
+
+  width: 100%;
+  max-width: 56px;
+  height: 150px;
+
+  overflow: hidden;
+
+  border-radius: 6px 6px 0 0;
+  background: var(--bg-secondary);
+}
+
+.admin-monthly-bar-fill {
+  width: 100%;
+  min-height: 8px;
+
+  border-radius: 6px 6px 0 0;
+
+  background: #6ee7b7;
+  box-shadow: 0 0 10px rgba(110, 231, 183, 0.25);
+
+  transition:
+    height 0.3s ease,
+    opacity 0.2s ease;
+}
+
+.admin-monthly-bar-fill:hover {
+  opacity: 0.75;
+}
+
+.admin-monthly-label {
+  margin-top: 10px;
+
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
 }
