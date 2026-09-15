@@ -1506,3 +1506,15 @@
   color: var(--text-muted);
   font-size: 13px;
 }
+
+.admin-recent-link {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.admin-recent-link:hover {
+  color: var(--accent-primary);
+}
