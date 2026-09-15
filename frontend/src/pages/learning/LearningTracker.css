@@ -1679,3 +1679,215 @@
   font-family: var(--font-mono);
   font-size: 11px;
 }
+
+/* =========================
+   Admin Settings
+========================= */
+
+.admin-settings-section {
+  margin-top: 24px;
+  padding: 24px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+}
+
+.admin-settings-section h2 {
+  margin: 0 0 20px;
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* Profile 정보 */
+
+.admin-settings-info {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.admin-settings-info > div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+}
+
+.admin-settings-info span {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.admin-settings-info strong {
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* 입력 폼 */
+
+.admin-settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-settings-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-settings-form label span {
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.admin-settings-form input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  outline: none;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-settings-form input::placeholder {
+  color: var(--text-muted);
+}
+
+.admin-settings-form input:focus {
+  border-color: rgba(94, 234, 212, 0.55);
+  box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.08);
+}
+
+/* 버튼 */
+
+.admin-settings-form button {
+  align-self: flex-start;
+  margin-top: 4px;
+  padding: 10px 16px;
+  color: var(--bg-primary);
+  background: var(--accent-primary, #5eead4);
+  border: 1px solid transparent;
+  border-radius: 7px;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-settings-form button:hover:not(:disabled) {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+
+.admin-settings-form button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* 메시지 */
+
+.admin-settings-error,
+.admin-settings-success {
+  margin: 16px 0 0;
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.admin-settings-error {
+  color: #fca5a5;
+  background: rgba(248, 113, 113, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+}
+
+.admin-settings-success {
+  color: #86efac;
+  background: rgba(74, 222, 128, 0.08);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+}
+
+/* 모바일 */
+
+@media (max-width: 768px) {
+  .admin-settings-info {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-settings-section {
+    padding: 20px;
+  }
+
+  .admin-settings-form button {
+    width: 100%;
+  }
+}
+
+/* Settings Accordion */
+
+.admin-settings-accordion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0;
+  color: var(--text-primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: left;
+}
+
+.admin-settings-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 22px;
+  line-height: 1;
+  transform: rotate(0deg);
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease;
+}
+
+.admin-settings-accordion:hover
+  .admin-settings-arrow {
+  color: var(--accent-primary, #5eead4);
+}
+
+.admin-settings-arrow.open {
+  transform: rotate(90deg);
+  color: var(--accent-primary, #5eead4);
+}
+
+.admin-settings-accordion-content {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-subtle);
+}
