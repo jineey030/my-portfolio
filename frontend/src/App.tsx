@@ -19,6 +19,7 @@ import AdminLayout from './pages/admin/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminTodos from './pages/admin/AdminTodos';
 import AdminStudyLogs from './pages/admin/AdminStudyLogs';
+import AdminSettings from './pages/admin/AdminSettings';
 
 import NotFound from './pages/not-found/NotFound';
 
@@ -90,6 +91,11 @@ function AppContent() {
               <Route
                 path="study-logs"
                 element={<AdminStudyLogs />}
+              />
+
+              <Route
+                path="settings"
+                element={<AdminSettings />}
               />
             </Route>
           </Route>
