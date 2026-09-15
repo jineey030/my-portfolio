@@ -94,6 +94,14 @@ function AdminDashboard() {
             100
         );
 
+  const recentTodos = [...todos]
+    .sort((a, b) => b.id - a.id)
+    .slice(0, 5);
+
+  const recentStudyLogs = [...studyLogs]
+    .sort((a, b) => b.id - a.id)
+    .slice(0, 5);
+
   return (
     <main className="admin-page">
       <header className="admin-page-header">
@@ -137,6 +145,84 @@ function AdminDashboard() {
           value={latestStudyDate}
           description="most recent study date"
         />
+      </section>
+
+      <section className="admin-recent">
+        <div className="admin-recent-card">
+          <div className="admin-recent-header">
+            <p className="admin-recent-label">
+              RECENT TODOS
+            </p>
+
+            <span>{recentTodos.length}</span>
+          </div>
+
+          {recentTodos.length === 0 ? (
+            <p className="admin-recent-empty">
+              최근 Todo가 없습니다.
+            </p>
+          ) : (
+            <ul className="admin-recent-list">
+              {recentTodos.map((todo) => (
+                <li key={todo.id}>
+                  <div className="admin-recent-item">
+                    <span
+                      className={`admin-todo-status ${
+                        todo.completed
+                          ? 'completed'
+                          : ''
+                      }`}
+                    >
+                      {todo.completed ? '✓' : '○'}
+                    </span>
+
+                    <span className="admin-recent-title">
+                      {todo.title}
+                    </span>
+
+                    <span
+                      className={`admin-priority ${todo.priority}`}
+                    >
+                      {todo.priority.toUpperCase()}
+                    </span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <div className="admin-recent-card">
+          <div className="admin-recent-header">
+            <p className="admin-recent-label">
+              RECENT STUDY LOGS
+            </p>
+
+            <span>{recentStudyLogs.length}</span>
+          </div>
+
+          {recentStudyLogs.length === 0 ? (
+            <p className="admin-recent-empty">
+              최근 Study Log가 없습니다.
+            </p>
+          ) : (
+            <ul className="admin-recent-list">
+              {recentStudyLogs.map((log) => (
+                <li key={log.id}>
+                  <div className="admin-study-log-item">
+                    <span className="admin-study-log-date">
+                      {log.date.slice(0, 10).replace(/-/g, '.')}
+                    </span>
+
+                    <span className="admin-recent-title">
+                      {log.content}
+                    </span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </section>
     </main>
   );
