@@ -5,11 +5,13 @@ import com.devlog.backend.auth.dto.ChangeAdminPasswordRequest
 import com.devlog.backend.auth.dto.UpdateAdminProfileRequest
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import com.devlog.backend.auth.dto.UpdateAdminProfileResponse
 
 @Service
 class AdminProfileService(
     private val adminUserRepository: AdminUserRepository,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    private val jwtService: JwtService
 ) {
 
     fun getProfile(
@@ -31,7 +33,7 @@ class AdminProfileService(
     fun updateProfile(
         currentUsername: String,
         request: UpdateAdminProfileRequest
-    ): AdminProfileResponse {
+    ): UpdateAdminProfileResponse {
 
         val adminUser =
             adminUserRepository.findByUsername(currentUsername)
@@ -61,9 +63,13 @@ class AdminProfileService(
         val savedUser =
             adminUserRepository.save(updatedUser)
 
-        return AdminProfileResponse(
+        val newToken =
+            jwtService.generateToken(savedUser.username)
+
+        return UpdateAdminProfileResponse(
             username = savedUser.username,
-            role = savedUser.role
+            role = savedUser.role,
+            token = newToken
         )
     }
 
