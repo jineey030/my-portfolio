@@ -71,8 +71,9 @@ function AiChat() {
     {
       role: 'assistant',
       content:
-        '안녕하세요! 예진에 대해 궁금한 내용을 선택해주세요.',
-    },
+        '안녕하세요! 예진에 대해 궁금한 내용을 질문해주세요.\n\n'
+      + '예) 기본 프로필 정보, 기술 스택, 프로젝트 정보, 공부중인 내용 등'
+    }
   ]);
 
   const [isLoading, setIsLoading] = useState(false);
