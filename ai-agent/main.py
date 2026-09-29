@@ -106,10 +106,10 @@ def get_tool_definitions():
 
     return definitions
 
-
 # =========================
 # Fake AI
 # =========================
+
 def fake_ai(user_input, tool_definitions, tool_results):
 
     used_tools = {
@@ -132,6 +132,7 @@ def fake_ai(user_input, tool_definitions, tool_results):
         "개발자" in user_input
         or "소개" in user_input
         or "누구" in user_input
+        or "어떤 사람" in user_input
     ) and not has_profile:
 
         return {
@@ -143,6 +144,8 @@ def fake_ai(user_input, tool_definitions, tool_results):
     if (
         "기술" in user_input
         or "스택" in user_input
+        or "사용하는 기술" in user_input
+        or "무슨 기술" in user_input
     ) and not has_skills:
 
         return {
@@ -154,6 +157,8 @@ def fake_ai(user_input, tool_definitions, tool_results):
     if (
         "프로젝트" in user_input
         or "만든 것" in user_input
+        or "무엇을 만들었" in user_input
+        or "작업" in user_input
     ) and not has_projects:
 
         return {
@@ -165,6 +170,8 @@ def fake_ai(user_input, tool_definitions, tool_results):
     if (
         "공부" in user_input
         or "학습" in user_input
+        or "배우" in user_input
+        or "요즘 뭐" in user_input
     ) and not has_learning:
 
         return {
@@ -179,6 +186,10 @@ def fake_ai(user_input, tool_definitions, tool_results):
 
     for result in tool_results:
 
+        # =========================
+        # Profile
+        # =========================
+
         if result["tool_name"] == "get_profile":
 
             profile = result["result"]
@@ -186,10 +197,18 @@ def fake_ai(user_input, tool_definitions, tool_results):
             return {
                 "type": "final_answer",
                 "content": (
+                    f"안녕하세요! 저는 {profile['name']}님의 포트폴리오를 "
+                    f"소개해드리는 AI Assistant입니다.\n\n"
                     f"{profile['name']}님은 "
-                    f"{profile['introduction']}"
+                    f"{profile['introduction']}.\n\n"
+                    f"프론트엔드와 백엔드를 함께 공부하면서 "
+                    f"배운 내용을 실제 서비스로 구현하는 것을 좋아합니다."
                 )
             }
+
+        # =========================
+        # Skills
+        # =========================
 
         if result["tool_name"] == "get_skills":
 
@@ -202,11 +221,19 @@ def fake_ai(user_input, tool_definitions, tool_results):
             return {
                 "type": "final_answer",
                 "content": (
+                    "현재 사용하고 있는 기술은 다음과 같습니다.\n\n"
                     f"Frontend: {frontend}\n"
                     f"Backend: {backend}\n"
-                    f"Database: {database}"
+                    f"Database: {database}\n\n"
+                    "React와 TypeScript를 활용한 프론트엔드 개발과 "
+                    "Kotlin, Spring Boot를 활용한 백엔드 개발을 "
+                    "함께 경험하고 있습니다."
                 )
             }
+
+        # =========================
+        # Projects
+        # =========================
 
         if result["tool_name"] == "get_projects":
 
@@ -219,11 +246,18 @@ def fake_ai(user_input, tool_definitions, tool_results):
             return {
                 "type": "final_answer",
                 "content": (
-                    f"{project['name']}를 만들었습니다.\n"
-                    f"{project['description']}\n"
-                    f"기술 스택: {stack}"
+                    f"현재 소개할 수 있는 프로젝트는 "
+                    f"'{project['name']}'입니다.\n\n"
+                    f"{project['description']}.\n\n"
+                    f"사용한 기술은 {stack}입니다.\n\n"
+                    "프론트엔드부터 백엔드, 데이터베이스까지 "
+                    "전체 흐름을 직접 구현해보는 것을 목표로 만든 프로젝트입니다."
                 )
             }
+
+        # =========================
+        # Learning
+        # =========================
 
         if result["tool_name"] == "get_learning":
 
@@ -234,14 +268,25 @@ def fake_ai(user_input, tool_definitions, tool_results):
             return {
                 "type": "final_answer",
                 "content": (
-                    f"현재 {current}를 공부하고 있습니다.\n"
-                    f"목표: {learning['goal']}"
+                    f"요즘은 {current}를 중심으로 공부하고 있습니다.\n\n"
+                    f"특히 {learning['goal']}을 목표로 "
+                    "하나씩 직접 구현해보면서 익히고 있습니다.\n\n"
+                    "최근에는 AI Agent와 MCP까지 공부하면서 "
+                    "기존 웹 개발 경험과 AI 기술을 연결해보는 중입니다."
                 )
             }
 
+    # =========================
+    # 이해하지 못한 질문
+    # =========================
+
     return {
         "type": "final_answer",
-        "content": "질문을 이해하지 못했어요."
+        "content": (
+            "음, 아직 그 질문에는 정확하게 답변하기 어려워요. 😅\n\n"
+            "예진의 개발자 소개, 기술 스택, 프로젝트, "
+            "현재 공부하고 있는 내용에 대해서는 알려드릴 수 있습니다."
+        )
     }
 
 # =========================
@@ -309,76 +354,3 @@ def chat(request: ChatRequest):
                 "tool_name": tool_name,
                 "result": tool_result
             })
-
-
-# =========================
-# Agent Loop
-# =========================
-
-# user_input = input("질문: ")
-
-# tool_definitions = get_tool_definitions()
-
-# tool_results = []
-
-
-# while True:
-
-#     # 1. AI에게 현재 상황을 전달하고 판단 받기
-#     ai_response = fake_ai(
-#         user_input,
-#         tool_definitions,
-#         tool_results
-#     )
-
-#     print()
-#     print("AI 판단:", ai_response)
-
-#     # =========================
-#     # 2. 최종 답변이면 종료
-#     # =========================
-
-#     if ai_response["type"] == "final_answer":
-
-#         print()
-#         print("AI 최종 답변:")
-#         print(ai_response["content"])
-
-#         break
-
-#     # =========================
-#     # 3. Tool 호출 요청이면 실행
-#     # =========================
-
-#     if ai_response["type"] == "tool_call":
-
-#         tool_name = ai_response["tool_name"]
-
-#         print()
-#         print("호출할 Tool:", tool_name)
-
-#         # Registry에서 Tool 찾기
-#         tool = tools.get(tool_name)
-
-#         if tool is None:
-
-#             tool_result = {
-#                 "error": f"존재하지 않는 Tool입니다: {tool_name}"
-#             }
-
-#         else:
-
-#             # 실제 Python 함수 가져오기
-#             tool_function = tool["function"]
-
-#             # 함수 실행
-#             tool_result = tool_function()
-
-#             print("Tool 결과:")
-#             print(tool_result)
-
-#         # Tool 실행 결과 저장
-#         tool_results.append({
-#             "tool_name": tool_name,
-#             "result": tool_result
-#         })
