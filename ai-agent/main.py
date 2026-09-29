@@ -67,25 +67,55 @@ tools = {
     "get_profile": {
         "function": get_profile,
         "description": "예진의 기본 프로필 정보를 가져옵니다.",
-        "parameters": {}
+        "parameters": {},
+        "keywords": [
+            "개발자",
+            "소개",
+            "누구",
+            "어떤 사람",
+            "프로필"
+        ]
     },
 
     "get_skills": {
         "function": get_skills,
         "description": "예진이 사용하는 기술 스택 정보를 가져옵니다.",
-        "parameters": {}
+        "parameters": {},
+        "keywords": [
+            "기술",
+            "스택",
+            "기술 스택",
+            "사용하는 기술",
+            "무슨 기술",
+            "frontend",
+            "backend"
+        ]
     },
 
     "get_projects": {
         "function": get_projects,
         "description": "예진이 만든 프로젝트 정보를 가져옵니다.",
-        "parameters": {}
+        "parameters": {},
+        "keywords": [
+            "프로젝트",
+            "만든 것",
+            "무엇을 만들었",
+            "작업"
+        ]
     },
 
     "get_learning": {
         "function": get_learning,
         "description": "예진이 현재 공부하고 있는 내용을 가져옵니다.",
-        "parameters": {}
+        "parameters": {},
+        "keywords": [
+            "공부",
+            "학습",
+            "배우",
+            "요즘 뭐",
+            "관심사",
+            "최근 관심"
+        ]
     }
 }
 
@@ -110,52 +140,100 @@ def get_tool_definitions():
 # Tool 선택
 # =========================
 def select_tools(user_input):
+
     user_input = user_input.lower()
-
-    wants_profile = (
-        "개발자" in user_input
-        or "소개" in user_input
-        or "누구" in user_input
-        or "어떤 사람" in user_input
-        or "프로필" in user_input
-    )
-
-    wants_skills = (
-        "기술" in user_input
-        or "스택" in user_input
-        or "사용하는 기술" in user_input
-        or "무슨 기술" in user_input
-    )
-
-    wants_projects = (
-        "프로젝트" in user_input
-        or "만든 것" in user_input
-        or "무엇을 만들었" in user_input
-        or "작업" in user_input
-    )
-
-    wants_learning = (
-        "공부" in user_input
-        or "학습" in user_input
-        or "배우" in user_input
-        or "요즘 뭐" in user_input
-    )
 
     requested_tools = []
 
-    if wants_profile:
-        requested_tools.append("get_profile")
+    for tool_name, tool in tools.items():
 
-    if wants_skills:
-        requested_tools.append("get_skills")
+        keywords = tool["keywords"]
 
-    if wants_projects:
-        requested_tools.append("get_projects")
+        for keyword in keywords:
 
-    if wants_learning:
-        requested_tools.append("get_learning")
+            if keyword.lower() in user_input:
+
+                requested_tools.append(tool_name)
+
+                break
 
     return requested_tools
+
+# =========================
+# AI 답변 생성
+# =========================
+def generate_answer(results):
+
+    answer_parts = []
+
+    # =========================
+    # Profile 결과
+    # =========================
+
+    if "get_profile" in results:
+
+        profile = results["get_profile"]
+
+        answer_parts.append(
+            f"{profile['name']}님은 "
+            f"{profile['introduction']}."
+        )
+
+    # =========================
+    # Skills 결과
+    # =========================
+
+    if "get_skills" in results:
+
+        skills = results["get_skills"]
+
+        frontend = ", ".join(skills["frontend"])
+        backend = ", ".join(skills["backend"])
+        database = ", ".join(skills["database"])
+
+        answer_parts.append(
+            "🛠️ 기술 스택\n"
+            f"Frontend: {frontend}\n"
+            f"Backend: {backend}\n"
+            f"Database: {database}"
+        )
+
+    # =========================
+    # Projects 결과
+    # =========================
+
+    if "get_projects" in results:
+
+        projects = results["get_projects"]
+
+        for project in projects:
+
+            stack = ", ".join(project["stack"])
+
+            answer_parts.append(
+                "👩‍💻 프로젝트\n"
+                f"{project['name']}\n"
+                f"{project['description']}.\n"
+                f"사용 기술: {stack}"
+            )
+
+    # =========================
+    # Learning 결과
+    # =========================
+
+    if "get_learning" in results:
+
+        learning = results["get_learning"]
+
+        current = ", ".join(learning["current"])
+
+        answer_parts.append(
+            "🤓 현재 공부하고 있는 내용\n"
+            f"{current}\n\n"
+            f"🔔 학습 목표는 {learning['goal']}입니다."
+        )
+
+    return "\n\n".join(answer_parts)
 
 # =========================
 # Fake AI
@@ -215,7 +293,6 @@ def fake_ai(user_input, tool_definitions, tool_results, messages):
 
     print("모든 Tool 실행 완료:", all_tools_used)
 
-    # Tool 결과 확인
     if all_tools_used:
 
         print("모든 Tool의 결과를 가지고 있습니다.")
@@ -227,66 +304,11 @@ def fake_ai(user_input, tool_definitions, tool_results, messages):
 
         print("수집된 결과:", results)
 
-        answer_parts = []
-
-        # Profile 결과
-        if "get_profile" in results:
-
-            profile = results["get_profile"]
-
-            answer_parts.append(
-                f"{profile['name']}님은 "
-                f"{profile['introduction']}."
-            )
-
-        # Skills 결과
-        if "get_skills" in results:
-
-            skills = results["get_skills"]
-
-            frontend = ", ".join(skills["frontend"])
-            backend = ", ".join(skills["backend"])
-            database = ", ".join(skills["database"])
-
-            answer_parts.append(
-                "🛠️ 기술 스택\n"
-                f"Frontend: {frontend}\n"
-                f"Backend: {backend}\n"
-                f"Database: {database}"
-            )
-
-        # Projects 결과
-        if "get_projects" in results:
-
-            projects = results["get_projects"]
-
-            for project in projects:
-
-                stack = ", ".join(project["stack"])
-
-                answer_parts.append(
-                    "👩‍💻 프로젝트\n"
-                    f"{project['name']}\n"
-                    f"{project['description']}.\n"
-                    f"사용 기술: {stack}"
-                )
-
-        # Learning 결과
-        if "get_learning" in results:
-
-            learning = results["get_learning"]
-
-            current = ", ".join(learning["current"])
-
-            answer_parts.append(
-                "🤓 현재 공부하고 있는 내용\n"
-                f"{current}\n\n"
-                f"🔔 학습 목표는 {learning['goal']}입니다."
-            )
+        answer = generate_answer(results)
 
         return {
             "type": "final_answer",
-            "content": "\n\n".join(answer_parts)
+            "content": answer
         }
     
     # 이해하지 못한 질문
