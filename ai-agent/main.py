@@ -1,97 +1,97 @@
-# 실제 OpenAIU 호출 
-# from dotenv import load_dotenv
-# from openai import OpenAI
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
-# load_dotenv()
-
-# client = OpenAI()
-
-# response = client.responses.create(
-#     model="gpt-5.6",
-#     input="안녕! 나는 AI Agent를 공부하고 있어."
-# )
-
-# print(response.output_text)
-# END
-
-# 가짜 Tool Calling 호출
 # =========================
 # Tool
 # =========================
 
-def get_learning_info():
+def get_profile():
     return {
-        "name": "예진",
-        "skills": [
+        "name": "오예진",
+        "role": "개발자",
+        "introduction": "React와 Kotlin으로 배우고, 만들면서 성장하는 개발자"
+    }
+
+
+def get_skills():
+    return {
+        "frontend": [
             "React",
+            "TypeScript"
+        ],
+        "backend": [
             "Kotlin",
-            "Spring Boot"
+            "Spring Boot",
+            "Node.js"
+        ],
+        "database": [
+            "MariaDB",
+            "PostgreSQL"
         ]
     }
 
 
-def get_todos():
+def get_projects():
     return [
         {
-            "id": 1,
-            "title": "React 공부하기",
-            "completed": False
-        },
-        {
-            "id": 2,
-            "title": "Kotlin 복습하기",
-            "completed": True
-        },
-        {
-            "id": 3,
-            "title": "Spring Boot API 만들기",
-            "completed": False
+            "name": "Dev Learning Tracker",
+            "description": "React와 Kotlin으로 학습 현황과 Todo를 관리하는 서비스",
+            "stack": [
+                "React",
+                "Kotlin",
+                "Spring Boot",
+                "MariaDB"
+            ]
         }
     ]
 
 
-def get_study_logs():
-    return [
-        {
-            "date": "2026-09-21",
-            "content": "React 상태 관리 공부"
-        },
-        {
-            "date": "2026-09-22",
-            "content": "Kotlin Spring Boot 공부"
-        }
-    ]
-
+def get_learning():
+    return {
+        "current": [
+            "React",
+            "Kotlin",
+            "Spring Boot",
+            "AI Agent",
+            "MCP"
+        ],
+        "goal": "배운 내용을 직접 동작하는 서비스로 만드는 것"
+    }
 
 # =========================
 # Tool Registry
 # =========================
 
 tools = {
-    "get_learning_info": {
-        "function": get_learning_info,
-        "description": "사용자가 공부하고 있는 기술 스택 정보를 가져옵니다.",
+    "get_profile": {
+        "function": get_profile,
+        "description": "예진의 기본 프로필 정보를 가져옵니다.",
         "parameters": {}
     },
 
-    "get_todos": {
-        "function": get_todos,
-        "description": "사용자의 Todo 목록을 가져옵니다.",
+    "get_skills": {
+        "function": get_skills,
+        "description": "예진이 사용하는 기술 스택 정보를 가져옵니다.",
         "parameters": {}
     },
 
-    "get_study_logs": {
-        "function": get_study_logs,
-        "description": "사용자의 공부 기록을 가져옵니다.",
+    "get_projects": {
+        "function": get_projects,
+        "description": "예진이 만든 프로젝트 정보를 가져옵니다.",
+        "parameters": {}
+    },
+
+    "get_learning": {
+        "function": get_learning,
+        "description": "예진이 현재 공부하고 있는 내용을 가져옵니다.",
         "parameters": {}
     }
 }
 
-
 # =========================
 # Tool Definition
 # =========================
-
 def get_tool_definitions():
 
     definitions = []
@@ -110,208 +110,275 @@ def get_tool_definitions():
 # =========================
 # Fake AI
 # =========================
-
 def fake_ai(user_input, tool_definitions, tool_results):
 
-    # 이미 사용한 Tool 확인
     used_tools = {
         result["tool_name"]
         for result in tool_results
     }
 
-    # 어떤 정보가 이미 가져와졌는지 확인
-    has_todos = "get_todos" in used_tools
-    has_study_logs = "get_study_logs" in used_tools
-    has_learning_info = "get_learning_info" in used_tools
+    has_profile = "get_profile" in used_tools
+    has_skills = "get_skills" in used_tools
+    has_projects = "get_projects" in used_tools
+    has_learning = "get_learning" in used_tools
 
-    # 사용자가 무엇을 요청했는지 확인
-    needs_todos = (
-        "todo" in user_input.lower()
-        or "할 일" in user_input
-    )
-
-    needs_study_logs = (
-        "공부 기록" in user_input
-    )
-
-    needs_learning_info = (
-        "스택" in user_input
-        or "공부하는 기술" in user_input
-    )
+    user_input = user_input.lower()
 
     # =========================
-    # 필요한 Tool 호출 요청
+    # Tool 선택
     # =========================
 
-    if needs_todos and not has_todos:
+    if (
+        "개발자" in user_input
+        or "소개" in user_input
+        or "누구" in user_input
+    ) and not has_profile:
 
         return {
             "type": "tool_call",
-            "tool_name": "get_todos",
+            "tool_name": "get_profile",
             "arguments": {}
         }
 
-    if needs_study_logs and not has_study_logs:
+    if (
+        "기술" in user_input
+        or "스택" in user_input
+    ) and not has_skills:
 
         return {
             "type": "tool_call",
-            "tool_name": "get_study_logs",
+            "tool_name": "get_skills",
             "arguments": {}
         }
 
-    if needs_learning_info and not has_learning_info:
+    if (
+        "프로젝트" in user_input
+        or "만든 것" in user_input
+    ) and not has_projects:
 
         return {
             "type": "tool_call",
-            "tool_name": "get_learning_info",
+            "tool_name": "get_projects",
+            "arguments": {}
+        }
+
+    if (
+        "공부" in user_input
+        or "학습" in user_input
+    ) and not has_learning:
+
+        return {
+            "type": "tool_call",
+            "tool_name": "get_learning",
             "arguments": {}
         }
 
     # =========================
-    # Tool 결과 가져오기
+    # Tool 결과 확인
     # =========================
-
-    todos = None
-    study_logs = None
-    learning_info = None
 
     for result in tool_results:
 
-        if result["tool_name"] == "get_todos":
-            todos = result["result"]
+        if result["tool_name"] == "get_profile":
 
-        elif result["tool_name"] == "get_study_logs":
-            study_logs = result["result"]
+            profile = result["result"]
 
-        elif result["tool_name"] == "get_learning_info":
-            learning_info = result["result"]
+            return {
+                "type": "final_answer",
+                "content": (
+                    f"{profile['name']}님은 "
+                    f"{profile['introduction']}"
+                )
+            }
 
-    # =========================
-    # 결과를 최종 답변으로 변환
-    # =========================
+        if result["tool_name"] == "get_skills":
 
-    summaries = []
+            skills = result["result"]
 
-    if todos is not None:
+            frontend = ", ".join(skills["frontend"])
+            backend = ", ".join(skills["backend"])
+            database = ", ".join(skills["database"])
 
-        completed_count = sum(
-            1
-            for todo in todos
-            if todo["completed"]
-        )
+            return {
+                "type": "final_answer",
+                "content": (
+                    f"Frontend: {frontend}\n"
+                    f"Backend: {backend}\n"
+                    f"Database: {database}"
+                )
+            }
 
-        todo_summary = (
-            f"Todo는 총 {len(todos)}개이고 "
-            f"완료된 Todo는 {completed_count}개입니다."
-        )
+        if result["tool_name"] == "get_projects":
 
-        summaries.append(todo_summary)
+            projects = result["result"]
 
-    if study_logs is not None:
+            project = projects[0]
 
-        study_log_summary = (
-            f"공부 기록은 총 {len(study_logs)}개입니다."
-        )
+            stack = ", ".join(project["stack"])
 
-        summaries.append(study_log_summary)
+            return {
+                "type": "final_answer",
+                "content": (
+                    f"{project['name']}를 만들었습니다.\n"
+                    f"{project['description']}\n"
+                    f"기술 스택: {stack}"
+                )
+            }
 
-    if learning_info is not None:
+        if result["tool_name"] == "get_learning":
 
-        skills = ", ".join(
-            learning_info["skills"]
-        )
+            learning = result["result"]
 
-        learning_info_summary = (
-            f"공부하고 있는 기술은 {skills}입니다."
-        )
+            current = ", ".join(learning["current"])
 
-        summaries.append(learning_info_summary)
-
-    # =========================
-    # 최종 답변
-    # =========================
-
-    if summaries:
-
-        return {
-            "type": "final_answer",
-            "content": "\n".join(summaries)
-        }
+            return {
+                "type": "final_answer",
+                "content": (
+                    f"현재 {current}를 공부하고 있습니다.\n"
+                    f"목표: {learning['goal']}"
+                )
+            }
 
     return {
         "type": "final_answer",
-        "content": "요청을 이해하지 못했어요."
+        "content": "질문을 이해하지 못했어요."
     }
+
+# =========================
+# Api
+# =========================
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+class ChatRequest(BaseModel):
+    message: str
+
+
+@app.post("/chat")
+def chat(request: ChatRequest):
+
+    user_input = request.message
+
+    tool_definitions = get_tool_definitions()
+
+    tool_results = []
+
+    while True:
+
+        ai_response = fake_ai(
+            user_input,
+            tool_definitions,
+            tool_results
+        )
+
+        if ai_response["type"] == "final_answer":
+
+            return {
+                "answer": ai_response["content"]
+            }
+
+        if ai_response["type"] == "tool_call":
+
+            tool_name = ai_response["tool_name"]
+
+            tool = tools.get(tool_name)
+
+            if tool is None:
+
+                tool_result = {
+                    "error": f"존재하지 않는 Tool입니다: {tool_name}"
+                }
+
+            else:
+
+                tool_function = tool["function"]
+
+                tool_result = tool_function()
+
+            tool_results.append({
+                "tool_name": tool_name,
+                "result": tool_result
+            })
 
 
 # =========================
 # Agent Loop
 # =========================
 
-user_input = input("질문: ")
+# user_input = input("질문: ")
 
-tool_definitions = get_tool_definitions()
+# tool_definitions = get_tool_definitions()
 
-tool_results = []
+# tool_results = []
 
 
-while True:
+# while True:
 
-    # 1. AI에게 현재 상황을 전달하고 판단 받기
-    ai_response = fake_ai(
-        user_input,
-        tool_definitions,
-        tool_results
-    )
+#     # 1. AI에게 현재 상황을 전달하고 판단 받기
+#     ai_response = fake_ai(
+#         user_input,
+#         tool_definitions,
+#         tool_results
+#     )
 
-    print()
-    print("AI 판단:", ai_response)
+#     print()
+#     print("AI 판단:", ai_response)
 
-    # =========================
-    # 2. 최종 답변이면 종료
-    # =========================
+#     # =========================
+#     # 2. 최종 답변이면 종료
+#     # =========================
 
-    if ai_response["type"] == "final_answer":
+#     if ai_response["type"] == "final_answer":
 
-        print()
-        print("AI 최종 답변:")
-        print(ai_response["content"])
+#         print()
+#         print("AI 최종 답변:")
+#         print(ai_response["content"])
 
-        break
+#         break
 
-    # =========================
-    # 3. Tool 호출 요청이면 실행
-    # =========================
+#     # =========================
+#     # 3. Tool 호출 요청이면 실행
+#     # =========================
 
-    if ai_response["type"] == "tool_call":
+#     if ai_response["type"] == "tool_call":
 
-        tool_name = ai_response["tool_name"]
+#         tool_name = ai_response["tool_name"]
 
-        print()
-        print("호출할 Tool:", tool_name)
+#         print()
+#         print("호출할 Tool:", tool_name)
 
-        # Registry에서 Tool 찾기
-        tool = tools.get(tool_name)
+#         # Registry에서 Tool 찾기
+#         tool = tools.get(tool_name)
 
-        if tool is None:
+#         if tool is None:
 
-            tool_result = {
-                "error": f"존재하지 않는 Tool입니다: {tool_name}"
-            }
+#             tool_result = {
+#                 "error": f"존재하지 않는 Tool입니다: {tool_name}"
+#             }
 
-        else:
+#         else:
 
-            # 실제 Python 함수 가져오기
-            tool_function = tool["function"]
+#             # 실제 Python 함수 가져오기
+#             tool_function = tool["function"]
 
-            # 함수 실행
-            tool_result = tool_function()
+#             # 함수 실행
+#             tool_result = tool_function()
 
-            print("Tool 결과:")
-            print(tool_result)
+#             print("Tool 결과:")
+#             print(tool_result)
 
-        # Tool 실행 결과 저장
-        tool_results.append({
-            "tool_name": tool_name,
-            "result": tool_result
-        })
+#         # Tool 실행 결과 저장
+#         tool_results.append({
+#             "tool_name": tool_name,
+#             "result": tool_result
+#         })
