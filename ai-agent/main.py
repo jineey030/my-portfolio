@@ -20,6 +20,24 @@ client = genai.Client(
     api_key=os.getenv("GEMINI_API_KEY")
 )
 
+# =========================================================
+# Gemini 사용 가능 여부
+# =========================================================
+#
+# 현재 Gemini 무료 사용 한도를 모두 사용했기 때문에
+# False로 설정합니다.
+#
+# 나중에 Gemini를 다시 테스트할 때는 True로 변경합니다.
+#
+# True
+#  → 실제 Gemini API 호출
+#
+# False
+#  → Gemini 호출 없이 즉시 429 반환
+#
+
+GEMINI_AVAILABLE = False
+
 
 # =========================================================
 # Tool
@@ -448,6 +466,7 @@ def gemini_agent(user_input):
     ]
 
     # Tool 호출이 없으면 Gemini 답변 그대로 반환
+
     if not function_calls:
 
         return interaction.output_text
@@ -556,6 +575,34 @@ class ChatRequest(BaseModel):
 def chat(request: ChatRequest):
 
     user_input = request.message
+
+    # =====================================================
+    # Gemini 사용 불가능 상태
+    # =====================================================
+    #
+    # 현재 무료 사용 한도를 모두 사용했기 때문에
+    # Gemini API를 호출하지 않고 즉시 429 반환
+    #
+
+    if not GEMINI_AVAILABLE:
+
+        print("\n===== Gemini 사용 불가 =====")
+        print("→ Gemini 호출 없이 즉시 429 반환")
+
+        return JSONResponse(
+            status_code=429,
+            content={
+                "error": "quota_exceeded",
+                "message": (
+                    "오늘 Gemini API 무료 "
+                    "사용 한도를 모두 사용했어요."
+                )
+            }
+        )
+
+    # =====================================================
+    # Gemini 호출
+    # =====================================================
 
     try:
 
