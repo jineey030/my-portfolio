@@ -110,8 +110,7 @@ def get_tool_definitions():
 # Fake AI
 # =========================
 
-def fake_ai(user_input, tool_definitions, tool_results):
-
+def fake_ai(user_input, tool_definitions, tool_results, messages):
     used_tools = {
         result["tool_name"]
         for result in tool_results
@@ -125,59 +124,112 @@ def fake_ai(user_input, tool_definitions, tool_results):
     user_input = user_input.lower()
 
     # =========================
-    # Tool 선택
+    # 대화 문맥 확인
     # =========================
 
-    if (
+    previous_user_messages = [
+        message.content.lower()
+        for message in messages
+        if message.role == "user"
+    ]
+
+    has_skill_context = any(
+        "기술" in message
+        or "스택" in message
+        or "skill" in message
+        or "backend" in message
+        or "frontend" in message
+        for message in previous_user_messages[:-1]
+    )
+
+    # =========================
+    # Tool 선택
+    # =========================
+    wants_profile = (
         "개발자" in user_input
         or "소개" in user_input
         or "누구" in user_input
         or "어떤 사람" in user_input
-    ) and not has_profile:
+        or "프로필" in user_input
+    )
 
+    wants_skills = (
+        "기술" in user_input
+        or "스택" in user_input
+        or "사용하는 기술" in user_input
+        or "무슨 기술" in user_input
+    )
+
+    wants_projects = (
+        "프로젝트" in user_input
+        or "만든 것" in user_input
+        or "무엇을 만들었" in user_input
+        or "작업" in user_input
+    )
+
+    wants_learning = (
+        "공부" in user_input
+        or "학습" in user_input
+        or "배우" in user_input
+        or "요즘 뭐" in user_input
+    )
+
+    if wants_profile and not has_profile:
         return {
             "type": "tool_call",
             "tool_name": "get_profile",
             "arguments": {}
         }
 
-    if (
-        "기술" in user_input
-        or "스택" in user_input
-        or "사용하는 기술" in user_input
-        or "무슨 기술" in user_input
-    ) and not has_skills:
-
+    if wants_skills and not has_skills:
         return {
             "type": "tool_call",
             "tool_name": "get_skills",
             "arguments": {}
         }
 
-    if (
-        "프로젝트" in user_input
-        or "만든 것" in user_input
-        or "무엇을 만들었" in user_input
-        or "작업" in user_input
-    ) and not has_projects:
-
+    if wants_projects and not has_projects:
         return {
             "type": "tool_call",
             "tool_name": "get_projects",
             "arguments": {}
         }
 
-    if (
-        "공부" in user_input
-        or "학습" in user_input
-        or "배우" in user_input
-        or "요즘 뭐" in user_input
-    ) and not has_learning:
-
+    if wants_learning and not has_learning:
         return {
             "type": "tool_call",
             "tool_name": "get_learning",
             "arguments": {}
+        }
+
+    if has_profile and has_skills:
+
+        profile = next(
+            result["result"]
+            for result in tool_results
+            if result["tool_name"] == "get_profile"
+        )
+
+        skills = next(
+            result["result"]
+            for result in tool_results
+            if result["tool_name"] == "get_skills"
+        )
+
+        frontend = ", ".join(skills["frontend"])
+        backend = ", ".join(skills["backend"])
+        database = ", ".join(skills["database"])
+
+        return {
+            "type": "final_answer",
+            "content": (
+                f"{profile['name']}님은 "
+                f"{profile['introduction']}.\n\n"
+                "현재 사용하는 기술은 다음과 같습니다.\n\n"
+                f"Frontend: {frontend}\n"
+                f"Backend: {backend}\n"
+                f"Database: {database}"
+            )
         }
 
     # =========================
@@ -213,6 +265,28 @@ def fake_ai(user_input, tool_definitions, tool_results):
         if result["tool_name"] == "get_skills":
 
             skills = result["result"]
+
+            if "backend" in user_input or "백엔드" in user_input:
+
+                backend = ", ".join(skills["backend"])
+
+                return {
+                    "type": "final_answer",
+                    "content": (
+                        f"Backend로는 {backend}를 사용하고 있습니다."
+                    )
+                }
+
+            if "frontend" in user_input or "프론트" in user_input or "프론트엔드" in user_input:
+                        
+                frontend = ", ".join(skills["frontend"])
+
+                return {
+                    "type": "final_answer",
+                    "content": (
+                        f"Frontend로는 {frontend}를 사용하고 있습니다."
+                    )
+                }
 
             frontend = ", ".join(skills["frontend"])
             backend = ", ".join(skills["backend"])
@@ -305,14 +379,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+class ChatMessage(BaseModel):
+    role: str
+    content: str
+
+
 class ChatRequest(BaseModel):
     message: str
-
+    messages: list[ChatMessage]
 
 @app.post("/chat")
 def chat(request: ChatRequest):
 
     user_input = request.message
+    messages = request.messages
 
     tool_definitions = get_tool_definitions()
 
@@ -323,7 +403,8 @@ def chat(request: ChatRequest):
         ai_response = fake_ai(
             user_input,
             tool_definitions,
-            tool_results
+            tool_results,
+            messages
         )
 
         if ai_response["type"] == "final_answer":
