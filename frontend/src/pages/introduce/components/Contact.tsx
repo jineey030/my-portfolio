@@ -22,6 +22,15 @@ function Contact() {
         >
           GitHub
         </a>
+
+        <a
+          href={PROFILE.velog}
+          target="_blank"
+          rel="noreferrer"
+          className="btn-outline"
+        >
+          Velog
+        </a>
       </div>
     </section>
   );
