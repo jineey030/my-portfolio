@@ -10,7 +10,7 @@ def get_profile():
     return {
         "name": "오예진",
         "role": "개발자",
-        "introduction": "React와 Kotlin으로 배우고, 만들면서 성장하는 개발자"
+        "introduction": "배우고, 만들면서 성장하는 개발자입니다"
     }
 
 
@@ -174,181 +174,101 @@ def fake_ai(user_input, tool_definitions, tool_results, messages):
         or "요즘 뭐" in user_input
     )
 
-    if wants_profile and not has_profile:
-        return {
-            "type": "tool_call",
-            "tool_name": "get_profile",
-            "arguments": {}
-        }
+    # =========================
+    # 요청된 Tool 확인
+    # =========================
 
-    if wants_skills and not has_skills:
-        return {
-            "type": "tool_call",
-            "tool_name": "get_skills",
-            "arguments": {}
-        }
+    requested_tools = []
 
-    if wants_projects and not has_projects:
-        return {
-            "type": "tool_call",
-            "tool_name": "get_projects",
-            "arguments": {}
-        }
+    if wants_profile:
+        requested_tools.append("get_profile")
 
-    if wants_learning and not has_learning:
-        return {
-            "type": "tool_call",
-            "tool_name": "get_learning",
-            "arguments": {}
-        }
+    if wants_skills:
+        requested_tools.append("get_skills")
 
-    if has_profile and has_skills:
+    if wants_projects:
+        requested_tools.append("get_projects")
 
-        profile = next(
-            result["result"]
+    if wants_learning:
+        requested_tools.append("get_learning")
+
+    # =========================
+    # Tool 실행 요청
+    # =========================
+
+    for tool_name in requested_tools:
+
+        if tool_name not in used_tools:
+
+            return {
+                "type": "tool_call",
+                "tool_name": tool_name,
+                "arguments": {}
+            }
+
+    # =========================
+    # 모든 요청 Tool 실행 여부 확인
+    # =========================
+
+    all_tools_used = all(
+        tool_name in used_tools
+        for tool_name in requested_tools
+    )
+
+    print("모든 Tool 실행 완료:", all_tools_used)
+
+    # =========================
+    # Tool 결과 확인
+    # =========================
+
+    if all_tools_used:
+
+        print("모든 Tool의 결과를 가지고 있습니다.")
+
+        results = {
+            result["tool_name"]: result["result"]
             for result in tool_results
-            if result["tool_name"] == "get_profile"
-        )
+        }
 
-        skills = next(
-            result["result"]
-            for result in tool_results
-            if result["tool_name"] == "get_skills"
-        )
+        print("수집된 결과:", results)
+
+        profile = results["get_profile"]
+        skills = results["get_skills"]
+        projects = results["get_projects"]
+        learning = results["get_learning"]
 
         frontend = ", ".join(skills["frontend"])
         backend = ", ".join(skills["backend"])
         database = ", ".join(skills["database"])
+
+        current = ", ".join(learning["current"])
+
+        project = projects[0]
+
+        stack = ", ".join(project["stack"])
 
         return {
             "type": "final_answer",
             "content": (
                 f"{profile['name']}님은 "
                 f"{profile['introduction']}.\n\n"
-                "현재 사용하는 기술은 다음과 같습니다.\n\n"
+
+                "🛠️ 기술 스택\n"
                 f"Frontend: {frontend}\n"
                 f"Backend: {backend}\n"
-                f"Database: {database}"
+                f"Database: {database}\n\n"
+
+                "👩‍💻 프로젝트\n"
+                f"{project['name']}\n"
+                f"{project['description']}.\n"
+                f"사용 기술: {stack}\n\n"
+
+                "🤓 현재 공부하고 있는 내용\n"
+                f"{current}\n\n"
+
+                f"🔔 학습 목표는 {learning['goal']}입니다."
             )
         }
-
-    # =========================
-    # Tool 결과 확인
-    # =========================
-
-    for result in tool_results:
-
-        # =========================
-        # Profile
-        # =========================
-
-        if result["tool_name"] == "get_profile":
-
-            profile = result["result"]
-
-            return {
-                "type": "final_answer",
-                "content": (
-                    f"안녕하세요! 저는 {profile['name']}님의 포트폴리오를 "
-                    f"소개해드리는 AI Assistant입니다.\n\n"
-                    f"{profile['name']}님은 "
-                    f"{profile['introduction']}.\n\n"
-                    f"프론트엔드와 백엔드를 함께 공부하면서 "
-                    f"배운 내용을 실제 서비스로 구현하는 것을 좋아합니다."
-                )
-            }
-
-        # =========================
-        # Skills
-        # =========================
-
-        if result["tool_name"] == "get_skills":
-
-            skills = result["result"]
-
-            if "backend" in user_input or "백엔드" in user_input:
-
-                backend = ", ".join(skills["backend"])
-
-                return {
-                    "type": "final_answer",
-                    "content": (
-                        f"Backend로는 {backend}를 사용하고 있습니다."
-                    )
-                }
-
-            if "frontend" in user_input or "프론트" in user_input or "프론트엔드" in user_input:
-                        
-                frontend = ", ".join(skills["frontend"])
-
-                return {
-                    "type": "final_answer",
-                    "content": (
-                        f"Frontend로는 {frontend}를 사용하고 있습니다."
-                    )
-                }
-
-            frontend = ", ".join(skills["frontend"])
-            backend = ", ".join(skills["backend"])
-            database = ", ".join(skills["database"])
-
-            return {
-                "type": "final_answer",
-                "content": (
-                    "현재 사용하고 있는 기술은 다음과 같습니다.\n\n"
-                    f"Frontend: {frontend}\n"
-                    f"Backend: {backend}\n"
-                    f"Database: {database}\n\n"
-                    "React와 TypeScript를 활용한 프론트엔드 개발과 "
-                    "Kotlin, Spring Boot를 활용한 백엔드 개발을 "
-                    "함께 경험하고 있습니다."
-                )
-            }
-
-        # =========================
-        # Projects
-        # =========================
-
-        if result["tool_name"] == "get_projects":
-
-            projects = result["result"]
-
-            project = projects[0]
-
-            stack = ", ".join(project["stack"])
-
-            return {
-                "type": "final_answer",
-                "content": (
-                    f"현재 소개할 수 있는 프로젝트는 "
-                    f"'{project['name']}'입니다.\n\n"
-                    f"{project['description']}.\n\n"
-                    f"사용한 기술은 {stack}입니다.\n\n"
-                    "프론트엔드부터 백엔드, 데이터베이스까지 "
-                    "전체 흐름을 직접 구현해보는 것을 목표로 만든 프로젝트입니다."
-                )
-            }
-
-        # =========================
-        # Learning
-        # =========================
-
-        if result["tool_name"] == "get_learning":
-
-            learning = result["result"]
-
-            current = ", ".join(learning["current"])
-
-            return {
-                "type": "final_answer",
-                "content": (
-                    f"요즘은 {current}를 중심으로 공부하고 있습니다.\n\n"
-                    f"특히 {learning['goal']}을 목표로 "
-                    "하나씩 직접 구현해보면서 익히고 있습니다.\n\n"
-                    "최근에는 AI Agent와 MCP까지 공부하면서 "
-                    "기존 웹 개발 경험과 AI 기술을 연결해보는 중입니다."
-                )
-            }
 
     # =========================
     # 이해하지 못한 질문
