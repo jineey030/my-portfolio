@@ -232,42 +232,78 @@ def fake_ai(user_input, tool_definitions, tool_results, messages):
 
         print("수집된 결과:", results)
 
-        profile = results["get_profile"]
-        skills = results["get_skills"]
-        projects = results["get_projects"]
-        learning = results["get_learning"]
+        answer_parts = []
 
-        frontend = ", ".join(skills["frontend"])
-        backend = ", ".join(skills["backend"])
-        database = ", ".join(skills["database"])
+        # =========================
+        # Profile 결과
+        # =========================
 
-        current = ", ".join(learning["current"])
+        if "get_profile" in results:
 
-        project = projects[0]
+            profile = results["get_profile"]
 
-        stack = ", ".join(project["stack"])
-
-        return {
-            "type": "final_answer",
-            "content": (
+            answer_parts.append(
                 f"{profile['name']}님은 "
-                f"{profile['introduction']}.\n\n"
+                f"{profile['introduction']}."
+            )
 
+        # =========================
+        # Skills 결과
+        # =========================
+
+        if "get_skills" in results:
+
+            skills = results["get_skills"]
+
+            frontend = ", ".join(skills["frontend"])
+            backend = ", ".join(skills["backend"])
+            database = ", ".join(skills["database"])
+
+            answer_parts.append(
                 "🛠️ 기술 스택\n"
                 f"Frontend: {frontend}\n"
                 f"Backend: {backend}\n"
-                f"Database: {database}\n\n"
+                f"Database: {database}"
+            )
 
-                "👩‍💻 프로젝트\n"
-                f"{project['name']}\n"
-                f"{project['description']}.\n"
-                f"사용 기술: {stack}\n\n"
+        # =========================
+        # Projects 결과
+        # =========================
 
+        if "get_projects" in results:
+
+            projects = results["get_projects"]
+
+            for project in projects:
+
+                stack = ", ".join(project["stack"])
+
+                answer_parts.append(
+                    "👩‍💻 프로젝트\n"
+                    f"{project['name']}\n"
+                    f"{project['description']}.\n"
+                    f"사용 기술: {stack}"
+                )
+
+        # =========================
+        # Learning 결과
+        # =========================
+
+        if "get_learning" in results:
+
+            learning = results["get_learning"]
+
+            current = ", ".join(learning["current"])
+
+            answer_parts.append(
                 "🤓 현재 공부하고 있는 내용\n"
                 f"{current}\n\n"
-
                 f"🔔 학습 목표는 {learning['goal']}입니다."
             )
+
+        return {
+            "type": "final_answer",
+            "content": "\n\n".join(answer_parts)
         }
 
     # =========================
