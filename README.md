@@ -104,9 +104,18 @@ $env:DB_PASSWORD="your_db_password"
 
 .\gradlew bootRun
 ```
+기본적으로 `http://localhost:8080` 에서 실행되며, `/api/**` 요청에 대해
+`http://localhost:5173`(프론트엔드)로부터의 CORS 요청을 허용하도록 설정되어 있습니다.
+
+> application.properties는 ${DB_USERNAME}, ${DB_PASSWORD} 환경변수를 참조합니다.
+> 백엔드 실행 전에 환경변수를 설정하거나, VS Code 등의 실행 환경에 등록해서 사용하세요.
+
+> 프론트엔드의 API 주소는 `frontend/.env`의 `VITE_API_BASE_URL`을 통해 관리합니다.
+> `.env` 파일에는 실제 환경에 필요한 값을 설정하되, GitHub에는 업로드하지 않습니다.
 
 ### 3. AI Agent 실행
 Python 가상환경을 활성화한 후 `http://localhost:8000` 에서 실행됩니다.
+
 🔗 Swagger : `http://localhost:8000/docs` 
 ```bash
 cd ai-agent
@@ -117,15 +126,6 @@ cd ai-agent
 # FastAPI 서버 실행:
 uvicorn main:app --reload
 ```
-
-기본적으로 `http://localhost:8080` 에서 실행되며, `/api/**` 요청에 대해
-`http://localhost:5173`(프론트엔드)로부터의 CORS 요청을 허용하도록 설정되어 있습니다.
-
-> application.properties는 ${DB_USERNAME}, ${DB_PASSWORD} 환경변수를 참조합니다.
-> 백엔드 실행 전에 환경변수를 설정하거나, VS Code 등의 실행 환경에 등록해서 사용하세요.
-
-> 프론트엔드의 API 주소는 `frontend/.env`의 `VITE_API_BASE_URL`을 통해 관리합니다.
-> `.env` 파일에는 실제 환경에 필요한 값을 설정하되, GitHub에는 업로드하지 않습니다.
 
 ## // contact
 
