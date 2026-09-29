@@ -134,20 +134,21 @@ function AiChat() {
   // =========================
 
   const askQuestion = async (question: string) => {
-    if (isLoading) return;
-
     const trimmedQuestion = question.trim();
+
     if (!trimmedQuestion || isLoading) return;
+
     setInput('');
 
-    // 사용자 메시지 추가
-    setMessages((prev) => [
-      ...prev,
+    const updatedMessages = [
+      ...messages,
       {
-        role: 'user',
-        content: question,
+        role: 'user' as const,
+        content: trimmedQuestion,
       },
-    ]);
+    ];
+
+    setMessages(updatedMessages);
 
     setIsLoading(true);
 
@@ -160,7 +161,8 @@ function AiChat() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            message: question,
+            message: trimmedQuestion,
+            messages: updatedMessages,
           }),
         }
       );
@@ -171,10 +173,8 @@ function AiChat() {
 
       const data = await response.json();
 
-      // 로딩 종료
       setIsLoading(false);
 
-      // AI 타이핑 효과
       await typeMessage(data.answer);
 
     } catch (error) {
