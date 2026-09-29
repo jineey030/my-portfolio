@@ -11,6 +11,7 @@
   <img src="https://img.shields.io/badge/Kotlin-2.3-4ade80?logo=kotlin&logoColor=black" />
   <img src="https://img.shields.io/badge/Spring%20Boot-4.1-f472b6?logo=springboot&logoColor=white" />
   <img src="https://img.shields.io/badge/MariaDB-JPA-1a2029?logo=mariadb&logoColor=white" />
+  <img src="https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white" />
 </p>
 
 ---
@@ -30,7 +31,7 @@
 | 영역 | 스택 |
 | --- | --- |
 | **Frontend** | React 19, TypeScript, Vite, React Router |
-| **Backend** | Kotlin, Spring Boot 4 (Web MVC), Spring Data JPA |
+| **Backend** | Kotlin, Spring Boot 4 (Web MVC), Spring Data JPA, Python |
 | **Database** | MariaDB |
 | **Tooling** | Gradle (Kotlin DSL), oxlint |
 
@@ -38,6 +39,8 @@
 
 ```text
 my-portfolio/
+├── ai-agent/
+│   ├── main.py
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
@@ -93,6 +96,11 @@ $env:DB_USERNAME="your_db_username"
 $env:DB_PASSWORD="your_db_password"
 
 .\gradlew bootRun
+```
+
+### 3. AI Agent 실행
+```bash
+ai-agent> uvicorn main:app --reload
 ```
 
 기본적으로 `http://localhost:8080` 에서 실행되며, `/api/**` 요청에 대해
