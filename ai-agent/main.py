@@ -107,6 +107,57 @@ def get_tool_definitions():
     return definitions
 
 # =========================
+# Tool 선택
+# =========================
+def select_tools(user_input):
+    user_input = user_input.lower()
+
+    wants_profile = (
+        "개발자" in user_input
+        or "소개" in user_input
+        or "누구" in user_input
+        or "어떤 사람" in user_input
+        or "프로필" in user_input
+    )
+
+    wants_skills = (
+        "기술" in user_input
+        or "스택" in user_input
+        or "사용하는 기술" in user_input
+        or "무슨 기술" in user_input
+    )
+
+    wants_projects = (
+        "프로젝트" in user_input
+        or "만든 것" in user_input
+        or "무엇을 만들었" in user_input
+        or "작업" in user_input
+    )
+
+    wants_learning = (
+        "공부" in user_input
+        or "학습" in user_input
+        or "배우" in user_input
+        or "요즘 뭐" in user_input
+    )
+
+    requested_tools = []
+
+    if wants_profile:
+        requested_tools.append("get_profile")
+
+    if wants_skills:
+        requested_tools.append("get_skills")
+
+    if wants_projects:
+        requested_tools.append("get_projects")
+
+    if wants_learning:
+        requested_tools.append("get_learning")
+
+    return requested_tools
+
+# =========================
 # Fake AI
 # =========================
 
@@ -142,60 +193,10 @@ def fake_ai(user_input, tool_definitions, tool_results, messages):
         for message in previous_user_messages[:-1]
     )
 
-    # =========================
     # Tool 선택
-    # =========================
-    wants_profile = (
-        "개발자" in user_input
-        or "소개" in user_input
-        or "누구" in user_input
-        or "어떤 사람" in user_input
-        or "프로필" in user_input
-    )
+    requested_tools = select_tools(user_input)
 
-    wants_skills = (
-        "기술" in user_input
-        or "스택" in user_input
-        or "사용하는 기술" in user_input
-        or "무슨 기술" in user_input
-    )
-
-    wants_projects = (
-        "프로젝트" in user_input
-        or "만든 것" in user_input
-        or "무엇을 만들었" in user_input
-        or "작업" in user_input
-    )
-
-    wants_learning = (
-        "공부" in user_input
-        or "학습" in user_input
-        or "배우" in user_input
-        or "요즘 뭐" in user_input
-    )
-
-    # =========================
-    # 요청된 Tool 확인
-    # =========================
-
-    requested_tools = []
-
-    if wants_profile:
-        requested_tools.append("get_profile")
-
-    if wants_skills:
-        requested_tools.append("get_skills")
-
-    if wants_projects:
-        requested_tools.append("get_projects")
-
-    if wants_learning:
-        requested_tools.append("get_learning")
-
-    # =========================
     # Tool 실행 요청
-    # =========================
-
     for tool_name in requested_tools:
 
         if tool_name not in used_tools:
@@ -206,10 +207,7 @@ def fake_ai(user_input, tool_definitions, tool_results, messages):
                 "arguments": {}
             }
 
-    # =========================
     # 모든 요청 Tool 실행 여부 확인
-    # =========================
-
     all_tools_used = all(
         tool_name in used_tools
         for tool_name in requested_tools
@@ -217,10 +215,7 @@ def fake_ai(user_input, tool_definitions, tool_results, messages):
 
     print("모든 Tool 실행 완료:", all_tools_used)
 
-    # =========================
     # Tool 결과 확인
-    # =========================
-
     if all_tools_used:
 
         print("모든 Tool의 결과를 가지고 있습니다.")
@@ -234,10 +229,7 @@ def fake_ai(user_input, tool_definitions, tool_results, messages):
 
         answer_parts = []
 
-        # =========================
         # Profile 결과
-        # =========================
-
         if "get_profile" in results:
 
             profile = results["get_profile"]
@@ -247,10 +239,7 @@ def fake_ai(user_input, tool_definitions, tool_results, messages):
                 f"{profile['introduction']}."
             )
 
-        # =========================
         # Skills 결과
-        # =========================
-
         if "get_skills" in results:
 
             skills = results["get_skills"]
@@ -266,10 +255,7 @@ def fake_ai(user_input, tool_definitions, tool_results, messages):
                 f"Database: {database}"
             )
 
-        # =========================
         # Projects 결과
-        # =========================
-
         if "get_projects" in results:
 
             projects = results["get_projects"]
@@ -285,10 +271,7 @@ def fake_ai(user_input, tool_definitions, tool_results, messages):
                     f"사용 기술: {stack}"
                 )
 
-        # =========================
         # Learning 결과
-        # =========================
-
         if "get_learning" in results:
 
             learning = results["get_learning"]
@@ -305,11 +288,8 @@ def fake_ai(user_input, tool_definitions, tool_results, messages):
             "type": "final_answer",
             "content": "\n\n".join(answer_parts)
         }
-
-    # =========================
+    
     # 이해하지 못한 질문
-    # =========================
-
     return {
         "type": "final_answer",
         "content": (
