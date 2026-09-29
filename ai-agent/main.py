@@ -6,6 +6,7 @@ from google import genai
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 
@@ -236,9 +237,9 @@ def generate_answer(results):
 
     answer_parts = []
 
-    # =====================================================
+    # -----------------------------------------------------
     # Profile
-    # =====================================================
+    # -----------------------------------------------------
 
     if "get_profile" in results:
 
@@ -249,17 +250,25 @@ def generate_answer(results):
             f"{profile['introduction']}."
         )
 
-    # =====================================================
+    # -----------------------------------------------------
     # Skills
-    # =====================================================
+    # -----------------------------------------------------
 
     if "get_skills" in results:
 
         skills = results["get_skills"]
 
-        frontend = ", ".join(skills["frontend"])
-        backend = ", ".join(skills["backend"])
-        database = ", ".join(skills["database"])
+        frontend = ", ".join(
+            skills["frontend"]
+        )
+
+        backend = ", ".join(
+            skills["backend"]
+        )
+
+        database = ", ".join(
+            skills["database"]
+        )
 
         answer_parts.append(
             "🛠️ 기술 스택\n"
@@ -268,9 +277,9 @@ def generate_answer(results):
             f"Database: {database}"
         )
 
-    # =====================================================
+    # -----------------------------------------------------
     # Projects
-    # =====================================================
+    # -----------------------------------------------------
 
     if "get_projects" in results:
 
@@ -278,7 +287,9 @@ def generate_answer(results):
 
         for project in projects:
 
-            stack = ", ".join(project["stack"])
+            stack = ", ".join(
+                project["stack"]
+            )
 
             answer_parts.append(
                 "👩‍💻 프로젝트\n"
@@ -287,20 +298,23 @@ def generate_answer(results):
                 f"사용 기술: {stack}"
             )
 
-    # =====================================================
+    # -----------------------------------------------------
     # Learning
-    # =====================================================
+    # -----------------------------------------------------
 
     if "get_learning" in results:
 
         learning = results["get_learning"]
 
-        current = ", ".join(learning["current"])
+        current = ", ".join(
+            learning["current"]
+        )
 
         answer_parts.append(
             "🤓 현재 공부하고 있는 내용\n"
             f"{current}\n\n"
-            f"🔔 학습 목표는 {learning['goal']}입니다."
+            f"🔔 학습 목표는 "
+            f"{learning['goal']}입니다."
         )
 
     return "\n\n".join(answer_parts)
@@ -322,11 +336,9 @@ def fake_ai(
         for result in tool_results
     }
 
-    requested_tools = select_tools(user_input)
-
-    # =====================================================
-    # 아직 실행하지 않은 Tool 찾기
-    # =====================================================
+    requested_tools = select_tools(
+        user_input
+    )
 
     for tool_name in requested_tools:
 
@@ -337,10 +349,6 @@ def fake_ai(
                 "tool_name": tool_name,
                 "arguments": {}
             }
-
-    # =====================================================
-    # 모든 Tool 실행 완료
-    # =====================================================
 
     all_tools_used = all(
         tool_name in used_tools
@@ -354,23 +362,23 @@ def fake_ai(
             for result in tool_results
         }
 
-        answer = generate_answer(results)
+        answer = generate_answer(
+            results
+        )
 
         return {
             "type": "final_answer",
             "content": answer
         }
 
-    # =====================================================
-    # 이해하지 못한 질문
-    # =====================================================
-
     return {
         "type": "final_answer",
         "content": (
-            "음, 아직 그 질문에는 정확하게 답변하기 어려워요. 😅\n\n"
-            "예진의 개발자 소개, 기술 스택, 프로젝트, "
-            "현재 공부하고 있는 내용에 대해서는 알려드릴 수 있습니다."
+            "음, 아직 그 질문에는 "
+            "정확하게 답변하기 어려워요. 😅\n\n"
+            "예진의 개발자 소개, 기술 스택, "
+            "프로젝트, 현재 공부하고 있는 "
+            "내용에 대해서는 알려드릴 수 있습니다."
         )
     }
 
@@ -381,25 +389,21 @@ def fake_ai(
 
 def gemini_agent(user_input):
 
-    # =====================================================
-    # STEP 1
-    # 로컬에서 필요한 Tool 후보 찾기
-    #
-    # 이 과정에서는 Gemini API 호출이 발생하지 않는다.
-    # =====================================================
+    # -----------------------------------------------------
+    # 1. 로컬에서 Tool 선택
+    # -----------------------------------------------------
 
-    requested_tools = select_tools(user_input)
+    requested_tools = select_tools(
+        user_input
+    )
 
     print("\n===== 로컬 Tool 선택 =====")
-    print("요청:", user_input)
-    print("Tool 후보:", requested_tools)
+    print(f"요청: {user_input}")
+    print(f"Tool 후보: {requested_tools}")
 
-    # =====================================================
-    # STEP 2
-    # Tool이 필요 없는 질문
-    #
-    # Gemini 1회만 호출
-    # =====================================================
+    # -----------------------------------------------------
+    # 2. Tool이 필요 없는 질문
+    # -----------------------------------------------------
 
     if not requested_tools:
 
@@ -413,25 +417,19 @@ def gemini_agent(user_input):
 
         return interaction.output_text
 
-    # =====================================================
-    # STEP 3
-    # 필요한 Tool만 Gemini에게 전달
-    # =====================================================
+    # -----------------------------------------------------
+    # 3. 필요한 Tool만 Gemini에게 전달
+    # -----------------------------------------------------
 
     gemini_tools = get_gemini_tools(
         requested_tools
     )
 
     print("\n===== Gemini 호출 =====")
-    print("Gemini에게 전달하는 Tool:", requested_tools)
-
-    # =====================================================
-    # STEP 4
-    # Gemini 첫 번째 호출
-    #
-    # 목적:
-    # 어떤 Tool을 사용할지 판단
-    # =====================================================
+    print(
+        f"Gemini에게 전달하는 Tool: "
+        f"{requested_tools}"
+    )
 
     interaction = client.interactions.create(
         model="gemini-3.8-flash",
@@ -439,10 +437,9 @@ def gemini_agent(user_input):
         tools=gemini_tools
     )
 
-    # =====================================================
-    # STEP 5
-    # Gemini가 요청한 모든 Function Call 수집
-    # =====================================================
+    # -----------------------------------------------------
+    # 4. Gemini가 요청한 Tool Call 수집
+    # -----------------------------------------------------
 
     function_calls = [
         step
@@ -450,22 +447,16 @@ def gemini_agent(user_input):
         if step.type == "function_call"
     ]
 
-    # =====================================================
-    # Tool 호출이 없는 경우
-    # =====================================================
-
+    # Tool 호출이 없으면 Gemini 답변 그대로 반환
     if not function_calls:
 
         return interaction.output_text
 
-    print("\n===== Gemini Tool Call =====")
+    # -----------------------------------------------------
+    # 5. Tool 실행
+    # -----------------------------------------------------
 
-    # =====================================================
-    # STEP 6
-    # 모든 Tool 실행
-    #
-    # Gemini를 Tool마다 다시 호출하지 않는다.
-    # =====================================================
+    print("\n===== Gemini Tool Call =====")
 
     function_results = []
 
@@ -478,7 +469,8 @@ def gemini_agent(user_input):
         )
 
         print(
-            f"arguments: {function_call.arguments}"
+            f"arguments: "
+            f"{function_call.arguments}"
         )
 
         tool_result = execute_tool(
@@ -504,25 +496,19 @@ def gemini_agent(user_input):
             ]
         })
 
-    # =====================================================
-    # STEP 7
-    # 모든 Tool 결과를 한 번에 Gemini에게 전달
-    #
-    # Gemini 두 번째 호출
-    # =====================================================
+    # -----------------------------------------------------
+    # 6. Tool 결과를 한 번에 Gemini에게 전달
+    # -----------------------------------------------------
 
-    print("\n===== Gemini 최종 답변 호출 =====")
+    print(
+        "\n===== Gemini 최종 답변 호출 ====="
+    )
 
     final_interaction = client.interactions.create(
         model="gemini-3.8-flash",
         previous_interaction_id=interaction.id,
         input=function_results
     )
-
-    # =====================================================
-    # STEP 8
-    # 최종 답변
-    # =====================================================
 
     return final_interaction.output_text
 
@@ -533,10 +519,6 @@ def gemini_agent(user_input):
 
 app = FastAPI()
 
-
-# =========================================================
-# CORS
-# =========================================================
 
 app.add_middleware(
     CORSMiddleware,
@@ -575,13 +557,66 @@ def chat(request: ChatRequest):
 
     user_input = request.message
 
-    answer = gemini_agent(
-        user_input
-    )
+    try:
 
-    return {
-        "answer": answer
-    }
+        answer = gemini_agent(
+            user_input
+        )
+
+        return {
+            "answer": answer
+        }
+
+    except Exception as error:
+
+        error_message = str(error)
+
+        print("\n===== Gemini Error =====")
+        print(error_message)
+
+        # -------------------------------------------------
+        # 429 = API 무료 한도 / Rate Limit
+        # -------------------------------------------------
+
+        if (
+            "429" in error_message
+            or "rate limit" in error_message.lower()
+            or "too_many_requests" in error_message.lower()
+        ):
+
+            print(
+                "→ Gemini API 429 / Rate Limit"
+            )
+
+            return JSONResponse(
+                status_code=429,
+                content={
+                    "error": "quota_exceeded",
+                    "message": (
+                        "오늘 Gemini API 무료 "
+                        "사용 한도를 모두 사용했어요."
+                    )
+                }
+            )
+
+        # -------------------------------------------------
+        # 그 외 서버 오류
+        # -------------------------------------------------
+
+        print(
+            "→ Gemini API 또는 서버 오류"
+        )
+
+        return JSONResponse(
+            status_code=500,
+            content={
+                "error": "server_error",
+                "message": (
+                    "AI 서버와 통신하는 중 "
+                    "문제가 발생했어요."
+                )
+            }
+        )
 
 
 # =========================================================
