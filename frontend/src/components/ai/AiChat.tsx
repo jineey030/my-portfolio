@@ -1,13 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import './AiChat.css';
 
-const QUESTIONS = [
-  '예진은 어떤 개발자인가요?',
-  '어떤 기술을 사용하나요?',
-  '어떤 프로젝트를 만들었나요?',
-  '무엇을 공부하고 있나요?',
-];
-
 type Message = {
   role: 'user' | 'assistant';
   content: string;
@@ -83,6 +76,7 @@ function AiChat() {
   ]);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [input, setInput] = useState('');
 
   // 가장 아래 메시지로 자동 스크롤
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -140,6 +134,10 @@ function AiChat() {
 
   const askQuestion = async (question: string) => {
     if (isLoading) return;
+
+    const trimmedQuestion = question.trim();
+    if (!trimmedQuestion || isLoading) return;
+    setInput('');
 
     // 사용자 메시지 추가
     setMessages((prev) => [
@@ -282,36 +280,31 @@ function AiChat() {
             </div>
 
 
-            {/* =========================
-                Quick Menu
-                ========================= */}
+            <div className="ai-input-area">
+                <input
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                        askQuestion(input);
+                    }
+                    }}
+                    placeholder="궁금한 내용을 입력해주세요."
+                    disabled={isLoading}
+                />
 
-            <div className="ai-question-list">
-
-              <span className="ai-question-label">
-                QUICK MENU
-              </span>
-
-              {QUESTIONS.map((question) => (
                 <button
-                  key={question}
-                  onClick={() => askQuestion(question)}
-                  disabled={isLoading}
+                    type="button"
+                    onClick={() => askQuestion(input)}
+                    disabled={isLoading || !input.trim()}
+                    aria-label="메시지 보내기"
                 >
-                  <span>
-                    {question}
-                  </span>
-
-                  <span className="question-arrow">
-                    ›
-                  </span>
+                    ↑
                 </button>
-              ))}
-
             </div>
 
           </div>
-
         </div>
       )}
 
