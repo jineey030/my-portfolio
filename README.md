@@ -34,12 +34,6 @@ Python + FastAPI 기반의 AI Agent를 추가하여
 
 ## // tech stack
 
-
- React 19, TypeScript, Vite, React Router |
-Kotlin, Spring Boot 4 (Web MVC), Spring Data JPA, Python |
- MariaDB |
-| **Tooling** | Gradle (Kotlin DSL), oxlint |
-
 | 영역 | 스택 |
 | --- | --- |
 | **Frontend** |	React 19, TypeScript, Vite, React Router |
