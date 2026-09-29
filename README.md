@@ -106,26 +106,17 @@ $env:DB_PASSWORD="your_db_password"
 ```
 
 ### 3. AI Agent 실행
-Python 가상환경을 활성화한 후 실행합니다.
+Python 가상환경을 활성화한 후 `http://localhost:8000` 에서 실행됩니다.
+🔗 Swagger : `http://localhost:8000/docs` 
 ```bash
 cd ai-agent
-```
 
-가상환경:
-```bash
+# 가상환경:
 .\.venv\Scripts\Activate.ps1
-```
 
-FastAPI 서버:
-```bash
+# FastAPI 서버 실행:
 uvicorn main:app --reload
 ```
-
-기본적으로 다음 주소에서 실행됩니다.
-`http://localhost:8000`
-
-AI Agent API: `POST /chat`
-Frontend의 React AI Chat에서 이 API를 호출합니다.
 
 기본적으로 `http://localhost:8080` 에서 실행되며, `/api/**` 요청에 대해
 `http://localhost:5173`(프론트엔드)로부터의 CORS 요청을 허용하도록 설정되어 있습니다.
