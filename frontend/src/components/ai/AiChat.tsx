@@ -77,6 +77,7 @@ function AiChat() {
   ]);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isQuotaExceeded, setIsQuotaExceeded] = useState(false);
   const [input, setInput] = useState('');
 
   // 가장 아래 메시지로 자동 스크롤
@@ -136,7 +137,13 @@ function AiChat() {
   const askQuestion = async (question: string) => {
     const trimmedQuestion = question.trim();
 
-    if (!trimmedQuestion || isLoading) return;
+    if (
+      !trimmedQuestion ||
+      isLoading ||
+      isQuotaExceeded
+    ) {
+      return;
+    }
 
     setInput('');
 
@@ -149,8 +156,15 @@ function AiChat() {
     ];
 
     setMessages(updatedMessages);
-
     setIsLoading(true);
+
+    // 5초 후 fetch 요청 취소
+    const controller = new AbortController();
+    const AI_TIMEOUT = 30000;
+
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, AI_TIMEOUT);
 
     try {
       const response = await fetch(
@@ -164,13 +178,32 @@ function AiChat() {
             message: trimmedQuestion,
             messages: updatedMessages,
           }),
+          signal: controller.signal,
         }
       );
 
-      if (!response.ok) {
-        throw new Error('API 요청에 실패했습니다.');
+      clearTimeout(timeoutId);
+
+      // 429 = Gemini 무료 API 한도 초과
+      if (response.status === 429) {
+
+        setIsLoading(false);
+        setIsQuotaExceeded(true);
+
+        await typeMessage(
+          '🤖 오늘 AI 무료 API 사용 한도를 모두 사용했어요.\n\n' +
+          'Gemini API 무료 한도가 다시 충전되면 이용할 수 있습니다.'
+        );
+
+        return;
       }
 
+      // 그 외 HTTP 오류
+      if (!response.ok) {
+        throw new Error(
+          `API 요청 실패: ${response.status}`
+        );
+      }
       const data = await response.json();
 
       setIsLoading(false);
@@ -178,12 +211,30 @@ function AiChat() {
       await typeMessage(data.answer);
 
     } catch (error) {
+
+      clearTimeout(timeoutId);
+
       console.error(error);
 
       setIsLoading(false);
 
+      // 5초 타임아웃
+      if (
+        error instanceof DOMException &&
+        error.name === 'AbortError'
+      ) {
+        await typeMessage(
+          '🤖 AI 응답이 너무 오래 걸리고 있어요.\n\n' +
+          '잠시 후 다시 시도해주세요.'
+        );
+
+        return;
+      }
+
+      // 그 외 오류
       await typeMessage(
-        'AI 서버와 연결할 수 없습니다.'
+        '🤖 AI 서버와 연결할 수 없습니다.\n\n' +
+        '잠시 후 다시 시도해주세요.'
       );
     }
   };
@@ -283,25 +334,33 @@ function AiChat() {
 
             <div className="ai-input-area">
                 <input
-                    type="text"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={(e) => {
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => {
                     if (e.key === 'Enter') {
-                        askQuestion(input);
+                      askQuestion(input);
                     }
-                    }}
-                    placeholder="궁금한 내용을 입력해주세요."
-                    disabled={isLoading}
+                  }}
+                  placeholder={
+                    isQuotaExceeded
+                      ? '오늘은 AI를 사용할 수 없어요'
+                      : isLoading
+                        ? '답변을 기다리는 중...'
+                        : '메시지를 입력하세요...'
+                  }
+                  disabled={isLoading || isQuotaExceeded}
                 />
 
                 <button
-                    type="button"
-                    onClick={() => askQuestion(input)}
-                    disabled={isLoading || !input.trim()}
-                    aria-label="메시지 보내기"
+                  type="button"
+                  onClick={() => askQuestion(input)}
+                  disabled={
+                    isLoading ||
+                    isQuotaExceeded ||
+                    !input.trim()
+                  }
                 >
-                    ↑
+                  {isLoading ? '...' : '↑'}
                 </button>
             </div>
 
