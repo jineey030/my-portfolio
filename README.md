@@ -3,6 +3,8 @@
 > 프론트엔드와 백엔드를 직접 연결해보며 기술을 학습하기 위해 만든 개인 포트폴리오 프로젝트입니다.
 > React로 만든 소개 페이지와, Kotlin/Spring Boot로 만든 API 서버를 함께 다루면서
 > 풀스택 흐름(요청 → 처리 → 응답 → 렌더링)을 직접 몸으로 익히는 것을 목표로 합니다.
+> 최근에는 Python + FastAPI 기반의 AI Agent를 추가하여
+> Tool Calling, Tool Registry, Agent Loop 등의 개념을 직접 구현하고 있습니다.
 
 <p>
   <img src="https://img.shields.io/badge/React-19-5eead4?logo=react&logoColor=black" />
@@ -22,25 +24,36 @@
 프론트엔드는 React 기반 SPA로 자기소개 페이지를 구성했고,
 백엔드는 Spring Boot + JPA + MariaDB로 API 서버를 구축하는 연습을 하고 있습니다.
 
+Python + FastAPI 기반의 AI Agent를 추가하여
+포트폴리오에 대한 질문에 답변할 수 있는 AI Chat UI를 구현하고 있습니다.
+
 - 새로운 기술 스택(React 19, Kotlin, Spring Boot 4)을 직접 써보고 익히기 위한 학습용 프로젝트입니다.
 - 프론트/백엔드를 분리된 서버로 두고 CORS 설정, 환경변수 관리 등 실제 서비스에 가까운 구조로 연습합니다.
+- AI Agent를 직접 구현하면서 Tool Calling과 Agent Loop의 동작 원리를 학습합니다.
 - 기능과 구조는 계속 추가/변경될 예정입니다. (진행 중인 프로젝트)
 
 ## // tech stack
 
+
+ React 19, TypeScript, Vite, React Router |
+Kotlin, Spring Boot 4 (Web MVC), Spring Data JPA, Python |
+ MariaDB |
+| **Tooling** | Gradle (Kotlin DSL), oxlint |
+
 | 영역 | 스택 |
 | --- | --- |
-| **Frontend** | React 19, TypeScript, Vite, React Router |
-| **Backend** | Kotlin, Spring Boot 4 (Web MVC), Spring Data JPA, Python |
-| **Database** | MariaDB |
-| **Tooling** | Gradle (Kotlin DSL), oxlint |
+| **Frontend** |	React 19, TypeScript, Vite, React Router |
+| **Backend** | 	Kotlin, Spring Boot 4, Spring Data JPA |
+| **AI Agent**	| Python 3.13, FastAPI, Tool Calling, Tool Registry |
+| **Database** |	MariaDB |
+| **Tooling	Gradle** | (Kotlin DSL), npm, uvicorn, oxlint |
 
 ## // project structure
 
 ```text
 my-portfolio/
 ├── ai-agent/
-│   ├── main.py
+│   └── main.py
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
@@ -99,9 +112,26 @@ $env:DB_PASSWORD="your_db_password"
 ```
 
 ### 3. AI Agent 실행
+Python 가상환경을 활성화한 후 실행합니다.
 ```bash
-ai-agent> uvicorn main:app --reload
+cd ai-agent
 ```
+
+가상환경:
+```bash
+.\.venv\Scripts\Activate.ps1
+```
+
+FastAPI 서버:
+```bash
+uvicorn main:app --reload
+```
+
+기본적으로 다음 주소에서 실행됩니다.
+`http://localhost:8000`
+
+AI Agent API: `POST /chat`
+Frontend의 React AI Chat에서 이 API를 호출합니다.
 
 기본적으로 `http://localhost:8080` 에서 실행되며, `/api/**` 요청에 대해
 `http://localhost:5173`(프론트엔드)로부터의 CORS 요청을 허용하도록 설정되어 있습니다.
