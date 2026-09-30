@@ -1,7 +1,8 @@
 import ollama
 
 
-MODEL = "qwen3:4b"
+# MODEL = "qwen3:4b"
+MODEL = "qwen3:1.7b"
 
 
 def ask_ollama(prompt: str) -> str:
