@@ -6,7 +6,6 @@ from google import genai
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 
@@ -19,24 +18,6 @@ load_dotenv()
 client = genai.Client(
     api_key=os.getenv("GEMINI_API_KEY")
 )
-
-# =========================================================
-# Gemini 사용 가능 여부
-# =========================================================
-#
-# 현재 Gemini 무료 사용 한도를 모두 사용했기 때문에
-# False로 설정합니다.
-#
-# 나중에 Gemini를 다시 테스트할 때는 True로 변경합니다.
-#
-# True
-#  → 실제 Gemini API 호출
-#
-# False
-#  → Gemini 호출 없이 즉시 429 반환
-#
-
-GEMINI_AVAILABLE = False
 
 
 # =========================================================
@@ -106,7 +87,6 @@ tools = {
     "get_profile": {
         "function": get_profile,
         "description": "예진의 기본 프로필 정보를 가져옵니다.",
-        "parameters": {},
         "keywords": [
             "개발자",
             "소개",
@@ -119,7 +99,6 @@ tools = {
     "get_skills": {
         "function": get_skills,
         "description": "예진이 사용하는 기술 스택 정보를 가져옵니다.",
-        "parameters": {},
         "keywords": [
             "기술",
             "스택",
@@ -134,7 +113,6 @@ tools = {
     "get_projects": {
         "function": get_projects,
         "description": "예진이 만든 프로젝트 정보를 가져옵니다.",
-        "parameters": {},
         "keywords": [
             "프로젝트",
             "만든 것",
@@ -146,7 +124,6 @@ tools = {
     "get_learning": {
         "function": get_learning,
         "description": "예진이 현재 공부하고 있는 내용을 가져옵니다.",
-        "parameters": {},
         "keywords": [
             "공부",
             "학습",
@@ -160,47 +137,31 @@ tools = {
 
 
 # =========================================================
-# Tool Definition
+# Portfolio 질문인지 확인
 # =========================================================
 
-def get_tool_definitions():
+PORTFOLIO_KEYWORDS = [
+    "예진",
+    "내",
+    "너",
+    "프로필",
+    "개발자",
+    "프로젝트",
+    "기술 스택",
+    "기술",
+    "공부",
+    "학습",
+]
 
-    definitions = []
 
-    for name, tool in tools.items():
+def is_portfolio_question(user_input):
 
-        definitions.append({
-            "name": name,
-            "description": tool["description"],
-            "parameters": tool["parameters"]
-        })
+    user_input = user_input.lower()
 
-    return definitions
-
-
-# =========================================================
-# Gemini Tool Definition
-# =========================================================
-
-def get_gemini_tools(tool_names):
-
-    gemini_tools = []
-
-    for tool_name in tool_names:
-
-        tool = tools.get(tool_name)
-
-        if tool is None:
-            continue
-
-        gemini_tools.append({
-            "type": "function",
-            "name": tool_name,
-            "description": tool["description"],
-            "parameters": tool["parameters"]
-        })
-
-    return gemini_tools
+    return any(
+        keyword.lower() in user_input
+        for keyword in PORTFOLIO_KEYWORDS
+    )
 
 
 # =========================================================
@@ -215,9 +176,7 @@ def select_tools(user_input):
 
     for tool_name, tool in tools.items():
 
-        keywords = tool["keywords"]
-
-        for keyword in keywords:
+        for keyword in tool["keywords"]:
 
             if keyword.lower() in user_input:
 
@@ -226,6 +185,56 @@ def select_tools(user_input):
                 break
 
     return requested_tools
+
+
+# =========================================================
+# Fake AI
+# =========================================================
+
+def fake_ai(user_input):
+
+    # -----------------------------------------------------
+    # 1. 포트폴리오 관련 질문인지 확인
+    # -----------------------------------------------------
+
+    if not is_portfolio_question(user_input):
+
+        return {
+            "type": "out_of_scope",
+            "content": (
+                "예진님에 관련된 정보만 질문해주세요. 😊\n\n"
+                "예를 들면 이런 질문을 할 수 있어요.\n"
+                "- 어떤 기술을 사용하나요?\n"
+                "- 어떤 프로젝트를 만들었나요?\n"
+                "- 요즘 무엇을 공부하고 있나요?\n"
+                "- 어떤 개발자인가요?"
+            )
+        }
+
+    # -----------------------------------------------------
+    # 2. 필요한 Tool 선택
+    # -----------------------------------------------------
+
+    requested_tools = select_tools(
+        user_input
+    )
+
+    # 포트폴리오 관련 질문이지만
+    # 현재 등록된 Tool로 답변할 수 없는 경우
+    if not requested_tools:
+
+        return {
+            "type": "unknown",
+            "content": (
+                "예진님의 포트폴리오와 관련된 질문이지만 "
+                "현재 등록된 정보로는 답변하기 어려워요."
+            )
+        }
+
+    return {
+        "type": "tool_request",
+        "tools": requested_tools
+    }
 
 
 # =========================================================
@@ -242,294 +251,47 @@ def execute_tool(tool_name):
             "error": f"존재하지 않는 Tool입니다: {tool_name}"
         }
 
-    tool_function = tool["function"]
-
-    return tool_function()
+    return tool["function"]()
 
 
 # =========================================================
-# AI 답변 생성
+# Gemini 자연어 답변
 # =========================================================
 
-def generate_answer(results):
+def gemini_answer(user_input, results):
 
-    answer_parts = []
-
-    # -----------------------------------------------------
-    # Profile
-    # -----------------------------------------------------
-
-    if "get_profile" in results:
-
-        profile = results["get_profile"]
-
-        answer_parts.append(
-            f"{profile['name']}님은 "
-            f"{profile['introduction']}."
-        )
-
-    # -----------------------------------------------------
-    # Skills
-    # -----------------------------------------------------
-
-    if "get_skills" in results:
-
-        skills = results["get_skills"]
-
-        frontend = ", ".join(
-            skills["frontend"]
-        )
-
-        backend = ", ".join(
-            skills["backend"]
-        )
-
-        database = ", ".join(
-            skills["database"]
-        )
-
-        answer_parts.append(
-            "🛠️ 기술 스택\n"
-            f"Frontend: {frontend}\n"
-            f"Backend: {backend}\n"
-            f"Database: {database}"
-        )
-
-    # -----------------------------------------------------
-    # Projects
-    # -----------------------------------------------------
-
-    if "get_projects" in results:
-
-        projects = results["get_projects"]
-
-        for project in projects:
-
-            stack = ", ".join(
-                project["stack"]
-            )
-
-            answer_parts.append(
-                "👩‍💻 프로젝트\n"
-                f"{project['name']}\n"
-                f"{project['description']}.\n"
-                f"사용 기술: {stack}"
-            )
-
-    # -----------------------------------------------------
-    # Learning
-    # -----------------------------------------------------
-
-    if "get_learning" in results:
-
-        learning = results["get_learning"]
-
-        current = ", ".join(
-            learning["current"]
-        )
-
-        answer_parts.append(
-            "🤓 현재 공부하고 있는 내용\n"
-            f"{current}\n\n"
-            f"🔔 학습 목표는 "
-            f"{learning['goal']}입니다."
-        )
-
-    return "\n\n".join(answer_parts)
-
-
-# =========================================================
-# Fake AI
-# =========================================================
-
-def fake_ai(
-    user_input,
-    tool_definitions,
-    tool_results,
-    messages
-):
-
-    used_tools = {
-        result["tool_name"]
-        for result in tool_results
-    }
-
-    requested_tools = select_tools(
-        user_input
+    context = json.dumps(
+        results,
+        ensure_ascii=False
     )
 
-    for tool_name in requested_tools:
+    prompt = f"""
+당신은 개발자 예진이의 포트폴리오를 소개하는 AI입니다.
 
-        if tool_name not in used_tools:
+반드시 아래 데이터에 있는 정보만 사용하세요.
+없는 정보는 만들어내지 마세요.
 
-            return {
-                "type": "tool_call",
-                "tool_name": tool_name,
-                "arguments": {}
-            }
+[포트폴리오 데이터]
+{context}
 
-    all_tools_used = all(
-        tool_name in used_tools
-        for tool_name in requested_tools
-    )
+[사용자 질문]
+{user_input}
 
-    if all_tools_used and requested_tools:
+위 데이터를 기반으로 자연스럽고 간결하게 답변해주세요.
 
-        results = {
-            result["tool_name"]: result["result"]
-            for result in tool_results
-        }
+답변은 딱딱한 데이터 나열보다는
+사람이 직접 설명해주는 것처럼 자연스럽게 작성해주세요.
 
-        answer = generate_answer(
-            results
-        )
-
-        return {
-            "type": "final_answer",
-            "content": answer
-        }
-
-    return {
-        "type": "final_answer",
-        "content": (
-            "음, 아직 그 질문에는 "
-            "정확하게 답변하기 어려워요. 😅\n\n"
-            "예진의 개발자 소개, 기술 스택, "
-            "프로젝트, 현재 공부하고 있는 "
-            "내용에 대해서는 알려드릴 수 있습니다."
-        )
-    }
-
-
-# =========================================================
-# Gemini AI Agent
-# =========================================================
-
-def gemini_agent(user_input):
-
-    # -----------------------------------------------------
-    # 1. 로컬에서 Tool 선택
-    # -----------------------------------------------------
-
-    requested_tools = select_tools(
-        user_input
-    )
-
-    print("\n===== 로컬 Tool 선택 =====")
-    print(f"요청: {user_input}")
-    print(f"Tool 후보: {requested_tools}")
-
-    # -----------------------------------------------------
-    # 2. Tool이 필요 없는 질문
-    # -----------------------------------------------------
-
-    if not requested_tools:
-
-        print("\n===== Gemini 호출 =====")
-        print("Tool 없이 일반 답변 생성")
-
-        interaction = client.interactions.create(
-            model="gemini-3.8-flash",
-            input=user_input
-        )
-
-        return interaction.output_text
-
-    # -----------------------------------------------------
-    # 3. 필요한 Tool만 Gemini에게 전달
-    # -----------------------------------------------------
-
-    gemini_tools = get_gemini_tools(
-        requested_tools
-    )
-
-    print("\n===== Gemini 호출 =====")
-    print(
-        f"Gemini에게 전달하는 Tool: "
-        f"{requested_tools}"
-    )
+질문과 관련된 정보만 답변하고,
+관련 없는 정보는 불필요하게 추가하지 마세요.
+"""
 
     interaction = client.interactions.create(
         model="gemini-3.8-flash",
-        input=user_input,
-        tools=gemini_tools
+        input=prompt
     )
 
-    # -----------------------------------------------------
-    # 4. Gemini가 요청한 Tool Call 수집
-    # -----------------------------------------------------
-
-    function_calls = [
-        step
-        for step in interaction.steps
-        if step.type == "function_call"
-    ]
-
-    # Tool 호출이 없으면 Gemini 답변 그대로 반환
-
-    if not function_calls:
-
-        return interaction.output_text
-
-    # -----------------------------------------------------
-    # 5. Tool 실행
-    # -----------------------------------------------------
-
-    print("\n===== Gemini Tool Call =====")
-
-    function_results = []
-
-    for function_call in function_calls:
-
-        tool_name = function_call.name
-
-        print(
-            f"Tool 호출: {tool_name}"
-        )
-
-        print(
-            f"arguments: "
-            f"{function_call.arguments}"
-        )
-
-        tool_result = execute_tool(
-            tool_name
-        )
-
-        print(
-            f"Tool 결과: {tool_result}"
-        )
-
-        function_results.append({
-            "type": "function_result",
-            "name": tool_name,
-            "call_id": function_call.id,
-            "result": [
-                {
-                    "type": "text",
-                    "text": json.dumps(
-                        tool_result,
-                        ensure_ascii=False
-                    )
-                }
-            ]
-        })
-
-    # -----------------------------------------------------
-    # 6. Tool 결과를 한 번에 Gemini에게 전달
-    # -----------------------------------------------------
-
-    print(
-        "\n===== Gemini 최종 답변 호출 ====="
-    )
-
-    final_interaction = client.interactions.create(
-        model="gemini-3.8-flash",
-        previous_interaction_id=interaction.id,
-        input=function_results
-    )
-
-    return final_interaction.output_text
+    return interaction.output_text
 
 
 # =========================================================
@@ -556,13 +318,11 @@ app.add_middleware(
 # =========================================================
 
 class ChatMessage(BaseModel):
-
     role: str
     content: str
 
 
 class ChatRequest(BaseModel):
-
     message: str
     messages: list[ChatMessage]
 
@@ -577,113 +337,54 @@ def chat(request: ChatRequest):
     user_input = request.message
 
     # =====================================================
-    # Gemini 사용 불가능 상태
-    # =====================================================
-    #
-    # 현재 무료 사용 한도를 모두 사용했기 때문에
-    # Gemini API를 호출하지 않고 즉시 429 반환
-    #
-
-    if not GEMINI_AVAILABLE:
-
-        print("\n===== Gemini 사용 불가 =====")
-        print("→ Gemini 호출 없이 즉시 429 반환")
-
-        return JSONResponse(
-            status_code=429,
-            content={
-                "error": "quota_exceeded",
-                "message": (
-                    "오늘 Gemini API 무료 "
-                    "사용 한도를 모두 사용했어요."
-                )
-            }
-        )
-
-    # =====================================================
-    # Gemini 호출
+    # 1. Fake AI
     # =====================================================
 
-    try:
-
-        answer = gemini_agent(
-            user_input
-        )
-
-        return {
-            "answer": answer
-        }
-
-    except Exception as error:
-
-        error_message = str(error)
-
-        print("\n===== Gemini Error =====")
-        print(error_message)
-
-        # -------------------------------------------------
-        # 429 = API 무료 한도 / Rate Limit
-        # -------------------------------------------------
-
-        if (
-            "429" in error_message
-            or "rate limit" in error_message.lower()
-            or "too_many_requests" in error_message.lower()
-        ):
-
-            print(
-                "→ Gemini API 429 / Rate Limit"
-            )
-
-            return JSONResponse(
-                status_code=429,
-                content={
-                    "error": "quota_exceeded",
-                    "message": (
-                        "오늘 Gemini API 무료 "
-                        "사용 한도를 모두 사용했어요."
-                    )
-                }
-            )
-
-        # -------------------------------------------------
-        # 그 외 서버 오류
-        # -------------------------------------------------
-
-        print(
-            "→ Gemini API 또는 서버 오류"
-        )
-
-        return JSONResponse(
-            status_code=500,
-            content={
-                "error": "server_error",
-                "message": (
-                    "AI 서버와 통신하는 중 "
-                    "문제가 발생했어요."
-                )
-            }
-        )
-
-
-# =========================================================
-# Local Test
-# =========================================================
-
-def test_gemini():
-
-    answer = gemini_agent(
-        "예진이 사용하는 기술 스택을 알려줘."
+    decision = fake_ai(
+        user_input
     )
 
-    print("\n===== 최종 답변 =====")
-    print(answer)
+    # =====================================================
+    # 2. 포트폴리오와 관계없는 질문
+    # =====================================================
 
+    if decision["type"] == "out_of_scope":
 
-# =========================================================
-# Main
-# =========================================================
+        return {
+            "answer": decision["content"]
+        }
 
-if __name__ == "__main__":
+    # =====================================================
+    # 3. 등록된 Tool로 답변할 수 없는 질문
+    # =====================================================
 
-    test_gemini()
+    if decision["type"] == "unknown":
+
+        return {
+            "answer": decision["content"]
+        }
+
+    # =====================================================
+    # 4. Tool 실행
+    # =====================================================
+
+    results = {}
+
+    for tool_name in decision["tools"]:
+
+        results[tool_name] = execute_tool(
+            tool_name
+        )
+
+    # =====================================================
+    # 5. Gemini에게 자연어 답변 요청
+    # =====================================================
+
+    answer = gemini_answer(
+        user_input,
+        results
+    )
+
+    return {
+        "answer": answer
+    }
