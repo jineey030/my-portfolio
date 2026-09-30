@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import './AiChat.css';
 
+type LLMProvider = "gemini" | "ollama";
+
 type Message = {
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
+  provider?: LLMProvider;
 };
 
 function RobotIcon() {
@@ -93,7 +96,7 @@ function AiChat() {
   // 타이핑 효과
   // =========================
 
-  const typeMessage = (message: string) => {
+  const typeMessage = (message: string, provider?: LLMProvider) => {
     return new Promise<void>((resolve) => {
       let currentText = '';
       let index = 0;
@@ -104,6 +107,7 @@ function AiChat() {
         {
           role: 'assistant',
           content: '',
+          provider
         },
       ]);
 
@@ -117,6 +121,7 @@ function AiChat() {
           next[next.length - 1] = {
             role: 'assistant',
             content: currentText,
+            provider
           };
 
           return next;
@@ -126,7 +131,7 @@ function AiChat() {
           clearInterval(interval);
           resolve();
         }
-      }, 30);
+      }, 10);
     });
   };
 
@@ -215,11 +220,17 @@ function AiChat() {
       // 정상 응답
       // =========================
 
-      const data = await response.json();
+      const data: {
+        answer: string;
+        provider: LLMProvider;
+      } = await response.json();
 
       setIsLoading(false);
 
-      await typeMessage(data.answer);
+      await typeMessage(
+        data.answer,
+        data.provider
+      );
 
     } catch (error) {
       console.error(error);
@@ -292,7 +303,11 @@ function AiChat() {
 
                   {message.role === 'assistant' && (
                     <span className="message-label">
-                      AI
+                      {message.provider === 'gemini'
+                        ? '✦ Gemini'
+                        : message.provider === 'ollama'
+                          ? '🦙 Ollama'
+                          : 'AI'}
                     </span>
                   )}
 
