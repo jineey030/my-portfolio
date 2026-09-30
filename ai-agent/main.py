@@ -1,14 +1,56 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from dotenv import load_dotenv
 
-from llm.gemini import gemini_answer
+from llm.gemini import ask_gemini
+from llm.ollama import ask_ollama
+
+
+# =========================================================
+# Environment
+# =========================================================
+
+load_dotenv()
+
+USE_GEMINI = os.getenv("GEMINI", "false").lower() == "true"
+USE_OLLAMA = os.getenv("OLLAMA", "false").lower() == "true"
+
+
+# =========================================================
+# LLM
+# =========================================================
+def get_llm_provider():
+
+    if USE_GEMINI:
+        return "gemini"
+
+    if USE_OLLAMA:
+        return "ollama"
+
+    raise RuntimeError(
+        "GEMINI 또는 OLLAMA 중 하나를 true로 설정해주세요."
+    )
+
+
+def ask_llm(prompt: str) -> str:
+
+    provider = get_llm_provider()
+
+    if provider == "gemini":
+        return ask_gemini(prompt, {})
+
+    if provider == "ollama":
+        return ask_ollama(prompt)
 
 # =========================================================
 # Tool
 # =========================================================
 
 def get_profile():
+
     return {
         "name": "오예진",
         "role": "개발자",
@@ -17,6 +59,7 @@ def get_profile():
 
 
 def get_skills():
+
     return {
         "frontend": [
             "React",
@@ -35,6 +78,7 @@ def get_skills():
 
 
 def get_projects():
+
     return [
         {
             "name": "Dev Learning Tracker",
@@ -50,6 +94,7 @@ def get_projects():
 
 
 def get_learning():
+
     return {
         "current": [
             "React",
@@ -70,155 +115,24 @@ tools = {
 
     "get_profile": {
         "function": get_profile,
-        "description": "예진의 기본 프로필 정보를 가져옵니다.",
-        "keywords": [
-            "개발자",
-            "소개",
-            "누구",
-            "어떤 사람",
-            "프로필"
-        ]
+        "description": "예진의 기본 프로필 정보를 가져옵니다."
     },
 
     "get_skills": {
         "function": get_skills,
-        "description": "예진이 사용하는 기술 스택 정보를 가져옵니다.",
-        "keywords": [
-            "기술",
-            "스택",
-            "기술 스택",
-            "사용하는 기술",
-            "무슨 기술",
-            "frontend",
-            "backend"
-        ]
+        "description": "예진이 사용하는 기술 스택 정보를 가져옵니다."
     },
 
     "get_projects": {
         "function": get_projects,
-        "description": "예진이 만든 프로젝트 정보를 가져옵니다.",
-        "keywords": [
-            "프로젝트",
-            "만든 것",
-            "무엇을 만들었",
-            "작업"
-        ]
+        "description": "예진이 만든 프로젝트 정보를 가져옵니다."
     },
 
     "get_learning": {
         "function": get_learning,
-        "description": "예진이 현재 공부하고 있는 내용을 가져옵니다.",
-        "keywords": [
-            "공부",
-            "학습",
-            "배우",
-            "요즘 뭐",
-            "관심사",
-            "최근 관심"
-        ]
+        "description": "예진이 현재 공부하고 있는 내용을 가져옵니다."
     }
 }
-
-
-# =========================================================
-# Portfolio 질문인지 확인
-# =========================================================
-
-PORTFOLIO_KEYWORDS = [
-    "예진",
-    "내",
-    "너",
-    "프로필",
-    "개발자",
-    "프로젝트",
-    "기술 스택",
-    "기술",
-    "공부",
-    "학습",
-]
-
-
-def is_portfolio_question(user_input):
-
-    user_input = user_input.lower()
-
-    return any(
-        keyword.lower() in user_input
-        for keyword in PORTFOLIO_KEYWORDS
-    )
-
-
-# =========================================================
-# Tool 선택
-# =========================================================
-
-def select_tools(user_input):
-
-    user_input = user_input.lower()
-
-    requested_tools = []
-
-    for tool_name, tool in tools.items():
-
-        for keyword in tool["keywords"]:
-
-            if keyword.lower() in user_input:
-
-                requested_tools.append(tool_name)
-
-                break
-
-    return requested_tools
-
-
-# =========================================================
-# Fake AI
-# =========================================================
-
-def fake_ai(user_input):
-
-    # -----------------------------------------------------
-    # 1. 포트폴리오 관련 질문인지 확인
-    # -----------------------------------------------------
-
-    if not is_portfolio_question(user_input):
-
-        return {
-            "type": "out_of_scope",
-            "content": (
-                "예진님에 관련된 정보만 질문해주세요. 😊\n\n"
-                "예를 들면 이런 질문을 할 수 있어요.\n"
-                "- 어떤 기술을 사용하나요?\n"
-                "- 어떤 프로젝트를 만들었나요?\n"
-                "- 요즘 무엇을 공부하고 있나요?\n"
-                "- 어떤 개발자인가요?"
-            )
-        }
-
-    # -----------------------------------------------------
-    # 2. 필요한 Tool 선택
-    # -----------------------------------------------------
-
-    requested_tools = select_tools(
-        user_input
-    )
-
-    # 포트폴리오 관련 질문이지만
-    # 현재 등록된 Tool로 답변할 수 없는 경우
-    if not requested_tools:
-
-        return {
-            "type": "unknown",
-            "content": (
-                "예진님의 포트폴리오와 관련된 질문이지만 "
-                "현재 등록된 정보로는 답변하기 어려워요."
-            )
-        }
-
-    return {
-        "type": "tool_request",
-        "tools": requested_tools
-    }
 
 
 # =========================================================
@@ -236,6 +150,110 @@ def execute_tool(tool_name):
         }
 
     return tool["function"]()
+
+
+# =========================================================
+# LLM Tool 선택
+# =========================================================
+
+def ask_llm_to_select_tools(user_input):
+
+    tool_descriptions = []
+
+    for tool_name, tool in tools.items():
+
+        tool_descriptions.append(
+            f"- {tool_name}: {tool['description']}"
+        )
+
+    prompt = f"""
+너는 AI Agent의 Tool 선택 담당자야.
+
+사용자의 질문을 보고 필요한 Tool을 선택해.
+
+사용 가능한 Tool:
+
+{chr(10).join(tool_descriptions)}
+
+사용자 질문:
+{user_input}
+
+규칙:
+- 필요한 Tool의 이름만 반환해.
+- 여러 Tool이 필요하면 쉼표로 구분해.
+- Tool이 필요하지 않으면 NONE이라고 반환해.
+- 설명하지 말고 결과만 반환해.
+"""
+
+    return ask_llm(prompt)
+
+
+# =========================================================
+# Tool 선택 결과 파싱
+# =========================================================
+
+def parse_tool_selection(llm_result):
+
+    result = llm_result.strip()
+
+    if result == "NONE":
+        return []
+
+    selected_tools = []
+
+    for tool_name in result.split(","):
+
+        tool_name = tool_name.strip()
+
+        if tool_name in tools:
+            selected_tools.append(tool_name)
+
+    return selected_tools
+
+
+# =========================================================
+# 최종 답변 생성
+# =========================================================
+
+def generate_final_answer(
+    user_input,
+    tool_results
+):
+
+    prompt = f"""
+너는 개발자 오예진의 포트폴리오를 소개하는 AI Assistant야.
+
+사용자가 포트폴리오에 대해 질문하면
+오예진을 소개하는 것처럼 자연스럽고 친절하게 답변해.
+
+사용자의 질문:
+{user_input}
+
+Tool 실행 결과:
+{tool_results}
+
+답변 규칙:
+- 오예진에 대해 이야기할 때는 "예진님"이라고 표현해.
+- "내", "저", "저의" 같은 1인칭 표현을 사용하지 마.
+- Tool 결과에 있는 정보만 사용해.
+- Tool 결과에 없는 정보는 만들어내지 마.
+- 단순히 데이터를 나열하지 말고 자연스러운 문장으로 설명해.
+- 질문에 필요한 정보만 답변해.
+- 사용자가 "프로필 정보", "프로필"을 물어보면 이름, 역할, 소개를 자연스럽게 설명해.
+- 너무 딱딱한 문체보다는 포트폴리오를 안내하는 친절한 말투를 사용해.
+
+예시:
+사용자: "내 프로필 정보 알려줘"
+답변: "예진님의 프로필을 소개해드릴게요. 예진님은 개발자로, 배우고 만든 것을 직접 동작하는 서비스로 만들어가며 성장하고 있습니다."
+
+사용자: "기술 스택 알려줘"
+답변: "예진님은 프론트엔드에서 React와 TypeScript를 사용하고 있으며, 백엔드에서는 Kotlin과 Spring Boot, Node.js를 사용하고 있습니다."
+
+이제 사용자의 질문에 답변해.
+"""
+
+    return ask_llm(prompt)
+
 
 # =========================================================
 # FastAPI
@@ -261,11 +279,13 @@ app.add_middleware(
 # =========================================================
 
 class ChatMessage(BaseModel):
+
     role: str
     content: str
 
 
 class ChatRequest(BaseModel):
+
     message: str
     messages: list[ChatMessage]
 
@@ -280,31 +300,32 @@ def chat(request: ChatRequest):
     user_input = request.message
 
     # =====================================================
-    # 1. Fake AI
+    # 1. LLM에게 Tool 선택 요청
     # =====================================================
 
-    decision = fake_ai(
+    llm_result = ask_llm_to_select_tools(
         user_input
     )
 
     # =====================================================
-    # 2. 포트폴리오와 관계없는 질문
+    # 2. LLM 결과를 Tool 이름으로 변환
     # =====================================================
 
-    if decision["type"] == "out_of_scope":
+    selected_tools = parse_tool_selection(
+        llm_result
+    )
+
+    # =====================================================
+    # 3. 사용할 Tool이 없는 경우
+    # =====================================================
+
+    if not selected_tools:
 
         return {
-            "answer": decision["content"]
-        }
-
-    # =====================================================
-    # 3. 등록된 Tool로 답변할 수 없는 질문
-    # =====================================================
-
-    if decision["type"] == "unknown":
-
-        return {
-            "answer": decision["content"]
+            "answer": (
+                "질문에 답변하기 위해 사용할 수 있는 "
+                "Tool을 찾지 못했습니다."
+            )
         }
 
     # =====================================================
@@ -313,21 +334,22 @@ def chat(request: ChatRequest):
 
     results = {}
 
-    for tool_name in decision["tools"]:
+    for tool_name in selected_tools:
 
         results[tool_name] = execute_tool(
             tool_name
         )
 
     # =====================================================
-    # 5. LLM에게 자연어 답변 요청
+    # 5. Tool 결과를 LLM에게 전달
     # =====================================================
 
-    answer = gemini_answer(
+    answer = generate_final_answer(
         user_input,
         results
     )
 
     return {
-        "answer": answer
+        "answer": answer,
+        "provider": get_llm_provider()
     }
