@@ -1,9 +1,6 @@
 package com.devlog.backend.project
 
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
+import jakarta.persistence.*
 
 @Entity
 class Project(
@@ -13,6 +10,9 @@ class Project(
     val id: Long? = null,
 
     var name: String,
+
+    @Column(nullable = false)
+    var slug: String,
 
     var description: String,
 
