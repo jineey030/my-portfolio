@@ -44,7 +44,8 @@ class SecurityConfig(
                         "/api/study-logs/**",
                         "/api/projects/**",
                         "/api/skills/**",
-                        "/api/portfolio-skills/**"
+                        "/api/portfolio-skills/**",
+                        "/api/portfolio-profile"
                     )
                     .permitAll()
                     .requestMatchers("/error")
