@@ -6,8 +6,9 @@ import type {
   Project,
   Skill,
   Feature,
-  Challenge
-} from '../../types/project';
+  Challenge,
+  TechnicalHighlight
+} from '../../types/project'
 function ProjectDetail() {
   const { projectId } = useParams();
 
@@ -19,6 +20,7 @@ function ProjectDetail() {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [features, setFeatures] = useState<Feature[]>([]);
   const [challenges, setChallenges] = useState<Challenge[]>([]);
+  const [technicalHighlights, setTechnicalHighlights] = useState<TechnicalHighlight[]>([]);
 
   // projects
   useEffect(() => {
@@ -120,6 +122,33 @@ useEffect(() => {
   fetchChallenges();
 }, [projectConfig]);
 
+//slug
+useEffect(() => {
+  if (!projectConfig) return;
+
+  const fetchTechnicalHighlights = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/projects/${projectConfig.backendId}/technical-highlights`
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          'Technical Highlights를 불러오지 못했습니다.'
+        );
+      }
+
+      const data: TechnicalHighlight[] = await response.json();
+
+      setTechnicalHighlights(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  fetchTechnicalHighlights();
+}, [projectConfig]);
+
   if (!projectConfig) {
     return (
       <main className="project-detail project-not-found">
@@ -211,6 +240,25 @@ useEffect(() => {
             </li>
           ))}
         </ul>
+      </section>
+
+      {/* Technical Highlights */}
+      <section className="project-detail-section">
+        <p className="project-section-label">
+          05 / TECHNICAL HIGHLIGHTS
+        </p>
+
+        <div className="technical-highlights">
+          {technicalHighlights.map((highlight) => (
+            <article
+              key={highlight.id}
+              className="technical-highlight"
+            >
+              <h3>{highlight.title}</h3>
+              <p>{highlight.description}</p>
+            </article>
+          ))}
+        </div>
       </section>
 
       {/* Links */}
