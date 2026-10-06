@@ -1,5 +1,7 @@
 package com.devlog.backend.project
 
+import com.devlog.backend.project.dto.CreateProjectRequest
+import com.devlog.backend.project.dto.UpdateProjectRequest
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -39,7 +41,8 @@ class ProjectController(
             description = request.description,
             githubUrl = request.githubUrl,
             deployUrl = request.deployUrl,
-            imageUrl = request.imageUrl
+            imageUrl = request.imageUrl,
+            role = request.role
         )
     }
 
@@ -54,7 +57,8 @@ class ProjectController(
             description = request.description,
             githubUrl = request.githubUrl,
             deployUrl = request.deployUrl,
-            imageUrl = request.imageUrl
+            imageUrl = request.imageUrl,
+            role = request.role
         )
     }
 
@@ -66,19 +70,3 @@ class ProjectController(
         projectService.deleteProject(id)
     }
 }
-
-data class CreateProjectRequest(
-    val name: String,
-    val description: String,
-    val githubUrl: String? = null,
-    val deployUrl: String? = null,
-    val imageUrl: String? = null
-)
-
-data class UpdateProjectRequest(
-    val name: String,
-    val description: String,
-    val githubUrl: String? = null,
-    val deployUrl: String? = null,
-    val imageUrl: String? = null
-)
