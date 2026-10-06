@@ -6,6 +6,7 @@ import type {
   Project,
   Skill,
   Feature,
+  Challenge
 } from '../../types/project';
 function ProjectDetail() {
   const { projectId } = useParams();
@@ -17,6 +18,7 @@ function ProjectDetail() {
   const [project, setProject] = useState<Project | null>(null);
   const [skills, setSkills] = useState<Skill[]>([]);
   const [features, setFeatures] = useState<Feature[]>([]);
+  const [challenges, setChallenges] = useState<Challenge[]>([]);
 
   // projects
   useEffect(() => {
@@ -68,29 +70,55 @@ function ProjectDetail() {
   fetchFeatures();
 }, [projectConfig]);
 
-  useEffect(() => {
-    if (!projectConfig) return;
+// skills
+useEffect(() => {
+  if (!projectConfig) return;
 
-    const fetchSkills = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:8080/api/projects/${projectConfig.backendId}/skills`
-        );
+  const fetchSkills = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/projects/${projectConfig.backendId}/skills`
+      );
 
-        if (!response.ok) {
-          throw new Error('Skills를 불러오지 못했습니다.');
-        }
-
-        const data: Skill[] = await response.json();
-
-        setSkills(data);
-      } catch (error) {
-        console.error(error);
+      if (!response.ok) {
+        throw new Error('Skills를 불러오지 못했습니다.');
       }
-    };
 
-    fetchSkills();
-  }, [projectConfig]);
+      const data: Skill[] = await response.json();
+
+      setSkills(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  fetchSkills();
+}, [projectConfig]);
+
+// challenge
+useEffect(() => {
+  if (!projectConfig) return;
+
+  const fetchChallenges = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/projects/${projectConfig.backendId}/challenges`
+      );
+
+      if (!response.ok) {
+        throw new Error('Challenges를 불러오지 못했습니다.');
+      }
+
+      const data: Challenge[] = await response.json();
+
+      setChallenges(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  fetchChallenges();
+}, [projectConfig]);
 
   if (!projectConfig) {
     return (
@@ -168,6 +196,21 @@ function ProjectDetail() {
         <p className="project-detail-text">
           {project.role}
         </p>
+      </section>
+
+      {/* Challenges */}
+      <section className="project-detail-section">
+        <p className="project-section-label">
+          04 / CHALLENGES
+        </p>
+
+        <ul className="project-detail-list">
+          {challenges.map((challenge) => (
+            <li key={challenge.id}>
+              {challenge.name}
+            </li>
+          ))}
+        </ul>
       </section>
 
       {/* Links */}
