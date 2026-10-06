@@ -1,6 +1,7 @@
 export interface Project {
   id: number;
   name: string;
+  slug: string;
   description: string;
   githubUrl: string | null;
   deployUrl: string | null;
