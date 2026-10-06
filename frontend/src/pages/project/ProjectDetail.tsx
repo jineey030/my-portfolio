@@ -1,6 +1,12 @@
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { PROJECTS } from '../introduce/constants/projects';
 import './ProjectDetail.css';
+
+interface Skill {
+  id: number;
+  name: string;
+}
 
 function ProjectDetail() {
   const { projectId } = useParams();
@@ -8,6 +14,32 @@ function ProjectDetail() {
   const project = PROJECTS.find(
     (p) => p.id === projectId
   );
+
+  const [skills, setSkills] = useState<Skill[]>([]);
+
+  useEffect(() => {
+    if (!project) return;
+
+    const fetchSkills = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/projects/${project.backendId}/skills`
+        );
+
+        if (!response.ok) {
+          throw new Error('Skills를 불러오지 못했습니다.');
+        }
+
+        const data: Skill[] = await response.json();
+
+        setSkills(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchSkills();
+  }, [project]);
 
   if (!project) {
     return (
@@ -43,12 +75,12 @@ function ProjectDetail() {
         </p>
 
         <div className="stack-tags">
-          {project.stack.map((stack) => (
+          {skills.map((skill) => (
             <span
-              key={stack}
+              key={skill.id}
               className="stack-tag"
             >
-              {stack}
+              {skill.name}
             </span>
           ))}
         </div>
