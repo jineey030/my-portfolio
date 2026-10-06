@@ -5,6 +5,7 @@ export interface Project {
   githubUrl: string | null;
   deployUrl: string | null;
   imageUrl: string | null;
+  role: string | null;
 }
 
 export interface Skill {
