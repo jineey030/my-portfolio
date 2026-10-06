@@ -2,21 +2,11 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { PROJECTS } from '../introduce/constants/projects';
 import './ProjectDetail.css';
-
-interface Project {
-  id: number;
-  name: string;
-  description: string;
-  githubUrl: string | null;
-  deployUrl: string | null;
-  imageUrl: string | null;
-}
-
-interface Skill {
-  id: number;
-  name: string;
-}
-
+import type {
+  Project,
+  Skill,
+  Feature,
+} from '../../types/project';
 function ProjectDetail() {
   const { projectId } = useParams();
 
@@ -26,7 +16,9 @@ function ProjectDetail() {
 
   const [project, setProject] = useState<Project | null>(null);
   const [skills, setSkills] = useState<Skill[]>([]);
+  const [features, setFeatures] = useState<Feature[]>([]);
 
+  // projects
   useEffect(() => {
     if (!projectConfig) return;
 
@@ -50,6 +42,31 @@ function ProjectDetail() {
 
     fetchProject();
   }, [projectConfig]);
+
+  // feature
+  useEffect(() => {
+  if (!projectConfig) return;
+
+  const fetchFeatures = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/projects/${projectConfig.backendId}/features`
+      );
+
+      if (!response.ok) {
+        throw new Error('Features를 불러오지 못했습니다.');
+      }
+
+      const data: Feature[] = await response.json();
+
+      setFeatures(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  fetchFeatures();
+}, [projectConfig]);
 
   useEffect(() => {
     if (!projectConfig) return;
@@ -125,6 +142,21 @@ function ProjectDetail() {
             </span>
           ))}
         </div>
+      </section>
+
+      {/* Features */}
+      <section className="project-detail-section">
+        <p className="project-section-label">
+          02 / FEATURES
+        </p>
+
+        <ul className="project-detail-list">
+          {features.map((feature) => (
+            <li key={feature.id}>
+              {feature.name}
+            </li>
+          ))}
+        </ul>
       </section>
 
       {/* Links */}
