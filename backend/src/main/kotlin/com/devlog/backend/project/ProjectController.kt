@@ -24,6 +24,13 @@ class ProjectController(
         return projectService.getProjects()
     }
 
+    @GetMapping("/slug/{slug}")
+    fun getProjectBySlug(
+        @PathVariable slug: String
+    ): Project {
+        return projectService.getProjectBySlug(slug)
+    }
+
     @GetMapping("/{id}")
     fun getProject(
         @PathVariable id: Long
@@ -42,7 +49,8 @@ class ProjectController(
             githubUrl = request.githubUrl,
             deployUrl = request.deployUrl,
             imageUrl = request.imageUrl,
-            role = request.role
+            role = request.role,
+            slug = request.slug
         )
     }
 
@@ -58,7 +66,8 @@ class ProjectController(
             githubUrl = request.githubUrl,
             deployUrl = request.deployUrl,
             imageUrl = request.imageUrl,
-            role = request.role
+            role = request.role,
+            slug = request.slug
         )
     }
 
