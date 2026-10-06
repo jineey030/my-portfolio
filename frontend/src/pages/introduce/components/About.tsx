@@ -1,16 +1,38 @@
+import { useEffect, useState } from 'react';
+import type { PortfolioProfile } from '../../../types/portfolioProfile';
 import SectionTitle from '../../../components/ui/SectionTitle';
 
 function About() {
+  const [profile, setProfile] = useState<PortfolioProfile | null>(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch(
+          'http://localhost:8080/api/portfolio-profile'
+        );
+
+        if (!response.ok) {
+          throw new Error('프로필을 불러오지 못했습니다.');
+        }
+
+        const data: PortfolioProfile = await response.json();
+
+        setProfile(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
   return (
     <section id="about">
       <SectionTitle>About</SectionTitle>
 
       <p className="about-text">
-        React와 Kotlin(Spring Boot)을 함께 공부하면서, 배운 걸 그냥 넘기지 않고{' '}
-        <span className="highlight-cyan">
-          직접 동작하는 서비스
-        </span>
-        로 만들어보는 걸 목표로 하고 있습니다. 프론트엔드와 백엔드를 함께 다루면서 전체 흐름을 이해하는 것을 좋아합니다.
+        {profile?.aboutText}
       </p>
     </section>
   );
