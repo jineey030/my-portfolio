@@ -3,6 +3,15 @@ import { Link, useParams } from 'react-router';
 import { PROJECTS } from '../introduce/constants/projects';
 import './ProjectDetail.css';
 
+interface Project {
+  id: number;
+  name: string;
+  description: string;
+  githubUrl: string | null;
+  deployUrl: string | null;
+  imageUrl: string | null;
+}
+
 interface Skill {
   id: number;
   name: string;
@@ -11,19 +20,44 @@ interface Skill {
 function ProjectDetail() {
   const { projectId } = useParams();
 
-  const project = PROJECTS.find(
-    (p) => p.id === projectId
+  const projectConfig = PROJECTS.find(
+    (project) => project.id === projectId
   );
 
+  const [project, setProject] = useState<Project | null>(null);
   const [skills, setSkills] = useState<Skill[]>([]);
 
   useEffect(() => {
-    if (!project) return;
+    if (!projectConfig) return;
+
+    const fetchProject = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/projects/${projectConfig.backendId}`
+        );
+
+        if (!response.ok) {
+          throw new Error('프로젝트를 불러오지 못했습니다.');
+        }
+
+        const data: Project = await response.json();
+
+        setProject(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchProject();
+  }, [projectConfig]);
+
+  useEffect(() => {
+    if (!projectConfig) return;
 
     const fetchSkills = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/projects/${project.backendId}/skills`
+          `http://localhost:8080/api/projects/${projectConfig.backendId}/skills`
         );
 
         if (!response.ok) {
@@ -39,9 +73,9 @@ function ProjectDetail() {
     };
 
     fetchSkills();
-  }, [project]);
+  }, [projectConfig]);
 
-  if (!project) {
+  if (!projectConfig) {
     return (
       <main className="project-detail project-not-found">
         <p>프로젝트를 찾을 수 없습니다.</p>
@@ -53,15 +87,22 @@ function ProjectDetail() {
     );
   }
 
+  if (!project) {
+    return (
+      <main className="project-detail">
+        <p>프로젝트를 불러오는 중...</p>
+      </main>
+    );
+  }
+
   return (
     <main className="project-detail">
-      {/* Header */}
       <header className="project-detail-header">
         <p className="project-detail-label">
           PROJECT / {project.id}
         </p>
 
-        <h1>{project.title}</h1>
+        <h1>{project.name}</h1>
 
         <p className="project-detail-description">
           {project.description}
@@ -86,74 +127,11 @@ function ProjectDetail() {
         </div>
       </section>
 
-      {/* Features */}
-      <section className="project-detail-section">
-        <p className="project-section-label">
-          02 / FEATURES
-        </p>
-
-        <ul className="project-detail-list">
-          {project.features.map((feature) => (
-            <li key={feature}>
-              {feature}
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      {/* Role */}
-      <section className="project-detail-section">
-        <p className="project-section-label">
-          03 / MY ROLE
-        </p>
-
-        <p className="project-detail-text">
-          {project.role}
-        </p>
-      </section>
-
-      {/* Challenges */}
-      <section className="project-detail-section">
-        <p className="project-section-label">
-          04 / CHALLENGES
-        </p>
-
-        <ul className="project-detail-list">
-          {project.challenges.map((challenge) => (
-            <li key={challenge}>
-              {challenge}
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      {/* Technical Highlights */}
-      <section className="project-detail-section">
-        <p className="project-section-label">
-          05 / TECHNICAL HIGHLIGHTS
-        </p>
-
-        <div className="technical-highlights">
-          {project.technicalHighlights.map(
-            (highlight) => (
-              <article
-                key={highlight.title}
-                className="technical-highlight"
-              >
-                <h3>{highlight.title}</h3>
-
-                <p>{highlight.description}</p>
-              </article>
-            )
-          )}
-        </div>
-      </section>
-
       {/* Links */}
       <section className="project-detail-links">
-        {project.github && (
+        {project.githubUrl && (
           <a
-            href={project.github}
+            href={project.githubUrl}
             target="_blank"
             rel="noreferrer"
           >
@@ -161,9 +139,9 @@ function ProjectDetail() {
           </a>
         )}
 
-        {project.demo && (
+        {project.deployUrl && (
           <a
-            href={project.demo}
+            href={project.deployUrl}
             target="_blank"
             rel="noreferrer"
           >
@@ -172,7 +150,6 @@ function ProjectDetail() {
         )}
       </section>
 
-      {/* Back */}
       <Link
         to="/#projects"
         className="project-back"
