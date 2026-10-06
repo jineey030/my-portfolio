@@ -40,22 +40,11 @@ class SecurityConfig(
                     .permitAll()
                     .requestMatchers(
                         HttpMethod.GET,
-                        "/api/todos/**"
-                    )
-                    .permitAll()
-                    .requestMatchers(
-                        HttpMethod.GET,
+                        "/api/todos/**",
                         "/api/study-logs/**",
-                    )
-                    .permitAll()
-                    .requestMatchers(
-                        HttpMethod.GET,
-                        "/api/projects/**"
-                    )
-                    .permitAll()
-                    .requestMatchers(
-                        HttpMethod.GET,
-                        "/api/skills/**"
+                        "/api/projects/**",
+                        "/api/skills/**",
+                        "/api/portfolio-skills/**"
                     )
                     .permitAll()
                     .requestMatchers("/error")
