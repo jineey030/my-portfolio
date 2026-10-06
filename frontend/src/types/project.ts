@@ -22,3 +22,9 @@ export interface Challenge {
   id: number;
   name: string;
 }
+
+export interface TechnicalHighlight {
+  id: number;
+  title: string;
+  description: string;
+}
