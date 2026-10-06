@@ -23,14 +23,16 @@ class ProjectService(
         description: String,
         githubUrl: String?,
         deployUrl: String?,
-        imageUrl: String?
+        imageUrl: String?,
+        role: String?
     ): Project {
         val project = Project(
             name = name,
             description = description,
             githubUrl = githubUrl,
             deployUrl = deployUrl,
-            imageUrl = imageUrl
+            imageUrl = imageUrl,
+            role = role
         )
 
         return projectRepository.save(project)
@@ -42,7 +44,8 @@ class ProjectService(
         description: String,
         githubUrl: String?,
         deployUrl: String?,
-        imageUrl: String?
+        imageUrl: String?,
+        role : String?
     ): Project {
         val project = projectRepository.findById(id)
             .orElseThrow {
@@ -54,6 +57,7 @@ class ProjectService(
         project.githubUrl = githubUrl
         project.deployUrl = deployUrl
         project.imageUrl = imageUrl
+        project.role = role
 
         return projectRepository.save(project)
     }
