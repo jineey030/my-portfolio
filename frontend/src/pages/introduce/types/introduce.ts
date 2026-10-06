@@ -1,5 +1,6 @@
 export interface Project {
   id: string;
+  backendId: number;
   title: string;
   description: string;
   stack: string[];
