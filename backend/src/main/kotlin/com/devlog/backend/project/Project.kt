@@ -20,5 +20,7 @@ class Project(
 
     var deployUrl: String? = null,
 
-    var imageUrl: String? = null
+    var imageUrl: String? = null,
+
+    var role: String? = null
 )
