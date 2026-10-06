@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
-import { PROJECTS } from '../introduce/constants/projects';
 import './ProjectDetail.css';
 import type {
   Project,
@@ -12,10 +11,6 @@ import type {
 function ProjectDetail() {
   const { projectId } = useParams();
 
-  const projectConfig = PROJECTS.find(
-    (project) => project.id === projectId
-  );
-
   const [project, setProject] = useState<Project | null>(null);
   const [skills, setSkills] = useState<Skill[]>([]);
   const [features, setFeatures] = useState<Feature[]>([]);
@@ -24,12 +19,12 @@ function ProjectDetail() {
 
   // projects
   useEffect(() => {
-    if (!projectConfig) return;
+    if (!projectId) return;
 
     const fetchProject = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/projects/${projectConfig.backendId}`
+          `http://localhost:8080/api/projects/slug/${projectId}`
         );
 
         if (!response.ok) {
@@ -45,41 +40,40 @@ function ProjectDetail() {
     };
 
     fetchProject();
-  }, [projectConfig]);
+  }, [projectId]);
 
   // feature
   useEffect(() => {
-  if (!projectConfig) return;
+    if (!project?.id) return;
 
-  const fetchFeatures = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:8080/api/projects/${projectConfig.backendId}/features`
-      );
+    const fetchFeatures = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/projects/${project.id}/features`
+        );
 
-      if (!response.ok) {
-        throw new Error('Features를 불러오지 못했습니다.');
+        if (!response.ok) {
+          throw new Error('Features를 불러오지 못했습니다.');
+        }
+
+        const data: Feature[] = await response.json();
+
+        setFeatures(data);
+      } catch (error) {
+        console.error(error);
       }
+    };
 
-      const data: Feature[] = await response.json();
-
-      setFeatures(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  fetchFeatures();
-}, [projectConfig]);
-
+    fetchFeatures();
+  }, [project?.id]);
 // skills
 useEffect(() => {
-  if (!projectConfig) return;
+  if (!project?.id) return;
 
   const fetchSkills = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/projects/${projectConfig.backendId}/skills`
+        `http://localhost:8080/api/projects/${project.id}/skills`
       );
 
       if (!response.ok) {
@@ -95,16 +89,16 @@ useEffect(() => {
   };
 
   fetchSkills();
-}, [projectConfig]);
+}, [project?.id]);
 
 // challenge
 useEffect(() => {
-  if (!projectConfig) return;
+  if (!project?.id) return;
 
   const fetchChallenges = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/projects/${projectConfig.backendId}/challenges`
+        `http://localhost:8080/api/projects/${project.id}/challenges`
       );
 
       if (!response.ok) {
@@ -120,16 +114,16 @@ useEffect(() => {
   };
 
   fetchChallenges();
-}, [projectConfig]);
+}, [project?.id]);
 
 //slug
 useEffect(() => {
-  if (!projectConfig) return;
+  if (!project?.id) return;
 
   const fetchTechnicalHighlights = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/projects/${projectConfig.backendId}/technical-highlights`
+        `http://localhost:8080/api/projects/${project.id}/technical-highlights`
       );
 
       if (!response.ok) {
@@ -147,19 +141,19 @@ useEffect(() => {
   };
 
   fetchTechnicalHighlights();
-}, [projectConfig]);
+}, [project?.id]);
 
-  if (!projectConfig) {
-    return (
-      <main className="project-detail project-not-found">
-        <p>프로젝트를 찾을 수 없습니다.</p>
+  if (!projectId) {
+  return (
+    <main className="project-detail project-not-found">
+      <p>프로젝트를 찾을 수 없습니다.</p>
 
-        <Link to="/">
-          ← 홈으로 돌아가기
-        </Link>
-      </main>
-    );
-  }
+      <Link to="/">
+        ← 홈으로 돌아가기
+      </Link>
+    </main>
+  );
+}
 
   if (!project) {
     return (
