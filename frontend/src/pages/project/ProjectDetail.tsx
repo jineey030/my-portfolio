@@ -159,6 +159,17 @@ function ProjectDetail() {
         </ul>
       </section>
 
+      {/* My Role */}
+      <section className="project-detail-section">
+        <p className="project-section-label">
+          03 / MY ROLE
+        </p>
+
+        <p className="project-detail-text">
+          {project.role}
+        </p>
+      </section>
+
       {/* Links */}
       <section className="project-detail-links">
         {project.githubUrl && (
