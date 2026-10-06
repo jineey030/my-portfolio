@@ -17,3 +17,8 @@ export interface Feature {
   id: number;
   name: string;
 }
+
+export interface Challenge {
+  id: number;
+  name: string;
+}
