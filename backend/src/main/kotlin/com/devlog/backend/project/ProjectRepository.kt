@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 interface ProjectRepository : JpaRepository<Project, Long> {
 
     fun findAllByOrderByIdDesc(): List<Project>
+
+    fun findBySlug(slug: String): Project?
 }
