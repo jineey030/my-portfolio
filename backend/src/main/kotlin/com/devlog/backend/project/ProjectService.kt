@@ -11,6 +11,11 @@ class ProjectService(
         return projectRepository.findAllByOrderByIdDesc()
     }
 
+    fun getProjectBySlug(slug: String): Project {
+        return projectRepository.findBySlug(slug)
+            ?: throw IllegalArgumentException("Project not found: $slug")
+    }
+
     fun getProject(id: Long): Project {
         return projectRepository.findById(id)
             .orElseThrow {
@@ -20,6 +25,7 @@ class ProjectService(
 
     fun createProject(
         name: String,
+        slug: String,
         description: String,
         githubUrl: String?,
         deployUrl: String?,
@@ -28,6 +34,7 @@ class ProjectService(
     ): Project {
         val project = Project(
             name = name,
+            slug = slug,
             description = description,
             githubUrl = githubUrl,
             deployUrl = deployUrl,
@@ -41,6 +48,7 @@ class ProjectService(
     fun updateProject(
         id: Long,
         name: String,
+        slug: String,
         description: String,
         githubUrl: String?,
         deployUrl: String?,
@@ -53,6 +61,7 @@ class ProjectService(
             }
 
         project.name = name
+        project.slug = slug
         project.description = description
         project.githubUrl = githubUrl
         project.deployUrl = deployUrl
