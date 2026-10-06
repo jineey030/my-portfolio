@@ -1,22 +1,41 @@
+import { useEffect, useState } from 'react';
+import type { PortfolioProfile } from '../../../types/portfolioProfile';
+
 function Hero() {
+  const [profile, setProfile] = useState<PortfolioProfile | null>(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch(
+          'http://localhost:8080/api/portfolio-profile'
+        );
+
+        if (!response.ok) {
+          throw new Error('프로필을 불러오지 못했습니다.');
+        }
+
+        const data: PortfolioProfile = await response.json();
+
+        setProfile(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
   return (
     <section id="hero" className="hero">
       <p className="hero-greeting">$ whoami</p>
 
       <h1 className="hero-name">
-        오예진
+        {profile?.name}
       </h1>
 
       <p className="hero-tagline">
-        React와 Kotlin으로{' '}
-        <span className="highlight-cyan">
-          배우고
-        </span>
-        ,{' '}
-        <span className="highlight-purple">
-          만들면서
-        </span>{' '}
-        성장하는 개발자
+        {profile?.tagline}
       </p>
 
       <div className="hero-cta">
