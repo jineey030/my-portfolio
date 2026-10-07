@@ -1,11 +1,6 @@
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../../../api/api';
 
-interface Skill {
-  id: number;
-  name: string;
-}
-
 interface ProjectSkill {
   id: number;
   name: string;
@@ -18,9 +13,10 @@ interface ProjectSkillsProps {
 function ProjectSkills({
   projectId
 }: ProjectSkillsProps) {
-  const [skills, setSkills] = useState<ProjectSkill[]>([]);
-  const [allSkills, setAllSkills] = useState<Skill[]>([]);
-  const [selectedSkillId, setSelectedSkillId] =
+  const [skills, setSkills] =
+    useState<ProjectSkill[]>([]);
+
+  const [skillName, setSkillName] =
     useState('');
 
   const [isLoading, setIsLoading] =
@@ -60,39 +56,16 @@ function ProjectSkills({
     }
   };
 
-  const fetchAllSkills = async () => {
-    try {
-      const response = await apiFetch(
-        '/api/skills'
-      );
-
-      if (!response.ok) {
-        throw new Error(
-          '전체 Skills 조회에 실패했습니다.'
-        );
-      }
-
-      const data = await response.json();
-
-      setAllSkills(data);
-    } catch (error) {
-      console.error(error);
-
-      setError(
-        '전체 Skills를 불러오지 못했습니다.'
-      );
-    }
-  };
-
   useEffect(() => {
     fetchSkills();
-    fetchAllSkills();
   }, [projectId]);
 
   const handleAddSkill = async () => {
-    if (!selectedSkillId) {
+    const name = skillName.trim();
+
+    if (!name) {
       setError(
-        '추가할 Skill을 선택해주세요.'
+        'Skill 이름을 입력해주세요.'
       );
       return;
     }
@@ -103,19 +76,26 @@ function ProjectSkills({
       setMessage('');
 
       const response = await apiFetch(
-        `/api/projects/${projectId}/skills/${selectedSkillId}`,
+        `/api/projects/${projectId}/skills`,
         {
-          method: 'POST'
+          method: 'POST',
+          headers: {
+            'Content-Type':
+              'application/json'
+          },
+          body: JSON.stringify({
+            name
+          })
         }
       );
 
       if (!response.ok) {
         throw new Error(
-          'Skill 연결에 실패했습니다.'
+          'Skill 추가에 실패했습니다.'
         );
       }
 
-      setSelectedSkillId('');
+      setSkillName('');
 
       setMessage(
         'Skill이 추가되었습니다.'
@@ -177,27 +157,14 @@ function ProjectSkills({
       </div>
 
       <div className="admin-project-skills-add">
-        <select
-          value={selectedSkillId}
+        <input
+          type="text"
+          value={skillName}
           onChange={(event) =>
-            setSelectedSkillId(
-              event.target.value
-            )
+            setSkillName(event.target.value)
           }
-        >
-          <option value="">
-            Skill을 선택하세요
-          </option>
-
-          {allSkills.map((skill) => (
-            <option
-              key={skill.id}
-              value={skill.id}
-            >
-              {skill.name}
-            </option>
-          ))}
-        </select>
+          placeholder="예: React + TypeScript"
+        />
 
         <button
           type="button"
