@@ -1415,30 +1415,120 @@
   background: #4ade80;
 }
 
-.admin-dashboard-card:nth-child(4)::before {
+.admin-dashboard-card:nth-child(3)::before {
   background: #f472b6;
 }
 
-.admin-dashboard-card:nth-child(4):hover::before {
+.admin-dashboard-card:nth-child(3):hover::before {
   background: #f472b6;
 }
 
 
 /* ========================================
-   Portfolio Dashboard Responsive
- ======================================== */
+   Portfolio Management
+======================================== */
 
-@media (max-width: 760px) {
-  .admin-dashboard-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .admin-dashboard-card {
-    min-height: auto;
-    padding: 20px;
-  }
+.admin-management-list {
+  display: flex;
+  flex-direction: column;
+  margin-top: 32px;
+  border-top: 1px solid #1f2933;
 }
 
-.admin-dashboard-card {
+.admin-management-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 28px 8px 28px 4px;
+
+  border: 0;
+  border-bottom: 1px solid #1f2933;
+
+  background: transparent;
+  color: inherit;
+
+  text-align: left;
   cursor: pointer;
+
+  transition:
+    padding 0.2s ease,
+    background 0.2s ease;
+}
+
+.admin-management-item:hover {
+  padding-left: 12px;
+  padding-right: 4px;
+  background: #11161f;
+}
+
+.admin-management-content {
+  min-width: 0;
+}
+
+.admin-management-label {
+  margin: 0 0 8px;
+
+  color: #545e6b;
+
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+}
+
+.admin-management-item h2 {
+  margin: 0 0 8px;
+
+  color: #e5e7eb;
+
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.admin-management-item p:last-child {
+  margin: 0;
+
+  color: #8b95a3;
+
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.admin-management-arrow {
+  flex-shrink: 0;
+  margin-left: 24px;
+
+  color: #545e6b;
+
+  font-family: 'DM Mono', monospace;
+  font-size: 20px;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-management-item:hover .admin-management-arrow {
+  color: #5eead4;
+  transform: translateX(4px);
+}
+
+/* Mobile */
+
+@media (max-width: 640px) {
+  .admin-management-item {
+    padding: 22px 4px;
+  }
+
+  .admin-management-item:hover {
+    padding-left: 8px;
+  }
+
+  .admin-management-item h2 {
+    font-size: 18px;
+  }
+
+  .admin-management-item p:last-child {
+    max-width: 90%;
+  }
 }
