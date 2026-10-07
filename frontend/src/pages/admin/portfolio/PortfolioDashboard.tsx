@@ -1,4 +1,8 @@
+import { useNavigate } from 'react-router';
+
 function PortfolioDashboard() {
+  const navigate = useNavigate();
+
   return (
     <main className="admin-page">
       <header className="admin-page-header">
@@ -13,54 +17,57 @@ function PortfolioDashboard() {
         </p>
       </header>
 
-      <section className="admin-dashboard-grid">
-        <div className="admin-dashboard-card">
-          <p className="admin-dashboard-card-label">
-            PROFILE
-          </p>
+      <section className="admin-management-list">
 
-          <h2>Profile</h2>
+        <button
+          type="button"
+          className="admin-management-item"
+          onClick={() =>
+            navigate('/admin/portfolio/profile')
+          }
+        >
+          <div className="admin-management-content">
+            <p className="admin-management-label">
+              PROFILE
+            </p>
 
-          <p>
-            이름, 소개, 연락처 등 포트폴리오 프로필을 관리합니다.
-          </p>
-        </div>
+            <h2>Profile</h2>
 
-        <div className="admin-dashboard-card">
-          <p className="admin-dashboard-card-label">
-            PROJECTS
-          </p>
+            <p>
+              이름, 소개, 연락처 등 포트폴리오 프로필을 관리합니다.
+            </p>
+          </div>
 
-          <h2>Projects</h2>
+          <span className="admin-management-arrow">
+            →
+          </span>
+        </button>
 
-          <p>
-            포트폴리오에 표시할 프로젝트를 관리합니다.
-          </p>
-        </div>
+        <button
+          type="button"
+          className="admin-management-item"
+          onClick={() =>
+            navigate('/admin/portfolio/projects')
+          }
+        >
+          <div className="admin-management-content">
+            <p className="admin-management-label">
+              PROJECTS
+            </p>
 
-        <div className="admin-dashboard-card">
-          <p className="admin-dashboard-card-label">
-            SKILLS
-          </p>
+            <h2>Projects</h2>
 
-          <h2>Skills</h2>
+            <p>
+              프로젝트와 Skills, Features, Challenges,
+              Technical Highlights를 관리합니다.
+            </p>
+          </div>
 
-          <p>
-            포트폴리오 전체 기술 스택을 관리합니다.
-          </p>
-        </div>
+          <span className="admin-management-arrow">
+            →
+          </span>
+        </button>
 
-        <div className="admin-dashboard-card">
-          <p className="admin-dashboard-card-label">
-            CONTENT
-          </p>
-
-          <h2>Project Content</h2>
-
-          <p>
-            프로젝트의 Features, Challenges, Technical Highlights를 관리합니다.
-          </p>
-        </div>
       </section>
     </main>
   );
