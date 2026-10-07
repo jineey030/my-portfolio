@@ -1438,3 +1438,7 @@
     padding: 20px;
   }
 }
+
+.admin-dashboard-card {
+  cursor: pointer;
+}
