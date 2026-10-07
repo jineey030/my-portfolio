@@ -1784,3 +1784,168 @@
     width: 100%;
   }
 }
+
+/* ========================================
+   Project Technical Highlights
+======================================== */
+
+.admin-project-technical-highlights {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #1f2933;
+}
+
+.admin-project-technical-highlights-header {
+  margin-bottom: 14px;
+}
+
+.admin-project-technical-highlights-header h3 {
+  margin: 0;
+
+  color: #e5e7eb;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.admin-project-technical-highlights-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-project-technical-highlight-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  padding: 12px;
+
+  border: 1px solid #1f2933;
+  border-radius: 6px;
+
+  background: #0d1219;
+}
+
+.admin-project-technical-highlight-content {
+  min-width: 0;
+}
+
+.admin-project-technical-highlight-content h4 {
+  margin: 0 0 6px;
+
+  color: #e5e7eb;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.admin-project-technical-highlight-content p {
+  margin: 0;
+
+  color: #8b95a3;
+
+  font-size: 12px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.admin-project-technical-highlight-item button {
+  flex-shrink: 0;
+
+  border: 0;
+  background: transparent;
+
+  color: #f472b6;
+
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+
+  cursor: pointer;
+}
+
+.admin-project-technical-highlight-item button:hover {
+  color: #fb7185;
+}
+
+.admin-project-technical-highlights-add {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+
+  margin-top: 12px;
+}
+
+.admin-project-technical-highlights-add input,
+.admin-project-technical-highlights-add textarea {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 9px 10px;
+
+  border: 1px solid #26313d;
+  border-radius: 6px;
+
+  outline: none;
+
+  background: #0d1219;
+  color: #e5e7eb;
+
+  font-size: 13px;
+
+  font-family: inherit;
+}
+
+.admin-project-technical-highlights-add textarea {
+  resize: vertical;
+
+  line-height: 1.6;
+}
+
+.admin-project-technical-highlights-add input::placeholder,
+.admin-project-technical-highlights-add textarea::placeholder {
+  color: #545e6b;
+}
+
+.admin-project-technical-highlights-add input:focus,
+.admin-project-technical-highlights-add textarea:focus {
+  border-color: #5eead4;
+}
+
+.admin-project-technical-highlights-add button {
+  align-self: flex-start;
+
+  padding: 9px 14px;
+
+  border: 1px solid #5eead4;
+  border-radius: 6px;
+
+  background: transparent;
+  color: #5eead4;
+
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+
+  cursor: pointer;
+}
+
+.admin-project-technical-highlights-add button:hover {
+  background: rgba(94, 234, 212, 0.08);
+}
+
+@media (max-width: 640px) {
+  .admin-project-technical-highlight-item {
+    flex-direction: column;
+  }
+
+  .admin-project-technical-highlight-item button {
+    align-self: flex-end;
+  }
+
+  .admin-project-technical-highlights-add button {
+    width: 100%;
+  }
+}
