@@ -4,6 +4,7 @@ import type { Project } from '../../../types/project';
 
 import ProjectSkills from './ProjectSkills';
 import ProjectFeatures from './ProjectFeatures';
+import ProjectChallenges from './ProjectChallenges';
 
 function PortfolioProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -468,6 +469,10 @@ function PortfolioProjects() {
               />
 
               <ProjectFeatures
+                projectId={project.id}
+              />
+
+              <ProjectChallenges
                 projectId={project.id}
               />
 
