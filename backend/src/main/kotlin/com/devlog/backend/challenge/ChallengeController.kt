@@ -1,6 +1,7 @@
 package com.devlog.backend.challenge
 
 import com.devlog.backend.project.ProjectRepository
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -42,11 +43,21 @@ class ChallengeController(
             project = project
         )
 
-        val savedChallenge = challengeService.create(challenge)
+        val savedChallenge =
+            challengeService.create(challenge)
 
         return ChallengeResponse(
             id = savedChallenge.id,
             name = savedChallenge.name
         )
+    }
+
+    @DeleteMapping("/{challengeId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteChallenge(
+        @PathVariable projectId: Long,
+        @PathVariable challengeId: Long
+    ) {
+        challengeService.delete(challengeId)
     }
 }
