@@ -1949,3 +1949,122 @@
     width: 100%;
   }
 }
+
+/* ========================================
+   Project Content Accordion
+======================================== */
+
+.admin-project-content {
+  margin-top: 24px;
+  padding-top: 20px;
+
+  border-top: 1px solid #1f2933;
+}
+
+.admin-project-content-label {
+  margin: 0 0 10px;
+
+  color: #545e6b;
+
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+
+.admin-project-content-section {
+  border-bottom: 1px solid #1f2933;
+}
+
+.admin-project-content-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+  padding: 14px 4px;
+
+  border: 0;
+  background: transparent;
+  color: #cbd5e1;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    padding 0.2s ease;
+}
+
+.admin-project-content-toggle:hover {
+  padding-left: 8px;
+  color: #5eead4;
+}
+
+.admin-project-content-arrow {
+  flex-shrink: 0;
+
+  color: #545e6b;
+
+  font-family: 'DM Mono', monospace;
+  font-size: 16px;
+
+  transition: color 0.2s ease;
+}
+
+.admin-project-content-toggle:hover
+.admin-project-content-arrow {
+  color: #5eead4;
+}
+
+.admin-project-content-body {
+  padding: 0 4px 16px;
+}
+
+/*
+  기존 Skills / Features / Challenges /
+  Technical Highlights 컴포넌트의
+  위쪽 여백과 border를 제거해서
+  accordion 안에서 자연스럽게 보이도록 한다.
+*/
+
+.admin-project-content-body
+.admin-project-skills,
+.admin-project-content-body
+.admin-project-features,
+.admin-project-content-body
+.admin-project-challenges,
+.admin-project-content-body
+.admin-project-technical-highlights {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* Header 중복 제거 */
+
+.admin-project-content-body
+.admin-project-skills-header,
+.admin-project-content-body
+.admin-project-features-header,
+.admin-project-content-body
+.admin-project-challenges-header,
+.admin-project-content-body
+.admin-project-technical-highlights-header {
+  margin-bottom: 10px;
+}
+
+@media (max-width: 640px) {
+  .admin-project-content-toggle {
+    padding: 13px 2px;
+  }
+
+  .admin-project-content-toggle:hover {
+    padding-left: 6px;
+  }
+
+  .admin-project-content-body {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
