@@ -25,6 +25,9 @@ function ProjectSkills({
   const [isAdding, setIsAdding] =
     useState(false);
 
+  const [deletingSkillId, setDeletingSkillId] =
+    useState<number | null>(null);
+
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
 
@@ -113,6 +116,43 @@ function ProjectSkills({
     }
   };
 
+  const handleDeleteSkill = async (
+    skillId: number
+  ) => {
+    try {
+      setDeletingSkillId(skillId);
+      setError('');
+      setMessage('');
+
+      const response = await apiFetch(
+        `/api/projects/${projectId}/skills/${skillId}`,
+        {
+          method: 'DELETE'
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          'Skill 삭제에 실패했습니다.'
+        );
+      }
+
+      setMessage(
+        'Skill이 삭제되었습니다.'
+      );
+
+      await fetchSkills();
+    } catch (error) {
+      console.error(error);
+
+      setError(
+        'Skill 삭제에 실패했습니다.'
+      );
+    } finally {
+      setDeletingSkillId(null);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="admin-project-skills">
@@ -150,7 +190,21 @@ function ProjectSkills({
               key={skill.id}
               className="admin-project-skill-item"
             >
-              {skill.name}
+              <span>{skill.name}</span>
+
+              <button
+                type="button"
+                onClick={() =>
+                  handleDeleteSkill(skill.id)
+                }
+                disabled={
+                  deletingSkillId === skill.id
+                }
+              >
+                {deletingSkillId === skill.id
+                  ? 'Deleting...'
+                  : 'Remove'}
+              </button>
             </div>
           ))
         )}
