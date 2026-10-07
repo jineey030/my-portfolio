@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../../../api/api';
 import type { Project } from '../../../types/project';
+import ProjectSkills from './ProjectSkills';
 
 function PortfolioProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -455,16 +456,16 @@ function PortfolioProjects() {
 
                 <h2>{project.name}</h2>
 
-                <p>
-                  {project.description}
-                </p>
+                <p>{project.description}</p>
 
-                <span>
-                  {project.slug}
-                </span>
+                <span>{project.slug}</span>
               </div>
 
-                <div className="admin-project-card-actions">
+              <ProjectSkills
+                projectId={project.id}
+              />
+
+              <div className="admin-project-card-actions">
                     <button
                         type="button"
                         onClick={() =>
@@ -483,6 +484,8 @@ function PortfolioProjects() {
                         Delete
                     </button>
                 </div>
+
+                
             </article>
           ))
         )}
