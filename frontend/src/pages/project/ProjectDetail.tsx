@@ -116,7 +116,7 @@ useEffect(() => {
   fetchChallenges();
 }, [project?.id]);
 
-//slug
+// technical highlights
 useEffect(() => {
   if (!project?.id) return;
 

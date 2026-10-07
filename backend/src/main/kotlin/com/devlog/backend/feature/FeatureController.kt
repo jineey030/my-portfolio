@@ -1,6 +1,7 @@
 package com.devlog.backend.feature
 
 import com.devlog.backend.project.ProjectRepository
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -31,7 +32,9 @@ class FeatureController(
 
         val project = projectRepository.findById(projectId)
             .orElseThrow {
-                IllegalArgumentException("Project not found: $projectId")
+                IllegalArgumentException(
+                    "Project not found: $projectId"
+                )
             }
 
         val feature = Feature(
@@ -39,11 +42,21 @@ class FeatureController(
             project = project
         )
 
-        val savedFeature = featureService.create(feature)
+        val savedFeature =
+            featureService.create(feature)
 
         return FeatureResponse(
             id = savedFeature.id,
             name = savedFeature.name
         )
+    }
+
+    @DeleteMapping("/{featureId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteFeature(
+        @PathVariable projectId: Long,
+        @PathVariable featureId: Long
+    ) {
+        featureService.delete(featureId)
     }
 }

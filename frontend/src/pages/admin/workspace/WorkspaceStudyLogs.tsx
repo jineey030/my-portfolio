@@ -1,5 +1,5 @@
-import StudyLog from '../learning/components/StudyLog';
-import { useLearning } from '../learning/context/LearningContext';
+import StudyLog from '../../learning/components/StudyLog';
+import { useLearning } from '../../learning/context/LearningContext';
 
 function AdminStudyLogs() {
   const {

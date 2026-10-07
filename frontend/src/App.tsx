@@ -15,10 +15,15 @@ import Learning from './pages/learning/Learning';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminRoute from './pages/admin/AdminRoute';
 
+import PortfolioDashboard from './pages/admin/portfolio/PortfolioDashboard';
+import PortfolioProfile from './pages/admin/portfolio/PortfolioProfile';
+import PortfolioProjects from './pages/admin/portfolio/PortfolioProjects';
+
 import AdminLayout from './pages/admin/AdminLayout';
-import AdminDashboard from './pages/admin/AdminDashboard';
-import AdminTodos from './pages/admin/AdminTodos';
-import AdminStudyLogs from './pages/admin/AdminStudyLogs';
+import AdminDashboard from './pages/admin/workspace/WorkspaceDashboard';
+import AdminTodos from './pages/admin/workspace/WorkspaceTodos';
+import AdminStudyLogs from './pages/admin/workspace/WorkspaceStudyLogs';
+import AdminSettings from './pages/admin/AdminSettings';
 
 import NotFound from './pages/not-found/NotFound';
 
@@ -82,6 +87,22 @@ function AppContent() {
                 element={<AdminDashboard />}
               />
 
+              {/* portfolio */}
+              <Route 
+                path="portfolio" element={<PortfolioDashboard />} 
+              />
+
+              <Route
+                path="portfolio/profile"
+                element={<PortfolioProfile />}
+              />
+
+              <Route
+                path="portfolio/projects"
+                element={<PortfolioProjects />}
+              />
+
+              {/* workspace */}
               <Route
                 path="todos"
                 element={<AdminTodos />}
@@ -90,6 +111,11 @@ function AppContent() {
               <Route
                 path="study-logs"
                 element={<AdminStudyLogs />}
+              />
+
+              <Route
+                path="settings"
+                element={<AdminSettings />}
               />
             </Route>
           </Route>

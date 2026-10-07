@@ -2,6 +2,7 @@ package com.devlog.backend.technicalhighlight
 
 import com.devlog.backend.project.ProjectRepository
 import org.springframework.web.bind.annotation.*
+import org.springframework.http.HttpStatus
 
 @RestController
 @RequestMapping(
@@ -55,6 +56,17 @@ class TechnicalHighlightController(
             id = saved.id,
             title = saved.title,
             description = saved.description
+        )
+    }
+
+    @DeleteMapping("/{technicalHighlightId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteTechnicalHighlight(
+        @PathVariable projectId: Long,
+        @PathVariable technicalHighlightId: Long
+    ) {
+        technicalHighlightService.delete(
+            technicalHighlightId
         )
     }
 }

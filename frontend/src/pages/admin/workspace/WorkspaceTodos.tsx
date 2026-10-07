@@ -1,5 +1,5 @@
-import TodoList from '../learning/components/TodoList';
-import { useLearning } from '../learning/context/LearningContext';
+import TodoList from '../../learning/components/TodoList';
+import { useLearning } from '../../learning/context/LearningContext';
 
 function AdminTodos() {
   const {

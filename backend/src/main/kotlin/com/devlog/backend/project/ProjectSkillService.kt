@@ -1,5 +1,6 @@
 package com.devlog.backend.project
 
+import com.devlog.backend.skill.Skill
 import com.devlog.backend.skill.SkillRepository
 import org.springframework.stereotype.Service
 
@@ -47,6 +48,53 @@ class ProjectSkillService(
             projectSkillRepository.existsByProjectIdAndSkillId(
                 projectId,
                 skillId
+            )
+        ) {
+            throw IllegalArgumentException(
+                "Skill is already connected to this project."
+            )
+        }
+
+        val projectSkill = ProjectSkill(
+            project = project,
+            skill = skill
+        )
+
+        return projectSkillRepository.save(projectSkill)
+    }
+
+    fun createAndAddSkillToProject(
+        projectId: Long,
+        name: String
+    ): ProjectSkill {
+
+        val project = projectRepository.findById(projectId)
+            .orElseThrow {
+                IllegalArgumentException(
+                    "Project not found: $projectId"
+                )
+            }
+
+        val trimmedName = name.trim()
+
+        if (trimmedName.isBlank()) {
+            throw IllegalArgumentException(
+                "Skill name cannot be blank."
+            )
+        }
+
+        val skill = skillRepository
+            .findByName(trimmedName)
+            ?: skillRepository.save(
+                Skill(
+                    name = trimmedName
+                )
+            )
+
+        if (
+            projectSkillRepository.existsByProjectIdAndSkillId(
+                projectId,
+                skill.id!!
             )
         ) {
             throw IllegalArgumentException(
