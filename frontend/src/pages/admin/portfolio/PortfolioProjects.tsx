@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../../../api/api';
 import type { Project } from '../../../types/project';
+
 import ProjectSkills from './ProjectSkills';
+import ProjectFeatures from './ProjectFeatures';
 
 function PortfolioProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -462,6 +464,10 @@ function PortfolioProjects() {
               </div>
 
               <ProjectSkills
+                projectId={project.id}
+              />
+
+              <ProjectFeatures
                 projectId={project.id}
               />
 
