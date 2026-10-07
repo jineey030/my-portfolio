@@ -847,3 +847,594 @@
   }
 }
 
+/* ========================================
+   Portfolio Projects
+======================================== */
+
+.admin-page-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 24px;
+}
+
+.admin-page-actions button {
+  border: 1px solid #5eead4;
+  background: #11161f;
+  color: #5eead4;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.admin-page-actions button:hover {
+  background: #5eead4;
+  color: #0a0e14;
+}
+
+/* Project list */
+
+.admin-project-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.admin-project-card {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  padding: 24px;
+
+  border: 1px solid #1f2933;
+  border-radius: 10px;
+
+  background: #11161f;
+
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-project-card:hover {
+  border-color: #2f3a46;
+  transform: translateY(-1px);
+}
+
+.admin-project-card > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-project-card-label {
+  margin: 0;
+
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: #545e6b;
+}
+
+.admin-project-card h2 {
+  margin: 0;
+
+  font-size: 20px;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+.admin-project-card p:not(.admin-project-card-label) {
+  margin: 0;
+
+  color: #9ca3af;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.admin-project-card > div:first-child > span {
+  width: fit-content;
+
+  margin-top: 4px;
+
+  padding: 4px 8px;
+
+  border: 1px solid #26313d;
+  border-radius: 4px;
+
+  color: #6b7280;
+
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+}
+
+/* Project card actions */
+
+.admin-project-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+
+  padding-top: 4px;
+
+  border-top: 1px solid #1f2933;
+}
+
+.admin-project-card-actions button {
+  min-width: 72px;
+
+  padding: 8px 14px;
+
+  border: 1px solid #303b47;
+  border-radius: 5px;
+
+  background: transparent;
+  color: #9ca3af;
+
+  font-family: inherit;
+  font-size: 12px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.admin-project-card-actions button:first-child:hover {
+  border-color: #5eead4;
+  color: #5eead4;
+  background: rgba(94, 234, 212, 0.05);
+}
+
+.admin-project-card-actions button:last-child:hover {
+  border-color: #f472b6;
+  color: #f472b6;
+  background: rgba(244, 114, 182, 0.05);
+}
+
+/* Project Skills */
+
+.admin-project-skills {
+  padding: 18px;
+
+  border: 1px solid #1d2731;
+  border-radius: 8px;
+
+  background: #0d1219;
+}
+
+.admin-project-skills-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 14px;
+}
+
+.admin-project-skills-header h3 {
+  margin: 0;
+
+  color: #e5e7eb;
+
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-project-skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  margin-bottom: 16px;
+}
+
+.admin-project-skill-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 6px 8px 6px 10px;
+
+  border: 1px solid #26313d;
+  border-radius: 5px;
+
+  background: #11161f;
+
+  color: #cbd5e1;
+
+  font-size: 12px;
+}
+
+.admin-project-skill-item button {
+  padding: 2px 5px;
+
+  border: 0;
+  background: transparent;
+
+  color: #545e6b;
+
+  font-family: inherit;
+  font-size: 10px;
+
+  cursor: pointer;
+
+  transition: color 0.2s ease;
+}
+
+.admin-project-skill-item button:hover {
+  color: #f472b6;
+}
+
+.admin-project-skills-add {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-project-skills-add input {
+  flex: 1;
+
+  min-width: 0;
+
+  padding: 9px 11px;
+
+  border: 1px solid #26313d;
+  border-radius: 5px;
+
+  outline: none;
+
+  background: #11161f;
+  color: #e5e7eb;
+
+  font-family: inherit;
+  font-size: 12px;
+
+  transition: border-color 0.2s ease;
+}
+
+.admin-project-skills-add input::placeholder {
+  color: #545e6b;
+}
+
+.admin-project-skills-add input:focus {
+  border-color: #5eead4;
+}
+
+.admin-project-skills-add button {
+  flex-shrink: 0;
+
+  padding: 9px 14px;
+
+  border: 1px solid #5eead4;
+  border-radius: 5px;
+
+  background: transparent;
+  color: #5eead4;
+
+  font-family: inherit;
+  font-size: 12px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.admin-project-skills-add button:hover {
+  background: #5eead4;
+  color: #0a0e14;
+}
+
+/* Form */
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  margin-bottom: 28px;
+  padding: 24px;
+
+  border: 1px solid #26313d;
+  border-radius: 10px;
+
+  background: #11161f;
+}
+
+.admin-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.admin-form-group label {
+  color: #9ca3af;
+
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+
+.admin-form-group input,
+.admin-form-group textarea {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 10px 12px;
+
+  border: 1px solid #26313d;
+  border-radius: 5px;
+
+  outline: none;
+
+  background: #0d1219;
+  color: #e5e7eb;
+
+  font-family: inherit;
+  font-size: 13px;
+
+  transition: border-color 0.2s ease;
+}
+
+.admin-form-group input:focus,
+.admin-form-group textarea:focus {
+  border-color: #5eead4;
+}
+
+.admin-form-group textarea {
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.admin-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+
+  padding-top: 6px;
+}
+
+.admin-form-actions button {
+  padding: 9px 16px;
+
+  border-radius: 5px;
+
+  font-family: inherit;
+  font-size: 12px;
+
+  cursor: pointer;
+}
+
+.admin-form-actions button[type='submit'] {
+  border: 1px solid #5eead4;
+
+  background: #5eead4;
+  color: #0a0e14;
+}
+
+.admin-form-actions button[type='submit']:hover {
+  background: transparent;
+  color: #5eead4;
+}
+
+.admin-form-actions button[type='button'] {
+  border: 1px solid #303b47;
+
+  background: transparent;
+  color: #9ca3af;
+}
+
+.admin-form-actions button[type='button']:hover {
+  border-color: #6b7280;
+  color: #e5e7eb;
+}
+
+/* Messages */
+
+.admin-form-message {
+  margin: 12px 0;
+
+  color: #4ade80;
+
+  font-size: 13px;
+}
+
+.admin-form-error {
+  margin: 12px 0;
+
+  color: #f472b6;
+
+  font-size: 13px;
+}
+
+/* Mobile */
+
+@media (max-width: 640px) {
+  .admin-project-card {
+    padding: 18px;
+  }
+
+  .admin-project-skills {
+    padding: 14px;
+  }
+
+  .admin-project-skills-add {
+    flex-direction: column;
+  }
+
+  .admin-project-skills-add button {
+    width: 100%;
+  }
+
+  .admin-project-card-actions {
+    justify-content: stretch;
+  }
+
+  .admin-project-card-actions button {
+    flex: 1;
+  }
+
+  .admin-form {
+    padding: 18px;
+  }
+
+  .admin-form-actions {
+    flex-direction: column;
+  }
+
+  .admin-form-actions button {
+    width: 100%;
+  }
+}
+
+ /* ========================================
+    Portfolio Dashboard
+ ======================================== */
+
+.admin-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+
+  margin-top: 32px;
+}
+
+.admin-dashboard-card {
+  position: relative;
+
+  min-height: 190px;
+
+  padding: 24px;
+
+  border: 1px solid #1f2933;
+  border-radius: 10px;
+
+  background: #11161f;
+
+  overflow: hidden;
+
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.admin-dashboard-card::before {
+  content: '';
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 3px;
+  height: 100%;
+
+  background: #26313d;
+
+  transition:
+    background 0.2s ease;
+}
+
+.admin-dashboard-card:hover {
+  border-color: #34414e;
+  background: #141a23;
+  transform: translateY(-2px);
+}
+
+.admin-dashboard-card:hover::before {
+  background: #5eead4;
+}
+
+.admin-dashboard-card-label {
+  margin: 0 0 12px;
+
+  color: #545e6b;
+
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+}
+
+.admin-dashboard-card h2 {
+  margin: 0 0 12px;
+
+  color: #e5e7eb;
+
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.admin-dashboard-card p:last-child {
+  max-width: 420px;
+
+  margin: 0;
+
+  color: #8b95a3;
+
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+
+/* ========================================
+   Portfolio Dashboard Card Variants
+ ======================================== */
+
+.admin-dashboard-card:nth-child(1)::before {
+  background: #c084fc;
+}
+
+.admin-dashboard-card:nth-child(1):hover::before {
+  background: #c084fc;
+}
+
+.admin-dashboard-card:nth-child(2)::before {
+  background: #5eead4;
+}
+
+.admin-dashboard-card:nth-child(2):hover::before {
+  background: #5eead4;
+}
+
+.admin-dashboard-card:nth-child(3)::before {
+  background: #4ade80;
+}
+
+.admin-dashboard-card:nth-child(3):hover::before {
+  background: #4ade80;
+}
+
+.admin-dashboard-card:nth-child(4)::before {
+  background: #f472b6;
+}
+
+.admin-dashboard-card:nth-child(4):hover::before {
+  background: #f472b6;
+}
+
+
+/* ========================================
+   Portfolio Dashboard Responsive
+ ======================================== */
+
+@media (max-width: 760px) {
+  .admin-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-dashboard-card {
+    min-height: auto;
+    padding: 20px;
+  }
+}
