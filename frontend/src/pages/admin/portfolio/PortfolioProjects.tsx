@@ -20,6 +20,12 @@ function PortfolioProjects() {
   const [editingProjectId, setEditingProjectId] =
     useState<number | null>(null);
 
+  const [openContent, setOpenContent] =
+  useState<{
+    projectId: number;
+    section: string;
+  } | null>(null);
+
   const [form, setForm] = useState({
     name: '',
     slug: '',
@@ -29,6 +35,25 @@ function PortfolioProjects() {
     imageUrl: '',
     role: ''
   });
+
+  const toggleContent = (
+  projectId: number,
+  section: string
+) => {
+  setOpenContent((current) => {
+    if (
+      current?.projectId === projectId &&
+      current.section === section
+    ) {
+      return null;
+    }
+
+    return {
+      projectId,
+      section
+    };
+  });
+};
 
   const fetchProjects = async () => {
     try {
@@ -465,21 +490,149 @@ function PortfolioProjects() {
                 <span>{project.slug}</span>
               </div>
 
-              <ProjectSkills
-                projectId={project.id}
-              />
+              <div className="admin-project-content">
 
-              <ProjectFeatures
-                projectId={project.id}
-              />
+                <p className="admin-project-content-label">
+                  PROJECT CONTENT
+                </p>
 
-              <ProjectChallenges
-                projectId={project.id}
-              />
+                <div className="admin-project-content-section">
 
-              <ProjectTechnicalHighlights
-                projectId={project.id}
-              />
+                  <button
+                    type="button"
+                    className="admin-project-content-toggle"
+                    onClick={() =>
+                      toggleContent(
+                        project.id,
+                        'skills'
+                      )
+                    }
+                  >
+                    <span>Skills</span>
+
+                    <span className="admin-project-content-arrow">
+                      {openContent?.projectId === project.id &&
+                      openContent.section === 'skills'
+                        ? '−'
+                        : '+'}
+                    </span>
+                  </button>
+
+                  {openContent?.projectId === project.id &&
+                    openContent.section === 'skills' && (
+                      <div className="admin-project-content-body">
+                        <ProjectSkills
+                          projectId={project.id}
+                        />
+                      </div>
+                    )}
+
+                </div>
+
+                <div className="admin-project-content-section">
+
+                  <button
+                    type="button"
+                    className="admin-project-content-toggle"
+                    onClick={() =>
+                      toggleContent(
+                        project.id,
+                        'features'
+                      )
+                    }
+                  >
+                    <span>Features</span>
+
+                    <span className="admin-project-content-arrow">
+                      {openContent?.projectId === project.id &&
+                      openContent.section === 'features'
+                        ? '−'
+                        : '+'}
+                    </span>
+                  </button>
+
+                  {openContent?.projectId === project.id &&
+                    openContent.section === 'features' && (
+                      <div className="admin-project-content-body">
+                        <ProjectFeatures
+                          projectId={project.id}
+                        />
+                      </div>
+                    )}
+
+                </div>
+
+                <div className="admin-project-content-section">
+
+                  <button
+                    type="button"
+                    className="admin-project-content-toggle"
+                    onClick={() =>
+                      toggleContent(
+                        project.id,
+                        'challenges'
+                      )
+                    }
+                  >
+                    <span>Challenges</span>
+
+                    <span className="admin-project-content-arrow">
+                      {openContent?.projectId === project.id &&
+                      openContent.section === 'challenges'
+                        ? '−'
+                        : '+'}
+                    </span>
+                  </button>
+
+                  {openContent?.projectId === project.id &&
+                    openContent.section === 'challenges' && (
+                      <div className="admin-project-content-body">
+                        <ProjectChallenges
+                          projectId={project.id}
+                        />
+                      </div>
+                    )}
+
+                </div>
+
+                <div className="admin-project-content-section">
+
+                  <button
+                    type="button"
+                    className="admin-project-content-toggle"
+                    onClick={() =>
+                      toggleContent(
+                        project.id,
+                        'technical-highlights'
+                      )
+                    }
+                  >
+                    <span>
+                      Technical Highlights
+                    </span>
+
+                    <span className="admin-project-content-arrow">
+                      {openContent?.projectId === project.id &&
+                      openContent.section ===
+                        'technical-highlights'
+                        ? '−'
+                        : '+'}
+                    </span>
+                  </button>
+
+                  {openContent?.projectId === project.id &&
+                    openContent.section ===
+                      'technical-highlights' && (
+                      <div className="admin-project-content-body">
+                        <ProjectTechnicalHighlights
+                          projectId={project.id}
+                        />
+                      </div>
+                    )}
+
+                </div>
+
+              </div>
 
               <div className="admin-project-card-actions">
                     <button
