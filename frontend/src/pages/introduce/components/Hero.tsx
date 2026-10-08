@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { PortfolioProfile } from '../../../types/portfolioProfile';
+import { apiFetch } from '../../../api/api';
 
 function Hero() {
   const [profile, setProfile] = useState<PortfolioProfile | null>(null);
@@ -7,8 +8,8 @@ function Hero() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await fetch(
-          'http://localhost:8080/api/portfolio-profile'
+        const response = await apiFetch(
+          '/api/portfolio-profile'
         );
 
         if (!response.ok) {
