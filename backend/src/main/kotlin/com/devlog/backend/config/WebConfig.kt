@@ -11,7 +11,7 @@ class WebConfig : WebMvcConfigurer {
         registry.addMapping("/api/**")
             .allowedOrigins(
                 "http://localhost:5173",
-                "jineey-portfolio.vercel.app"
+                "https://jineey-portfolio.vercel.app"
             )
             .allowedMethods(
                 "GET",
