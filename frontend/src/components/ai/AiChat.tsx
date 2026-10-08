@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import './AiChat.css';
 
+const AI_API_BASE_URL = import.meta.env.VITE_AI_API_BASE_URL;
 type LLMProvider = "gemini" | "ollama";
 
 type Message = {
@@ -169,8 +170,7 @@ function AiChat() {
       // FastAPI 요청
       // =========================
 
-      const response = await fetch(
-        'http://127.0.0.1:8000/chat',
+      const response = await fetch(`${AI_API_BASE_URL}/chat`, 
         {
           method: 'POST',
           headers: {
