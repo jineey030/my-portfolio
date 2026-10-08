@@ -32,27 +32,72 @@ Python + FastAPI 기반의 AI Agent를 추가하여
 - AI Agent를 직접 구현하면서 Tool Calling과 Agent Loop의 동작 원리를 학습합니다.
 - 기능과 구조는 계속 추가/변경될 예정입니다. (진행 중인 프로젝트)
 
+---
+
 ## // tech stack
 
 | 영역 | 스택 |
 | --- | --- |
 | **Frontend** |	React 19, TypeScript, Vite, React Router |
-| **Backend** | 	Kotlin, Spring Boot 4, Spring Data JPA |
-| **AI Agent**	| Python 3.13, FastAPI, Tool Calling, Tool Registry |
-| **Database** |	MariaDB |
-| **Tooling	Gradle** | (Kotlin DSL), npm, uvicorn, oxlint |
+| **Backend** | 	Kotlin, Spring Boot 4, Spring Data JPA  |
+| **AI Agent**	| Python 3.13, FastAPI, Tool Calling, Tool Registry, Agent Loop |
+| **LLM** | Google Gemini, Ollama |
+| **Database** |	MariaDB / MySQL |
+| **Deployment** | Vercel, Render  |
+| **Tooling** | Gradle (Kotlin DSL), npm, uvicorn, Git  |
+
+## // architecture
+
+현재 프로젝트는 프론트엔드, 일반 API 서버, AI Agent 서버를 분리하여 구성하고 있습니다.
+
+```text
+                         ┌─────────────────────┐
+                         │      Browser        │
+                         │  React + TypeScript │
+                         └──────────┬──────────┘
+                                    │
+                   ┌────────────────┴────────────────┐
+                   │                                 │
+                   ▼                                 ▼
+        ┌─────────────────────┐          ┌─────────────────────┐
+        │   Spring Boot API   │          │   FastAPI AI Agent  │
+        │       Render        │          │       Render        │
+        └──────────┬──────────┘          └──────────┬──────────┘
+                   │                                │
+                   ▼                                ▼
+        ┌─────────────────────┐          ┌─────────────────────┐
+        │    MySQL / MariaDB  │          │       Gemini        │
+        │      Database       │          │        LLM          │
+        └─────────────────────┘          └─────────────────────┘
+                                                    │
+                                                    │ Development
+                                                    ▼
+                                           ┌─────────────────────┐
+                                           │       Ollama        │
+                                           │      qwen3:4b       │
+                                           └─────────────────────┘
+```
 
 ## // project structure
 
 ```text
 my-portfolio/
 ├── ai-agent/
-│   └── main.py
-├── frontend/
+│   ├── llm/
+│   │   ├── gemini.py
+│   │   └── ollama.py
+│   ├── .gitignore
+│   ├── main.py
+│   └── requirements.txt
+│
+├── svgfrontend/
 │   ├── src/
 │   │   ├── components/
 │   │   ├── pages/
+│   │   ├── api/
 │   │   └── ...
+│   ├── public/
+│   ├── .env
 │   └── package.json
 │
 ├── backend/
@@ -60,19 +105,18 @@ my-portfolio/
 │   │   └── main/
 │   │       └── kotlin/
 │   │           └── com/devlog/backend/
-│   │               └── todo/
+│   │               ├── todo/
+│   │               ├── project/
+│   │               ├── skill/
+│   │               └── ...
 │   ├── build.gradle.kts
 │   └── ...
 │
 └── README.md
 ```
 
-### Frontend
-React 기반 SPA로 포트폴리오 페이지와 Learning Tracker UI를 구성합니다.
+---
 
-### Backend
-Kotlin + Spring Boot 기반 REST API 서버입니다.
-Controller → Service → Repository → JPA → MariaDB 구조로 Todo CRUD를 처리합니다.
 
 ## // getting started
 
@@ -126,6 +170,94 @@ cd ai-agent
 # FastAPI 서버 실행:
 uvicorn main:app --reload
 ```
+
+### 4. LLM Provider
+
+현재 두 가지 Provider를 사용할 수 있습니다.
+
+```text
+Gemini
+  ↑
+  │ Production
+  │
+FastAPI
+  │
+  │ Development
+  ↓
+Ollama
+```
+
+Production에서는 Gemini를 사용하고,
+로컬 개발 환경에서는 Ollama를 사용할 수 있도록 환경변수로 전환할 수 있습니다.
+
+```env
+GEMINI=true
+OLLAMA=false
+```
+
+또는
+
+```env
+GEMINI=false
+OLLAMA=true
+```
+
+---
+
+## // deploy
+| 서비스	| 배포 | 환경 | 주소 |
+| --- | --- | --- | --- |
+| Portfolio | Frontend	| Vercel | https://jineey-portfolio.vercel.app|
+| Spring Boot | Backend	| Render	| - |
+| AI Agent | API	| Render	| - |
+| MySQL | Database | aiven | - |
+
+---
+
+## // learning goals 🏆
+
+이 프로젝트를 통해 다음과 같은 내용을 직접 구현하며 학습하고 있습니다.
+
+### Frontend
+
+* React 컴포넌트 설계
+* 상태 관리
+* React Router
+* API 통신
+* 환경변수 관리
+* CRUD UI 구현
+
+### Backend
+
+* Kotlin
+* Spring Boot
+* REST API
+* Controller / Service / Repository
+* Spring Data JPA
+* Database 연동
+* CORS
+* 환경변수 관리
+
+### AI Agent
+
+* FastAPI
+* Tool Calling
+* Tool Registry
+* Agent Loop
+* LLM Provider 분리
+* Gemini API
+* Ollama
+* AI Chat UI
+* Frontend ↔ AI API 연결
+
+### Deployment
+
+* GitHub
+* Vercel
+* Render
+* Production 환경변수
+* CORS
+* 서버 간 API 통신
 
 ## // contact
 
