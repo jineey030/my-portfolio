@@ -40,7 +40,7 @@ def ask_llm(prompt: str) -> str:
     provider = get_llm_provider()
 
     if provider == "gemini":
-        return ask_gemini(prompt, {})
+        return ask_gemini(prompt)
 
     if provider == "ollama":
         return ask_ollama(prompt)
