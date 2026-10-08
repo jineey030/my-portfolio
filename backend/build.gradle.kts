@@ -26,7 +26,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("tools.jackson.module:jackson-module-kotlin")
 
-	implementation("org.mariadb.jdbc:mariadb-java-client")
+	// implementation("org.mariadb.jdbc:mariadb-java-client")
+	runtimeOnly("com.mysql:mysql-connector-j")
 
 	implementation("org.springframework.boot:spring-boot-starter-security")
 
