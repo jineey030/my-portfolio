@@ -1,5 +1,6 @@
-import { FormEvent, useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router';
+import { apiFetch } from '../../api/api';
 
 function AdminLogin() {
   const navigate = useNavigate();
@@ -19,8 +20,8 @@ function AdminLogin() {
     setIsLoading(true);
 
     try {
-      const response = await fetch(
-        'http://localhost:8080/api/auth/login',
+      const response = await apiFetch(
+        '/api/auth/login',
         {
           method: 'POST',
           headers: {
