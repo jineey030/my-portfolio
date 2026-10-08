@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
+import { apiFetch } from '../../api/api';
 import './ProjectDetail.css';
 import type {
   Project,
@@ -23,8 +24,8 @@ function ProjectDetail() {
 
     const fetchProject = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:8080/api/projects/slug/${projectId}`
+        const response = await apiFetch(
+          `/api/projects/slug/${projectId}`
         );
 
         if (!response.ok) {
@@ -48,8 +49,8 @@ function ProjectDetail() {
 
     const fetchFeatures = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:8080/api/projects/${project.id}/features`
+        const response = await apiFetch(
+          `/api/projects/${project.id}/features`
         );
 
         if (!response.ok) {
@@ -72,8 +73,8 @@ useEffect(() => {
 
   const fetchSkills = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/projects/${project.id}/skills`
+      const response = await apiFetch(
+        `/api/projects/${project.id}/skills`
       );
 
       if (!response.ok) {
@@ -97,8 +98,8 @@ useEffect(() => {
 
   const fetchChallenges = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/projects/${project.id}/challenges`
+      const response = await apiFetch(
+        `/api/projects/${project.id}/challenges`
       );
 
       if (!response.ok) {
@@ -122,8 +123,8 @@ useEffect(() => {
 
   const fetchTechnicalHighlights = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/projects/${project.id}/technical-highlights`
+      const response = await apiFetch(
+        `/api/projects/${project.id}/technical-highlights`
       );
 
       if (!response.ok) {

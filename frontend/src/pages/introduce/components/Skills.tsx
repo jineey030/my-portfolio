@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import SectionTitle from '../../../components/ui/SectionTitle';
+import { apiFetch } from '../../../api/api';
 
 interface PortfolioSkill {
   id: number;
@@ -13,8 +14,8 @@ function Skills() {
   useEffect(() => {
     const fetchSkills = async () => {
       try {
-        const response = await fetch(
-          'http://localhost:8080/api/portfolio-skills'
+        const response = await apiFetch(
+          '/api/portfolio-skills'
         );
 
         if (!response.ok) {
