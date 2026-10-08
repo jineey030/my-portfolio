@@ -1,5 +1,4 @@
 import './LearningTracker.css';
-import { useState } from 'react';
 import type {
   Todo,
   StudyLogData
