@@ -76,7 +76,8 @@ function AiChat() {
       role: 'assistant',
       content:
         '안녕하세요! 예진에 대해 궁금한 내용을 질문해주세요.\n\n' +
-        '예) 기본 프로필 정보, 기술 스택, 프로젝트 정보, 공부중인 내용 등',
+        '예) 기본 프로필 정보, 기술 스택, 프로젝트 정보, 공부중인 내용 등\n\n' + 
+        '⚠️ 현재 무료 버전을 사용중이라 AI 응답이 다소 느립니다. 양해 부탁드립니다.',
     },
   ]);
 
@@ -301,15 +302,11 @@ function AiChat() {
                   }`}
                 >
 
-                  {message.role === 'assistant' && (
-                    <span className="message-label">
-                      {message.provider === 'gemini'
-                        ? '✦ Gemini'
-                        : message.provider === 'ollama'
-                          ? '🦙 Ollama'
-                          : 'AI'}
-                    </span>
-                  )}
+                {message.role === 'assistant' && (
+                  <span className="message-label">
+                    AI
+                  </span>
+                )}
 
                   <p>
                     {message.content}
