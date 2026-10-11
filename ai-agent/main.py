@@ -365,12 +365,6 @@ tools = {
         "description": (
             "DB에 등록된 프로젝트와 프로젝트별 기술 스택을 조회합니다."
         )
-    },
-    "get_learning": {
-        "function": get_learning,
-        "description": (
-            "DB에 저장된 학습 기록과 Todo 목록을 조회합니다."
-        )
     }
 }
 
@@ -416,10 +410,10 @@ def ask_llm_to_select_tools(user_input):
         for name, tool in tools.items()
     )
 
+    
     prompt = f"""
-너는 포트폴리오 AI Agent의 Tool 선택 담당자야.
-
-사용자의 질문에 답하기 위해 필요한 Tool을 선택해.
+너는 개발자 오예진의 포트폴리오 AI Agent에서
+필요한 Tool을 선택하는 담당자야.
 
 사용 가능한 Tool:
 {tool_descriptions}
@@ -428,14 +422,14 @@ def ask_llm_to_select_tools(user_input):
 {user_input}
 
 규칙:
-- 필요한 Tool 이름만 반환해.
+- 예진님의 프로필이나 자기소개 질문은 get_profile을 선택해.
+- 예진님의 기술 스택 질문은 get_skills를 선택해.
+- 예진님의 프로젝트나 프로젝트별 기술 스택 질문은
+  get_projects를 선택해.
 - 여러 Tool이 필요하면 쉼표로 구분해.
-- 포트폴리오, 프로필, 기술 스택, 프로젝트, 학습 기록에 관한 질문은
-  관련 Tool을 선택해.
-- 관련 Tool이 필요하지 않으면 NONE이라고 반환해.
+- 위 Tool로 답할 필요가 없으면 NONE이라고 반환해.
 - Tool 이름 외에 설명은 하지 마.
 """
-
     return ask_llm(prompt)
 
 
@@ -460,6 +454,46 @@ def parse_tool_selection(llm_result):
     return selected_tools
 
 
+# =========================================================
+# Question Relevance Check
+# =========================================================
+
+def is_portfolio_related(user_input: str) -> bool:
+    prompt = f"""
+너는 개발자 오예진의 포트폴리오 질문을 분류하는 담당자야.
+
+사용자의 질문이 아래 주제와 직접적으로 관련 있는지 판단해.
+
+허용되는 주제:
+- 오예진의 프로필, 소개, 역할, 개발자 정보
+- 오예진의 기술 스택과 개발 기술
+- 오예진이 만든 프로젝트, 프로젝트 기능, 사용 기술
+- 포트폴리오 웹사이트와 그 안에 공개된 정보
+
+허용되지 않는 주제:
+- 위 주제와 관계없는 일반 상식, 일상 대화, 잡담
+- 다른 사람이나 다른 회사에 대한 일반적인 질문
+- 코딩 문제 풀이, 일반적인 개발 지식 질문
+- 공부 중인 내용, 학습 기록, Todo 및 학습 목표
+
+단, 오예진의 프로젝트나 기술 스택을 이해하기 위해 필요한 질문은 허용해.
+
+사용자 질문:
+{user_input}
+
+위 기준에 따라 반드시 YES 또는 NO 중 하나만 반환해.
+다른 설명은 하지 마.
+"""
+
+    result = ask_llm(prompt).strip().upper()
+
+    # 응답 앞부분에 YES 또는 NO가 있는 경우도 처리
+    match = re.match(r"^(YES|NO)\b", result)
+
+    if not match:
+        return False
+
+    return match.group(1) == "YES"
 
 # =========================================================
 # Final Answer
@@ -545,6 +579,7 @@ class ChatRequest(BaseModel):
     messages: list[ChatMessage] = []
 
 
+
 # =========================================================
 # Chat API
 # =========================================================
@@ -559,22 +594,28 @@ def chat(request: ChatRequest):
             "provider": get_llm_provider()
         }
 
-    # 1. 필요한 Tool 선택
+    provider = get_llm_provider()
+
+    # 1. 예진님 포트폴리오와 관련 있는 질문인지 확인
+    if not is_portfolio_related(user_input):
+        return {
+            "answer": "예진님과 관련된 질문을 해주세요",
+            "provider": provider
+        }
+
+    # 2. 필요한 Tool 선택
     llm_result = ask_llm_to_select_tools(user_input)
 
-    # 2. Tool 선택 결과 파싱
+    # 3. Tool 선택 결과 파싱
     selected_tools = parse_tool_selection(llm_result)
 
-    # 3. Tool이 필요 없는 질문
+    # 관련 질문이지만 적절한 Tool을 선택하지 못한 경우
     if not selected_tools:
         return {
             "answer": (
-                "현재 포트폴리오 관련 질문에 답변하기 위한 "
-                "적절한 Tool을 선택하지 못했습니다. "
-                "프로필, 기술 스택, 프로젝트 또는 학습 기록에 대해 "
-                "질문해주세요."
+                "예진님과 관련된 질문을 해주세요"
             ),
-            "provider": get_llm_provider()
+            "provider": provider
         }
 
     # 4. 실제 Spring Boot API를 통해 Tool 실행
@@ -591,5 +632,6 @@ def chat(request: ChatRequest):
 
     return {
         "answer": answer,
-        "provider": get_llm_provider()
+        "provider": provider
     }
+
