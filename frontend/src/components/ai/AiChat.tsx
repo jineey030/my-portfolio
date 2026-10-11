@@ -70,12 +70,16 @@ function RobotIcon() {
 
 function AiChat() {
   const [isOpen, setIsOpen] = useState(false);
+  const [hasUnreadReply, setHasUnreadReply] = useState(false);
+
+  // 창이 닫혀 있는지 타이핑 완료 시점에 확인
+  const isOpenRef = useRef(false);
 
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
       content:
-        '안녕하세요! 예진에 대해 궁금한 내용을 질문해주세요.\n\n' +
+        '안녕하세요! 예진에 대해 궁금한 내용을 질문해주세요.\n' +
         '예) 기본 프로필 정보, 기술 스택, 프로젝트 정보, 공부중인 내용 등\n\n' + 
         '⚠️ 현재 무료 버전을 사용중이라 AI 응답이 다소 느립니다. 양해 부탁드립니다.',
     },
@@ -93,6 +97,23 @@ function AiChat() {
       behavior: 'smooth',
     });
   }, [messages, isLoading]);
+
+  const toggleChat = () => {
+    const nextIsOpen = !isOpenRef.current;
+  
+    isOpenRef.current = nextIsOpen;
+    setIsOpen(nextIsOpen);
+  
+    // 창을 열면 새 답변 알림 제거
+    if (nextIsOpen) {
+      setHasUnreadReply(false);
+    }
+  };
+
+const closeChat = () => {
+  isOpenRef.current = false;
+  setIsOpen(false);
+};
 
   // =========================
   // 타이핑 효과
@@ -131,6 +152,12 @@ function AiChat() {
 
         if (index >= message.length) {
           clearInterval(interval);
+        
+          // 답변 완료 시 채팅 창이 닫혀 있다면 알림 표시
+          if (!isOpenRef.current) {
+            setHasUnreadReply(true);
+          }
+        
           resolve();
         }
       }, 10);
@@ -275,7 +302,7 @@ function AiChat() {
 
             <button
               className="ai-chat-close"
-              onClick={() => setIsOpen(false)}
+              onClick={closeChat}
               aria-label="챗봇 닫기"
             >
               ×
@@ -395,17 +422,26 @@ function AiChat() {
       {/* =========================
           Floating Button
           ========================= */}
-
       <button
-        className={`ai-chat-button ${
-          isOpen ? 'is-open' : ''
-        }`}
-        onClick={() =>
-          setIsOpen((prev) => !prev)
+        type="button"
+        className={`ai-chat-button ${isOpen ? 'is-open' : ''}`}
+        onClick={toggleChat}
+        aria-label={
+          hasUnreadReply
+            ? '새 AI 답변이 도착했습니다. 챗봇 열기'
+            : isOpen
+              ? 'AI 챗봇 닫기'
+              : 'AI 챗봇 열기'
         }
-        aria-label="AI 챗봇 열기"
       >
         <RobotIcon />
+      
+        {hasUnreadReply && !isOpen && (
+          <span
+            className="ai-chat-notification"
+            aria-label="읽지 않은 답변"
+          />
+        )}
       </button>
     </>
   );
