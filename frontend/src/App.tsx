@@ -31,21 +31,23 @@ import NotFound from './pages/not-found/NotFound';
 import Navbar from './components/Navbar';
 import ScrollToHash from './components/ScrollToHash';
 import Footer from './components/Footer';
+import WelcomeNotice from './components/WelcomeNotice';
+import ServerStatusBanner from './components/ServerStatusBanner';
 
 // context
 import { LearningProvider } from './pages/learning/context/LearningContext';
 
-
 function AppContent() {
   const location = useLocation();
 
-  const isAdmin =
-    location.pathname.startsWith('/admin');
+  const isAdmin = location.pathname.startsWith('/admin');
 
   return (
     <>
-      {!isAdmin && <Navbar />}
+      {!isAdmin && <ServerStatusBanner />}
+      {!isAdmin && <WelcomeNotice />}
 
+      {!isAdmin && <Navbar />}
       {!isAdmin && <ScrollToHash />}
 
       <LearningProvider>
@@ -79,17 +81,16 @@ function AppContent() {
             path="/admin"
             element={<AdminRoute />}
           >
-            <Route
-              element={<AdminLayout />}
-            >
+            <Route element={<AdminLayout />}>
               <Route
                 index
                 element={<AdminDashboard />}
               />
 
               {/* portfolio */}
-              <Route 
-                path="portfolio" element={<PortfolioDashboard />} 
+              <Route
+                path="portfolio"
+                element={<PortfolioDashboard />}
               />
 
               <Route
@@ -132,7 +133,6 @@ function AppContent() {
     </>
   );
 }
-
 
 function App() {
   return (
