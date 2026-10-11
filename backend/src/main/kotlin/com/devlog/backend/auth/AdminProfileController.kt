@@ -125,7 +125,8 @@ class AdminProfileController(
                 .body(mapOf("message" to "현재 비밀번호와 다른 비밀번호를 입력해주세요."))
         }
 
-        admin.password = passwordEncoder.encode(request.newPassword)
+        val encodedPassword: String = passwordEncoder.encode(request.newPassword)
+        admin.password = encodedPassword
         adminUserRepository.save(admin)
 
         return ResponseEntity.ok(
