@@ -32,6 +32,8 @@ function TodoList({
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [deletingTodoId, setDeletingTodoId] = useState<number | null>(null);
+
   const [filter, setFilter] =
     useState<'all' | 'active' | 'completed'>('all');
 
@@ -303,6 +305,7 @@ function TodoList({
     }
   };
 
+  
   // [DELETE] Todo 삭제
   const handleDeleteTodo = async (
     id: number
@@ -317,7 +320,7 @@ function TodoList({
     }
 
     setError('');
-    setIsSubmitting(true);
+    setDeletingTodoId(id);
 
     try {
       const response = await apiFetch(
@@ -348,7 +351,7 @@ function TodoList({
         'Todo 삭제 실패하였습니다.'
       );
     } finally {
-      setIsSubmitting(false);
+      setDeletingTodoId(null);
     }
   };
 
@@ -795,18 +798,15 @@ function TodoList({
                       수정
                     </button>
 
+                    
                     <button
                       type="button"
                       onClick={() =>
-                        handleDeleteTodo(
-                          todo.id
-                        )
+                        handleDeleteTodo(todo.id)
                       }
-                      disabled={
-                        isSubmitting
-                      }
+                      disabled={deletingTodoId !== null}
                     >
-                      {isSubmitting
+                      {deletingTodoId === todo.id
                         ? '삭제 중...'
                         : '삭제'}
                     </button>
