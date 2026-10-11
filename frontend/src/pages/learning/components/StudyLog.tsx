@@ -29,6 +29,8 @@ function StudyLog({
   const [studyLogActionError, setStudyLogActionError] = useState('');
   const [isStudyLogSubmitting, setIsStudyLogSubmitting] = useState(false);
 
+  const [deletingStudyLogId, setDeletingStudyLogId] = useState<number | null>(null);
+
   const [sortOrder, setSortOrder] = useState<'latest' | 'oldest'>('latest');
 
   // 페이지네이션
@@ -230,14 +232,14 @@ function StudyLog({
     const shouldDelete = window.confirm(
       '이 Study Log를 삭제하시겠습니까?'
     );
-
+  
     if (!shouldDelete) {
       return;
     }
-
+  
     setStudyLogActionError('');
-    setIsStudyLogSubmitting(true);
-
+    setDeletingStudyLogId(id);
+  
     try {
       const response = await apiFetch(
         `/api/study-logs/${id}`,
@@ -245,11 +247,11 @@ function StudyLog({
           method: 'DELETE',
         }
       );
-
+  
       if (!response.ok) {
         throw new Error('Study Log 삭제에 실패했습니다.');
       }
-
+  
       setStudyLogs((prev) =>
         prev.filter((log) => log.id !== id)
       );
@@ -257,7 +259,7 @@ function StudyLog({
       console.error('Study Log 삭제 실패:', error);
       setStudyLogActionError('Study Log 삭제에 실패했습니다.');
     } finally {
-      setIsStudyLogSubmitting(false);
+      setDeletingStudyLogId(null);
     }
   };
 
@@ -400,12 +402,10 @@ function StudyLog({
 
                     <button
                       type="button"
-                      onClick={() =>
-                        handleDeleteStudyLog(log.id)
-                      }
-                      disabled={isStudyLogSubmitting}
+                      onClick={() => handleDeleteStudyLog(log.id)}
+                      disabled={deletingStudyLogId !== null}
                     >
-                      {isStudyLogSubmitting
+                      {deletingStudyLogId === log.id
                         ? '삭제 중...'
                         : '삭제'}
                     </button>
