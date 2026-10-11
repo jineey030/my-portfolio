@@ -1,6 +1,8 @@
+
 package com.devlog.backend.config
 
 import com.devlog.backend.auth.JwtAuthenticationFilter
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -9,7 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import jakarta.servlet.http.HttpServletResponse
 
 @Configuration
 class SecurityConfig(
@@ -33,11 +34,19 @@ class SecurityConfig(
                 it
                     .requestMatchers(HttpMethod.OPTIONS, "/**")
                     .permitAll()
+
+                    .requestMatchers(
+                        HttpMethod.GET,
+                        "/api/health"
+                    )
+                    .permitAll()
+
                     .requestMatchers(
                         HttpMethod.POST,
                         "/api/auth/login"
                     )
                     .permitAll()
+
                     .requestMatchers(
                         HttpMethod.GET,
                         "/api/todos/**",
@@ -48,8 +57,10 @@ class SecurityConfig(
                         "/api/portfolio-profile"
                     )
                     .permitAll()
+
                     .requestMatchers("/error")
                     .permitAll()
+
                     .anyRequest()
                     .authenticated()
             }
