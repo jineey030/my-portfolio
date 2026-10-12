@@ -1,6 +1,9 @@
 .server-status-banner {
-  position: relative;
-  z-index: 100;
+  position: fixed;
+  top: 73px;
+  left: 0;
+  z-index: 999;
+
   display: flex;
   align-items: flex-start;
   gap: 12px;
@@ -83,8 +86,9 @@
   outline-offset: 3px;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .server-status-banner {
+    top: 65px;
     gap: 9px;
     padding: 12px;
   }

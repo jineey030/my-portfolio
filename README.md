@@ -119,59 +119,207 @@ my-portfolio/
 
 
 ## // getting started
+본 프로젝트는 **Frontend (React + Vite), Backend (Spring Boot), AI Agent (FastAPI), MariaDB**로 구성됩니다.
 
-### 1. Frontend 실행
+### Prerequisites
+
+실행 전 다음 항목이 설치되어 있어야 합니다.
+
+- Git
+- Node.js 및 npm
+- JDK (프로젝트의 Gradle 설정에 명시된 버전)
+- MariaDB
+- Python 및 pip
+
+### 1. Clone Repository
+
+```bash
+git clone <GIT_REPOSITORY_URL>
+cd <PROJECT_DIRECTORY>
+```
+
+저장소를 clone한 후 아래 순서에 따라 각 서비스를 설정하고 실행합니다.
+
+### 2. Frontend 실행
+
+프론트엔드 디렉터리로 이동하여 의존성을 설치합니다.
 
 ```bash
 cd frontend
 npm install
+```
+
+`frontend/.env` 파일을 생성하고 백엔드 API 주소를 설정합니다.
+
+```dotenv
+VITE_API_BASE_URL=http://localhost:8080
+```
+
+개발 서버를 실행합니다.
+
+```bash
 npm run dev
 ```
 
-기본적으로 `http://localhost:5173` 에서 실행됩니다.
+- Frontend: http://localhost:5173
+- Backend API Base URL: `http://localhost:8080`
 
-### 2. Backend 실행
+> **참고**
+>
+> - `.env` 파일은 `frontend/package.json`과 `vite.config.js`가 있는 프로젝트 루트에 생성합니다.
+> - 환경변수를 변경한 경우 Vite 개발 서버를 재시작해야 합니다.
+> - `.env` 파일은 GitHub에 업로드하지 않습니다.
 
-MariaDB에 `devlog` 데이터베이스가 미리 생성되어 있어야 합니다.
+### 3. Backend 실행
 
-```bash
-cd backend
+#### 3.1. MariaDB 설정
 
-# 환경변수 설정 (DB 계정 정보)
-## 1. Linux/macOS
-export DB_USERNAME=your_db_username
-export DB_PASSWORD=your_db_password
+MariaDB 서버를 실행하고 `devlog` 데이터베이스를 미리 생성합니다.
 
-## 2. Powershell
+```sql
+CREATE DATABASE devlog
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_unicode_ci;
+```
+
+DB 계정에 해당 데이터베이스에 대한 접근 권한이 부여되어 있어야 합니다.
+
+#### 3.2. 환경변수 설정
+
+백엔드는 DB 접속 정보를 환경변수 `DB_USERNAME`, `DB_PASSWORD`로 관리합니다.
+
+**Windows PowerShell**
+
+```powershell
 $env:DB_USERNAME="your_db_username"
 $env:DB_PASSWORD="your_db_password"
-
-.\gradlew bootRun
 ```
-기본적으로 `http://localhost:8080` 에서 실행되며, `/api/**` 요청에 대해
-`http://localhost:5173`(프론트엔드)로부터의 CORS 요청을 허용하도록 설정되어 있습니다.
 
-> application.properties는 ${DB_USERNAME}, ${DB_PASSWORD} 환경변수를 참조합니다.
-> 백엔드 실행 전에 환경변수를 설정하거나, VS Code 등의 실행 환경에 등록해서 사용하세요.
+**Linux / macOS**
 
-> 프론트엔드의 API 주소는 `frontend/.env`의 `VITE_API_BASE_URL`을 통해 관리합니다.
-> `.env` 파일에는 실제 환경에 필요한 값을 설정하되, GitHub에는 업로드하지 않습니다.
-
-### 3. AI Agent 실행
-Python 가상환경을 활성화한 후 `http://localhost:8000` 에서 실행됩니다.
-
-🔗 Swagger : `http://localhost:8000/docs` 
 ```bash
-cd ai-agent
-
-# 가상환경:
-.\.venv\Scripts\Activate.ps1
-
-# FastAPI 서버 실행:
-uvicorn main:app --reload
+export DB_USERNAME=your_db_username
+export DB_PASSWORD=your_db_password
 ```
 
-### 4. LLM Provider
+실제 DB 계정 정보로 값을 변경합니다.
+
+#### 3.3. Backend 실행 (`local` 프로필)
+
+백엔드 디렉터리로 이동합니다.
+
+```powershell
+cd backend
+```
+
+**Windows PowerShell**
+
+```powershell
+.\gradlew.bat bootRun --args="--spring.profiles.active=local"
+```
+
+**Linux / macOS**
+
+```bash
+./gradlew bootRun --args="--spring.profiles.active=local"
+```
+
+- Backend: http://localhost:8080
+- Spring Profile: `local`
+
+> **설정 안내**
+>
+> - `application.properties`에서 `${DB_USERNAME}`, `${DB_PASSWORD}` 환경변수를 참조합니다.
+> - `application-local.properties`가 존재하면 `local` 프로필 활성화 시 해당 설정도 함께 적용됩니다.
+> - DB 접속 URL, 포트 및 기타 필수 설정은 프로젝트의 설정 파일을 확인합니다.
+> - 환경변수는 백엔드를 실행하는 터미널에 설정해야 합니다.
+
+### 4. AI Agent 실행
+
+Python 가상환경을 생성하고 AI Agent의 의존성을 설치합니다.
+
+#### 4.1. 가상환경 생성 (최초 1회)
+
+**Windows PowerShell**
+
+```powershell
+cd ai-agent
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+가상환경 활성화 후 의존성을 설치합니다.
+
+```powershell
+pip install -r requirements.txt
+```
+
+> `requirements.txt`가 저장소에 포함되어 있어야 합니다.
+
+#### 4.2. AI Agent 실행
+
+가상환경을 활성화한 상태에서 실행합니다.
+
+```powershell
+uvicorn main:app --reload --host 127.0.0.1 --port 8000
+```
+
+- AI Agent: http://localhost:8000
+- Swagger UI: http://localhost:8000/docs
+
+> `main.py`에 FastAPI 인스턴스 `app`이 정의되어 있어야 위 명령어를 사용할 수 있습니다.
+
+### 5. 전체 실행 순서
+
+각 서비스는 별도의 터미널에서 실행합니다.
+
+| 순서 | 서비스 | 실행 방법 |
+|---|---|---|
+| 1 | MariaDB | MariaDB 서버 실행 |
+| 2 | AI Agent | `uvicorn main:app --reload --host 127.0.0.1 --port 8000` |
+| 3 | Backend | `.\gradlew.bat bootRun --args="--spring.profiles.active=local"` |
+| 4 | Frontend | `npm run dev` |
+
+### 6. 주요 접속 주소
+
+| 서비스 | URL |
+|---|---|
+| Frontend | http://localhost:5173 |
+| Backend | http://localhost:8080 |
+| AI Agent | http://localhost:8000 |
+| AI Agent Swagger UI | http://localhost:8000/docs |
+
+### 7. Troubleshooting
+
+#### Frontend API 요청 실패
+
+1. `frontend/.env`에 `VITE_API_BASE_URL=http://localhost:8080`이 설정되어 있는지 확인합니다.
+2. Vite 개발 서버를 재시작합니다.
+3. 브라우저 개발자 도구의 Network 탭에서 Request URL과 HTTP 상태 코드를 확인합니다.
+
+#### Backend DB 연결 실패
+
+1. MariaDB 서버가 실행 중인지 확인합니다.
+2. `devlog` 데이터베이스가 생성되어 있는지 확인합니다.
+3. `DB_USERNAME`, `DB_PASSWORD` 환경변수가 올바르게 설정되어 있는지 확인합니다.
+4. `application.properties` 및 `application-local.properties`의 DB 연결 설정을 확인합니다.
+
+#### AI Agent 요청 실패
+
+1. AI Agent가 `localhost:8000`에서 실행 중인지 확인합니다.
+2. http://localhost:8000/docs 에 접속하여 API 엔드포인트를 확인합니다.
+3. Backend의 AI Agent 연결 주소 및 관련 설정을 확인합니다.
+
+### 8. 환경변수 및 보안
+
+- DB 계정 정보와 API 키를 소스 코드에 직접 작성하지 않습니다.
+- 실제 비밀번호나 민감한 정보가 포함된 `.env` 및 로컬 설정 파일은 Git에 커밋하지 않습니다.
+- `.env.example` 등의 예시 파일에는 실제 비밀번호 대신 placeholder를 사용합니다.
+- `VITE_` 접두사가 붙은 환경변수는 프론트엔드 번들에 노출될 수 있으므로 비밀 정보를 저장하지 않습니다.`
+
+---
+
+## // LLM Provider
 
 현재 두 가지 Provider를 사용할 수 있습니다.
 
