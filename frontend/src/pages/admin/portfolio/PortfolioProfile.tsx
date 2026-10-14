@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../../../api/api';
+import { useAdminRefreshKey } from '../../../api/adminRefresh';
 import type { PortfolioProfile as PortfolioProfileType } from '../../../types/portfolioProfile';
 
 function PortfolioProfile() {
@@ -12,10 +13,13 @@ function PortfolioProfile() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
+  const refreshKey = useAdminRefreshKey();
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        setIsLoading(true);
+        // 자동 새로고침 때는 로딩 화면 없이 갱신
+        if (refreshKey === 0) setIsLoading(true);
         setError('');
 
         const response = await apiFetch(
@@ -39,7 +43,7 @@ function PortfolioProfile() {
     };
 
     fetchProfile();
-  }, []);
+  }, [refreshKey]);
 
   const handleChange = (
     field: keyof PortfolioProfileType,
