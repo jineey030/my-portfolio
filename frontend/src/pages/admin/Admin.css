@@ -1257,6 +1257,62 @@
   font-size: 13px;
 }
 
+/* Admin Select */
+
+.admin-form-group select {
+  width: 100%;
+  min-height: 42px;
+  box-sizing: border-box;
+  padding: 10px 38px 10px 12px;
+
+  appearance: none;
+  -webkit-appearance: none;
+
+  border: 1px solid #26313d;
+  border-radius: 5px;
+  outline: none;
+
+  background-color: #0d1219;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235eead4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 14px;
+
+  color: #e5e7eb;
+  font-family: inherit;
+  font-size: 13px;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.admin-form-group select:hover {
+  border-color: #3b4a58;
+}
+
+.admin-form-group select:focus {
+  border-color: #5eead4;
+  box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.08);
+}
+
+.admin-form-group select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-form-group select option {
+  background: #11161f;
+  color: #e5e7eb;
+}
+
+.admin-form-group select option:disabled {
+  color: #545e6b;
+}
+
 /* Mobile */
 
 @media (max-width: 640px) {
