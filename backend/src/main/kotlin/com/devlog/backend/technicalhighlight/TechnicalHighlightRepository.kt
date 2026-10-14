@@ -6,4 +6,5 @@ interface TechnicalHighlightRepository :
     JpaRepository<TechnicalHighlight, Long> {
 
     fun findAllByProjectId(projectId: Long): List<TechnicalHighlight>
+    fun deleteAllByProjectId(projectId: Long)
 }
