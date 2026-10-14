@@ -10,6 +10,13 @@ interface ProjectSkillsProps {
   projectId: number;
 }
 
+const SKILL_CATEGORIES = [
+  'Frontend',
+  'Backend',
+  'DB',
+  'Infra'
+] as const;
+
 function ProjectSkills({
   projectId
 }: ProjectSkillsProps) {
@@ -18,6 +25,9 @@ function ProjectSkills({
 
   const [skillName, setSkillName] =
     useState('');
+
+  const [category, setCategory] =
+    useState<string>('Frontend');
 
   const [isLoading, setIsLoading] =
     useState(true);
@@ -45,7 +55,8 @@ function ProjectSkills({
         );
       }
 
-      const data = await response.json();
+      const data: ProjectSkill[] =
+        await response.json();
 
       setSkills(data);
     } catch (error) {
@@ -60,6 +71,7 @@ function ProjectSkills({
   };
 
   useEffect(() => {
+    setIsLoading(true);
     fetchSkills();
   }, [projectId]);
 
@@ -67,9 +79,12 @@ function ProjectSkills({
     const name = skillName.trim();
 
     if (!name) {
-      setError(
-        'Skill 이름을 입력해주세요.'
-      );
+      setError('Skill 이름을 입력해주세요.');
+      return;
+    }
+
+    if (!category) {
+      setError('Skill 카테고리를 선택해주세요.');
       return;
     }
 
@@ -83,8 +98,7 @@ function ProjectSkills({
         {
           method: 'POST',
           headers: {
-            'Content-Type':
-              'application/json'
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             name,
@@ -94,6 +108,13 @@ function ProjectSkills({
       );
 
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error(
+          'Skill 추가 실패:',
+          response.status,
+          errorText
+        );
+
         throw new Error(
           'Skill 추가에 실패했습니다.'
         );
@@ -110,7 +131,9 @@ function ProjectSkills({
       console.error(error);
 
       setError(
-        'Skill 추가에 실패했습니다.'
+        error instanceof Error
+          ? error.message
+          : 'Skill 추가에 실패했습니다.'
       );
     } finally {
       setIsAdding(false);
@@ -139,7 +162,7 @@ function ProjectSkills({
       }
 
       setMessage(
-        'Skill이 삭제되었습니다.'
+        '프로젝트에서 Skill 연결이 삭제되었습니다.'
       );
 
       await fetchSkills();
@@ -147,7 +170,9 @@ function ProjectSkills({
       console.error(error);
 
       setError(
-        'Skill 삭제에 실패했습니다.'
+        error instanceof Error
+          ? error.message
+          : 'Skill 삭제에 실패했습니다.'
       );
     } finally {
       setDeletingSkillId(null);
@@ -182,9 +207,7 @@ function ProjectSkills({
 
       <div className="admin-project-skills-list">
         {skills.length === 0 ? (
-          <p>
-            등록된 Skill이 없습니다.
-          </p>
+          <p>등록된 Skill이 없습니다.</p>
         ) : (
           skills.map((skill) => (
             <div
@@ -218,17 +241,29 @@ function ProjectSkills({
           onChange={(event) =>
             setSkillName(event.target.value)
           }
-          placeholder="예: React + TypeScript"
+          placeholder="예: React, Kotlin, MySQL"
         />
+
+        <select
+          value={category}
+          onChange={(event) =>
+            setCategory(event.target.value)
+          }
+          aria-label="Skill 카테고리"
+        >
+          {SKILL_CATEGORIES.map((item) => (
+            <option key={item} value={item}>
+              {item}
+            </option>
+          ))}
+        </select>
 
         <button
           type="button"
           onClick={handleAddSkill}
           disabled={isAdding}
         >
-          {isAdding
-            ? 'Adding...'
-            : 'Add Skill'}
+          {isAdding ? 'Adding...' : 'Add Skill'}
         </button>
       </div>
     </div>
