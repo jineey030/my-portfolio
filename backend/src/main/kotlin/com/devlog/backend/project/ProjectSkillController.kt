@@ -1,4 +1,3 @@
-
 package com.devlog.backend.project
 
 import com.devlog.backend.project.dto.CreateProjectSkillRequest
@@ -18,11 +17,7 @@ class ProjectSkillController(
         return projectSkillService
             .getSkillsByProject(projectId)
             .map { projectSkill ->
-                ProjectSkillResponse(
-                    id = requireNotNull(projectSkill.skill.id),
-                    name = projectSkill.skill.name,
-                    category = projectSkill.skill.category
-                )
+                ProjectSkillResponse.from(projectSkill)
             }
     }
 
@@ -39,11 +34,7 @@ class ProjectSkillController(
                 category = request.category
             )
 
-        return ProjectSkillResponse(
-            id = requireNotNull(projectSkill.skill.id),
-            name = projectSkill.skill.name,
-            category = projectSkill.skill.category
-        )
+        return ProjectSkillResponse.from(projectSkill)
     }
 
     @PostMapping("/{skillId}")
@@ -55,11 +46,7 @@ class ProjectSkillController(
         val projectSkill =
             projectSkillService.addSkillToProject(projectId, skillId)
 
-        return ProjectSkillResponse(
-            id = requireNotNull(projectSkill.skill.id),
-            name = projectSkill.skill.name,
-            category = projectSkill.skill.category
-        )
+        return ProjectSkillResponse.from(projectSkill)
     }
 
     @DeleteMapping("/{skillId}")
