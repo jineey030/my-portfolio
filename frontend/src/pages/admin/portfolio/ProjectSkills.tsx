@@ -4,6 +4,7 @@ import { apiFetch } from '../../../api/api';
 interface ProjectSkill {
   id: number;
   name: string;
+  category: string;
 }
 
 interface ProjectSkillsProps {
