@@ -1,10 +1,15 @@
 package com.devlog.backend.project
 
+import com.devlog.backend.challenge.ChallengeRepository
+import com.devlog.backend.feature.FeatureRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ProjectService(
-    private val projectRepository: ProjectRepository
+    private val projectRepository: ProjectRepository,
+    private val challengeRepository: ChallengeRepository,
+    private val featureRepository: FeatureRepository
 ) {
 
     fun getProjects(): List<Project> {
@@ -53,7 +58,7 @@ class ProjectService(
         githubUrl: String?,
         deployUrl: String?,
         imageUrl: String?,
-        role : String?
+        role: String?
     ): Project {
         val project = projectRepository.findById(id)
             .orElseThrow {
@@ -71,11 +76,15 @@ class ProjectService(
         return projectRepository.save(project)
     }
 
+    @Transactional
     fun deleteProject(id: Long) {
-        if (!projectRepository.existsById(id)) {
-            throw IllegalArgumentException("Project not found: $id")
-        }
+        val project = projectRepository.findById(id)
+            .orElseThrow {
+                IllegalArgumentException("Project not found: $id")
+            }
 
-        projectRepository.deleteById(id)
+        challengeRepository.deleteAllByProjectId(id)
+        featureRepository.deleteAllByProjectId(id)
+        projectRepository.delete(project)
     }
 }
