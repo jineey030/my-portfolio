@@ -824,14 +824,14 @@
   border-top: 1px solid var(--border-subtle);
 }
 
-/* Project Skills - Custom Select */
+/* 카테고리 선택 */
 .admin-project-skills-add select {
-  width: 100%;
-  min-width: 110px;
+  flex: 0 0 125px;
+  width: 125px;
+  min-width: 0;
   box-sizing: border-box;
 
-  padding: 10px 38px 10px 12px;
-
+  padding: 10px 32px 10px 12px;
   color: #e5e7eb;
   background-color: #0d1219;
 
@@ -840,29 +840,22 @@
 
   font-family: inherit;
   font-size: 13px;
-  line-height: 1.5;
 
   appearance: none;
   -webkit-appearance: none;
 
-  /* 민트색 커스텀 화살표 */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235eead4' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 12px center;
+  background-position: right 10px center;
   background-size: 14px;
 
   cursor: pointer;
   outline: none;
-
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
-    background-color 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .admin-project-skills-add select:hover {
   border-color: #3b4a58;
-  background-color: #111821;
 }
 
 .admin-project-skills-add select:focus {
@@ -873,6 +866,11 @@
 .admin-project-skills-add select option {
   color: #e5e7eb;
   background-color: #111821;
+}
+
+/* 추가 버튼은 기존 스타일 유지 */
+.admin-project-skills-add button {
+  flex-shrink: 0;
 }
 
 /* 비활성화 상태 */
@@ -1133,28 +1131,15 @@
 
 .admin-project-skills-add {
   display: flex;
+  align-items: center;
   gap: 8px;
 }
 
 .admin-project-skills-add input {
   flex: 1;
-
   min-width: 0;
-
-  padding: 9px 11px;
-
-  border: 1px solid #26313d;
-  border-radius: 5px;
-
-  outline: none;
-
-  background: #11161f;
-  color: #e5e7eb;
-
-  font-family: inherit;
-  font-size: 12px;
-
-  transition: border-color 0.2s ease;
+  width: 0;
+  box-sizing: border-box;
 }
 
 .admin-project-skills-add input::placeholder {
