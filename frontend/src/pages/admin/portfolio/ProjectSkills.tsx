@@ -1,3 +1,4 @@
+```tsx
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../../../api/api';
 
@@ -76,6 +77,21 @@ function ProjectSkills({
     fetchSkills();
   }, [projectId]);
 
+  // 카테고리별로 스킬 그룹화
+  const groupedSkills = skills.reduce<
+    Record<string, ProjectSkill[]>
+  >((result, skill) => {
+    const skillCategory = skill.category;
+
+    if (!result[skillCategory]) {
+      result[skillCategory] = [];
+    }
+
+    result[skillCategory].push(skill);
+
+    return result;
+  }, {});
+
   const handleAddSkill = async () => {
     const name = skillName.trim();
 
@@ -110,6 +126,7 @@ function ProjectSkills({
 
       if (!response.ok) {
         const errorText = await response.text();
+
         console.error(
           'Skill 추가 실패:',
           response.status,
@@ -210,28 +227,50 @@ function ProjectSkills({
         {skills.length === 0 ? (
           <p>등록된 Skill이 없습니다.</p>
         ) : (
-          skills.map((skill) => (
-            <div
-              key={skill.id}
-              className="admin-project-skill-item"
-            >
-              <span>{skill.name}</span>
+          SKILL_CATEGORIES.map(
+            (categoryName) => {
+              const categorySkills =
+                groupedSkills[categoryName] ?? [];
 
-              <button
-                type="button"
-                onClick={() =>
-                  handleDeleteSkill(skill.id)
-                }
-                disabled={
-                  deletingSkillId === skill.id
-                }
-              >
-                {deletingSkillId === skill.id
-                  ? 'Deleting...'
-                  : 'Remove'}
-              </button>
-            </div>
-          ))
+              if (categorySkills.length === 0) {
+                return null;
+              }
+
+              return (
+                <div
+                  key={categoryName}
+                  className="admin-project-skill-category"
+                >
+                  <h4>{categoryName}</h4>
+
+                  <div className="admin-project-skill-items">
+                    {categorySkills.map((skill) => (
+                      <div
+                        key={skill.id}
+                        className="admin-project-skill-item"
+                      >
+                        <span>{skill.name}</span>
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleDeleteSkill(skill.id)
+                          }
+                          disabled={
+                            deletingSkillId === skill.id
+                          }
+                        >
+                          {deletingSkillId === skill.id
+                            ? 'Deleting...'
+                            : 'Remove'}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            }
+          )
         )}
       </div>
 
@@ -272,3 +311,4 @@ function ProjectSkills({
 }
 
 export default ProjectSkills;
+```
