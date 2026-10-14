@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Link } from 'react-router';
 
 import { apiFetch } from '../../../api/api';
+import { useAdminRefreshKey } from '../../../api/adminRefresh';
 
 import DashboardCard from '../../learning/components/DashboardCard';
 import { useLearning } from '../../learning/context/LearningContext';
@@ -19,7 +20,9 @@ function AdminDashboard() {
     setStudyLogs
   } = useLearning();
 
-  // Dashboard 진입 시 DB 데이터 조회
+  const refreshKey = useAdminRefreshKey();
+
+  // Dashboard 진입 시 DB 데이터 조회 (+ 데이터 변경 시 자동 새로고침)
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
@@ -60,7 +63,7 @@ function AdminDashboard() {
     };
 
     fetchDashboardData();
-  }, [setTodos, setStudyLogs]);
+  }, [setTodos, setStudyLogs, refreshKey]);
 
   const completedTodoCount =
     todos.filter(
