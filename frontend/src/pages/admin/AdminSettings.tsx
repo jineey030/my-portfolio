@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../../api/api';
+import { useAdminRefreshKey } from '../../api/adminRefresh';
 import './Admin.css';
 
 interface AdminProfile {
@@ -46,6 +47,8 @@ function AdminSettings() {
   const [isChangingPassword, setIsChangingPassword] =
     useState(false);
 
+  const refreshKey = useAdminRefreshKey();
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -77,7 +80,7 @@ function AdminSettings() {
     };
 
     fetchProfile();
-  }, []);
+  }, [refreshKey]);
 
   const handleUpdateUsername = async () => {
     if (!newUsername.trim()) {

@@ -1,3 +1,8 @@
+import {
+  notifyAdminDataChanged,
+  shouldNotifyAdminChange
+} from './adminRefresh';
+
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL;
 
@@ -26,11 +31,24 @@ export async function apiFetch(
     );
   }
 
-  return fetch(
+  const response = await fetch(
     `${API_BASE_URL}${path}`,
     {
       ...options,
       headers,
     }
   );
+
+  // /admin에서 데이터가 바뀌면 화면 데이터 자동 새로고침
+  if (
+    shouldNotifyAdminChange(
+      path,
+      options.method,
+      response.ok
+    )
+  ) {
+    notifyAdminDataChanged();
+  }
+
+  return response;
 }

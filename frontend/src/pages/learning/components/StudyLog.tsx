@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../../../api/api';
+import { useAdminRefreshKey } from '../../../api/adminRefresh';
 
 import type { StudyLogData } from '../types/learning';
 import Pagination from './Pagination';
@@ -69,6 +70,8 @@ function StudyLog({
     startIndex + ITEMS_PER_PAGE
   );
 
+  const refreshKey = useAdminRefreshKey();
+
   // [GET] Study Log 가져오기
   useEffect(() => {
     const fetchStudyLogs = async () => {
@@ -93,7 +96,7 @@ function StudyLog({
     };
 
     fetchStudyLogs();
-  }, []);
+  }, [refreshKey]);
 
   // 부모에게 전달용
   useEffect(() => {

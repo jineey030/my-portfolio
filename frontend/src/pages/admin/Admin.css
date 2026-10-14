@@ -1,4 +1,3 @@
-
 /* =========================
    Admin Page
    ========================= */
@@ -1091,29 +1090,32 @@
 }
 
 
-/* Skill category select */
+/* Custom select (AdminSelect) */
 
-.admin-project-skills-add select {
-  flex: 0 0 125px;
-  width: 125px;
+.admin-select {
+  position: relative;
+  flex: 0 0 140px;
+  width: 140px;
   min-width: 0;
+}
+
+.admin-select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
   height: 40px;
   box-sizing: border-box;
-  padding: 0 30px 0 12px;
+  padding: 0 12px;
   border: 1px solid #26313d;
   border-radius: 5px;
   outline: none;
-  appearance: none;
-  -webkit-appearance: none;
-  background-color: #0d1219;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235eead4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 14px;
+  background: #0d1219;
   color: #e5e7eb;
   font-family: inherit;
   font-size: 13px;
-  line-height: normal;
+  text-align: left;
   cursor: pointer;
   transition:
     border-color 0.2s ease,
@@ -1121,24 +1123,93 @@
     background-color 0.2s ease;
 }
 
-.admin-project-skills-add select:hover {
+.admin-select-trigger:hover {
   border-color: #3b4a58;
-  background-color: #111821;
+  background: #111821;
 }
 
-.admin-project-skills-add select:focus {
+.admin-select-trigger:focus-visible,
+.admin-select.is-open .admin-select-trigger {
   border-color: #5eead4;
   box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.08);
 }
 
-.admin-project-skills-add select option {
+.admin-select-trigger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-select-chevron {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  color: #5eead4;
+  transition: transform 0.2s ease;
+}
+
+.admin-select.is-open .admin-select-chevron {
+  transform: rotate(180deg);
+}
+
+.admin-select-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 50;
+  margin: 0;
+  padding: 4px;
+  border: 1px solid #26313d;
+  border-radius: 6px;
   background: #11161f;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(94, 234, 212, 0.04);
+  list-style: none;
+  animation: admin-select-in 0.12s ease-out;
+}
+
+@keyframes admin-select-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.admin-select-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 4px;
+  color: #9ca3af;
+  font-size: 13px;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color 0.12s ease,
+    color 0.12s ease;
+}
+
+.admin-select-option.is-active {
+  background: rgba(94, 234, 212, 0.08);
   color: #e5e7eb;
 }
 
-.admin-project-skills-add select:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.admin-select-option.is-selected {
+  color: #5eead4;
+}
+
+.admin-select-check {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
 }
 
 
@@ -1353,7 +1424,7 @@
     width: 100%;
   }
 
-  .admin-project-skills-add select {
+  .admin-project-skills-add .admin-select {
     flex: 1 1 auto;
     width: auto;
     min-width: 0;

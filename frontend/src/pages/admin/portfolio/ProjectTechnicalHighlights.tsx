@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../../../api/api';
+import { useAdminRefresh } from '../../../api/adminRefresh';
 
 interface TechnicalHighlight {
   id: number;
@@ -67,6 +68,8 @@ function ProjectTechnicalHighlights({
   useEffect(() => {
     fetchHighlights();
   }, [projectId]);
+
+  useAdminRefresh(fetchHighlights);
 
   const handleAddHighlight = async () => {
     const trimmedTitle = title.trim();

@@ -1,4 +1,3 @@
-
 package com.devlog.backend.project
 
 import com.devlog.backend.skill.Skill
@@ -69,7 +68,14 @@ class ProjectSkillService(
             "Skill category cannot be blank."
         }
 
-        val skill = skillRepository.findByName(trimmedName)
+        // 같은 이름의 Skill이 이미 있으면 재사용하되,
+        // 관리자가 선택한 카테고리로 갱신한다.
+        val skill = skillRepository.findFirstByNameIgnoreCaseOrderByIdAsc(trimmedName)
+            ?.also { existing ->
+                if (existing.category != trimmedCategory) {
+                    existing.category = trimmedCategory
+                }
+            }
             ?: skillRepository.save(
                 Skill(
                     name = trimmedName,
@@ -81,11 +87,11 @@ class ProjectSkillService(
             "Saved skill has no ID."
         }
 
-        if (projectSkillRepository.existsByProjectIdAndSkillId(projectId, skillId)) {
-            throw IllegalArgumentException(
-                "Skill is already connected to this project."
-            )
-        }
+        // 이미 연결된 Skill이면 카테고리만 갱신된 기존 연결을 돌려준다.
+        projectSkillRepository
+            .findAllByProjectId(projectId)
+            .find { it.skill.id == skillId }
+            ?.let { return it }
 
         return projectSkillRepository.save(
             ProjectSkill(

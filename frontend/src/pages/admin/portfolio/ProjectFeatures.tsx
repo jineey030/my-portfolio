@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../../../api/api';
+import { useAdminRefresh } from '../../../api/adminRefresh';
 
 interface ProjectFeature {
   id: number;
@@ -63,6 +64,8 @@ function ProjectFeatures({
   useEffect(() => {
     fetchFeatures();
   }, [projectId]);
+
+  useAdminRefresh(fetchFeatures);
 
   const handleAddFeature = async () => {
     const name = featureName.trim();

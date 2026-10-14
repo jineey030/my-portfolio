@@ -7,4 +7,6 @@ interface SkillRepository : JpaRepository<Skill, Long> {
     fun findAllByOrderByIdDesc(): List<Skill>
 
     fun findByName(name: String): Skill?
+
+    fun findFirstByNameIgnoreCaseOrderByIdAsc(name: String): Skill?
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../../../api/api';
+import { useAdminRefresh } from '../../../api/adminRefresh';
 
 interface ProjectChallenge {
   id: number;
@@ -63,6 +64,8 @@ function ProjectChallenges({
   useEffect(() => {
     fetchChallenges();
   }, [projectId]);
+
+  useAdminRefresh(fetchChallenges);
 
   const handleAddChallenge = async () => {
     const name = challengeName.trim();
