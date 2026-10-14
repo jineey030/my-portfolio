@@ -224,28 +224,48 @@ function ProjectSkills({
         {skills.length === 0 ? (
           <p>등록된 Skill이 없습니다.</p>
         ) : (
-          skills.map((skill) => (
-            <div
-              key={skill.id}
-              className="admin-project-skill-item"
-            >
-              <span>{skill.name}</span>
-
-              <button
-                type="button"
-                onClick={() =>
-                  handleDeleteSkill(skill.id)
-                }
-                disabled={
-                  deletingSkillId === skill.id
-                }
+          SKILL_CATEGORIES.map((categoryName) => {
+            const categorySkills =
+              groupedSkills[categoryName] ?? [];
+      
+            if (categorySkills.length === 0) {
+              return null;
+            }
+      
+            return (
+              <div
+                key={categoryName}
+                className="admin-project-skill-category"
               >
-                {deletingSkillId === skill.id
-                  ? 'Deleting...'
-                  : 'Remove'}
-              </button>
-            </div>
-          ))
+                <h4>{categoryName}</h4>
+      
+                <div className="admin-project-skill-items">
+                  {categorySkills.map((skill) => (
+                    <div
+                      key={skill.id}
+                      className="admin-project-skill-item"
+                    >
+                      <span>{skill.name}</span>
+      
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleDeleteSkill(skill.id)
+                        }
+                        disabled={
+                          deletingSkillId === skill.id
+                        }
+                      >
+                        {deletingSkillId === skill.id
+                          ? 'Deleting...'
+                          : 'Remove'}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })
         )}
       </div>
 
