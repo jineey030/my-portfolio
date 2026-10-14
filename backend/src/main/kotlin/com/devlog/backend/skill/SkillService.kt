@@ -18,9 +18,10 @@ class SkillService(
             }
     }
 
-    fun createSkill(name: String): Skill {
+    fun createSkill(name: String, category: String): Skill {
         val skill = Skill(
-            name = name
+            name = name,
+            category = category
         )
 
         return skillRepository.save(skill)
@@ -28,7 +29,8 @@ class SkillService(
 
     fun updateSkill(
         id: Long,
-        name: String
+        name: String,
+        category: String
     ): Skill {
         val skill = skillRepository.findById(id)
             .orElseThrow {
@@ -36,6 +38,7 @@ class SkillService(
             }
 
         skill.name = name
+        skill.category = category
 
         return skillRepository.save(skill)
     }
