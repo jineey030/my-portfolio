@@ -65,7 +65,8 @@ class ProjectSkillService(
 
     fun createAndAddSkillToProject(
         projectId: Long,
-        name: String
+        name: String,
+        category: String
     ): ProjectSkill {
 
         val project = projectRepository.findById(projectId)
@@ -76,18 +77,25 @@ class ProjectSkillService(
             }
 
         val trimmedName = name.trim()
-
+        val trimmedCategory = category.trim()
+        
         if (trimmedName.isBlank()) {
             throw IllegalArgumentException(
                 "Skill name cannot be blank."
             )
         }
-
-        val skill = skillRepository
-            .findByName(trimmedName)
+        
+        if (trimmedCategory.isBlank()) {
+            throw IllegalArgumentException(
+                "Skill category cannot be blank."
+            )
+        }
+            
+        val skill = skillRepository.findByName(trimmedName)
             ?: skillRepository.save(
                 Skill(
-                    name = trimmedName
+                    name = trimmedName,
+                    category = trimmedCategory
                 )
             )
 
