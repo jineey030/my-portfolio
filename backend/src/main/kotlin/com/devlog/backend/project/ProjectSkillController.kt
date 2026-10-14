@@ -44,7 +44,8 @@ class ProjectSkillController(
         val projectSkill =
             projectSkillService.createAndAddSkillToProject(
                 projectId = projectId,
-                name = request.name
+                name = request.name,
+                category = request.category
             )
 
         return ProjectSkillResponse(
