@@ -41,7 +41,8 @@ class ProjectSkillController(
 
         return ProjectSkillResponse(
             id = requireNotNull(projectSkill.skill.id),
-            name = projectSkill.skill.name
+            name = projectSkill.skill.name,
+            category = projectSkill.skill.category
         )
     }
 
@@ -56,7 +57,8 @@ class ProjectSkillController(
 
         return ProjectSkillResponse(
             id = requireNotNull(projectSkill.skill.id),
-            name = projectSkill.skill.name
+            name = projectSkill.skill.name,
+            category = projectSkill.skill.category
         )
     }
 
