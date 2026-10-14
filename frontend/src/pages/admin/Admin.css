@@ -1,3 +1,4 @@
+
 /* =========================
    Admin Page
    ========================= */
@@ -128,7 +129,6 @@
 .admin-nav-section-title {
   margin: 0 0 8px;
   padding: 0 12px;
-
   font-size: 10px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -824,60 +824,6 @@
   border-top: 1px solid var(--border-subtle);
 }
 
-/* 카테고리 선택 */
-.admin-project-skills-add select {
-  flex: 0 0 125px;
-  width: 125px;
-  min-width: 0;
-  box-sizing: border-box;
-
-  padding: 10px 32px 10px 12px;
-  color: #e5e7eb;
-  background-color: #0d1219;
-
-  border: 1px solid #26313d;
-  border-radius: 5px;
-
-  font-family: inherit;
-  font-size: 13px;
-
-  appearance: none;
-  -webkit-appearance: none;
-
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235eead4' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 14px;
-
-  cursor: pointer;
-  outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.admin-project-skills-add select:hover {
-  border-color: #3b4a58;
-}
-
-.admin-project-skills-add select:focus {
-  border-color: #5eead4;
-  box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.08);
-}
-
-.admin-project-skills-add select option {
-  color: #e5e7eb;
-  background-color: #111821;
-}
-
-/* 추가 버튼은 기존 스타일 유지 */
-.admin-project-skills-add button {
-  flex-shrink: 0;
-}
-
-/* 비활성화 상태 */
-.admin-project-skills-add select:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
 
 /* =========================
    Admin Mobile
@@ -900,6 +846,7 @@
     width: 100%;
   }
 }
+
 
 /* ========================================
    Portfolio Projects
@@ -931,6 +878,7 @@
   color: #0a0e14;
 }
 
+
 /* Project list */
 
 .admin-project-list {
@@ -943,14 +891,10 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-
   padding: 24px;
-
   border: 1px solid #1f2933;
   border-radius: 10px;
-
   background: #11161f;
-
   transition:
     border-color 0.2s ease,
     transform 0.2s ease;
@@ -969,7 +913,6 @@
 
 .admin-project-card-label {
   margin: 0;
-
   font-family: 'DM Mono', monospace;
   font-size: 11px;
   letter-spacing: 0.12em;
@@ -978,7 +921,6 @@
 
 .admin-project-card h2 {
   margin: 0;
-
   font-size: 20px;
   font-weight: 600;
   color: #e5e7eb;
@@ -986,7 +928,6 @@
 
 .admin-project-card p:not(.admin-project-card-label) {
   margin: 0;
-
   color: #9ca3af;
   font-size: 14px;
   line-height: 1.6;
@@ -994,19 +935,15 @@
 
 .admin-project-card > div:first-child > span {
   width: fit-content;
-
   margin-top: 4px;
-
   padding: 4px 8px;
-
   border: 1px solid #26313d;
   border-radius: 4px;
-
   color: #6b7280;
-
   font-family: 'DM Mono', monospace;
   font-size: 11px;
 }
+
 
 /* Project card actions */
 
@@ -1014,28 +951,20 @@
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-
   padding-top: 4px;
-
   border-top: 1px solid #1f2933;
 }
 
 .admin-project-card-actions button {
   min-width: 72px;
-
   padding: 8px 14px;
-
   border: 1px solid #303b47;
   border-radius: 5px;
-
   background: transparent;
   color: #9ca3af;
-
   font-family: inherit;
   font-size: 12px;
-
   cursor: pointer;
-
   transition:
     background 0.2s ease,
     color 0.2s ease,
@@ -1054,14 +983,14 @@
   background: rgba(244, 114, 182, 0.05);
 }
 
+
 /* Project Skills */
 
 .admin-project-skills {
+  min-width: 0;
   padding: 18px;
-
   border: 1px solid #1d2731;
   border-radius: 8px;
-
   background: #0d1219;
 }
 
@@ -1069,15 +998,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   margin-bottom: 14px;
 }
 
 .admin-project-skills-header h3 {
   margin: 0;
-
   color: #e5e7eb;
-
   font-family: 'DM Mono', monospace;
   font-size: 12px;
   letter-spacing: 0.08em;
@@ -1088,7 +1014,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-
   margin-bottom: 16px;
 }
 
@@ -1096,32 +1021,22 @@
   display: flex;
   align-items: center;
   gap: 8px;
-
   padding: 6px 8px 6px 10px;
-
   border: 1px solid #26313d;
   border-radius: 5px;
-
   background: #11161f;
-
   color: #cbd5e1;
-
   font-size: 12px;
 }
 
 .admin-project-skill-item button {
   padding: 2px 5px;
-
   border: 0;
   background: transparent;
-
   color: #545e6b;
-
   font-family: inherit;
   font-size: 10px;
-
   cursor: pointer;
-
   transition: color 0.2s ease;
 }
 
@@ -1129,52 +1044,135 @@
   color: #f472b6;
 }
 
+
+/* Skill add form */
+
 .admin-project-skills-add {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: 8px;
+  width: 100%;
+  min-width: 0;
 }
 
+/* Skill input */
+
 .admin-project-skills-add input {
-  flex: 1;
-  min-width: 0;
+  flex: 1 1 0;
   width: 0;
+  min-width: 0;
+  height: 40px;
   box-sizing: border-box;
+  padding: 0 12px;
+  border: 1px solid #26313d;
+  border-radius: 5px;
+  outline: none;
+  background: #0d1219;
+  color: #e5e7eb;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: normal;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .admin-project-skills-add input::placeholder {
   color: #545e6b;
 }
 
+.admin-project-skills-add input:hover {
+  border-color: #3b4a58;
+}
+
 .admin-project-skills-add input:focus {
   border-color: #5eead4;
+  box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.08);
 }
+
+
+/* Skill category select */
+
+.admin-project-skills-add select {
+  flex: 0 0 125px;
+  width: 125px;
+  min-width: 0;
+  height: 40px;
+  box-sizing: border-box;
+  padding: 0 30px 0 12px;
+  border: 1px solid #26313d;
+  border-radius: 5px;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: #0d1219;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235eead4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 14px;
+  color: #e5e7eb;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: normal;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.admin-project-skills-add select:hover {
+  border-color: #3b4a58;
+  background-color: #111821;
+}
+
+.admin-project-skills-add select:focus {
+  border-color: #5eead4;
+  box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.08);
+}
+
+.admin-project-skills-add select option {
+  background: #11161f;
+  color: #e5e7eb;
+}
+
+.admin-project-skills-add select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+/* Add Skill button */
 
 .admin-project-skills-add button {
-  flex-shrink: 0;
-
-  padding: 9px 14px;
-
+  flex: 0 0 auto;
+  min-height: 40px;
+  box-sizing: border-box;
+  padding: 0 14px;
   border: 1px solid #5eead4;
   border-radius: 5px;
-
   background: transparent;
   color: #5eead4;
-
   font-family: inherit;
   font-size: 12px;
-
+  white-space: nowrap;
   cursor: pointer;
-
   transition:
     background 0.2s ease,
-    color 0.2s ease;
+    color 0.2s ease,
+    opacity 0.2s ease;
 }
 
-.admin-project-skills-add button:hover {
+.admin-project-skills-add button:hover:not(:disabled) {
   background: #5eead4;
   color: #0a0e14;
 }
+
+.admin-project-skills-add button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 
 /* Form */
 
@@ -1182,13 +1180,10 @@
   display: flex;
   flex-direction: column;
   gap: 18px;
-
   margin-bottom: 28px;
   padding: 24px;
-
   border: 1px solid #26313d;
   border-radius: 10px;
-
   background: #11161f;
 }
 
@@ -1200,7 +1195,6 @@
 
 .admin-form-group label {
   color: #9ca3af;
-
   font-family: 'DM Mono', monospace;
   font-size: 11px;
   letter-spacing: 0.05em;
@@ -1210,20 +1204,14 @@
 .admin-form-group textarea {
   width: 100%;
   box-sizing: border-box;
-
   padding: 10px 12px;
-
   border: 1px solid #26313d;
   border-radius: 5px;
-
   outline: none;
-
   background: #0d1219;
   color: #e5e7eb;
-
   font-family: inherit;
   font-size: 13px;
-
   transition: border-color 0.2s ease;
 }
 
@@ -1241,24 +1229,19 @@
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-
   padding-top: 6px;
 }
 
 .admin-form-actions button {
   padding: 9px 16px;
-
   border-radius: 5px;
-
   font-family: inherit;
   font-size: 12px;
-
   cursor: pointer;
 }
 
 .admin-form-actions button[type='submit'] {
   border: 1px solid #5eead4;
-
   background: #5eead4;
   color: #0a0e14;
 }
@@ -1270,7 +1253,6 @@
 
 .admin-form-actions button[type='button'] {
   border: 1px solid #303b47;
-
   background: transparent;
   color: #9ca3af;
 }
@@ -1280,51 +1262,45 @@
   color: #e5e7eb;
 }
 
-/* Messages */
+
+/* Form messages */
 
 .admin-form-message {
   margin: 12px 0;
-
   color: #4ade80;
-
   font-size: 13px;
 }
 
 .admin-form-error {
   margin: 12px 0;
-
   color: #f472b6;
-
   font-size: 13px;
 }
 
-/* Admin Select */
+
+/* Admin form select */
 
 .admin-form-group select {
+  display: block;
   width: 100%;
   min-height: 42px;
   box-sizing: border-box;
   padding: 10px 38px 10px 12px;
-
   appearance: none;
   -webkit-appearance: none;
-
   border: 1px solid #26313d;
   border-radius: 5px;
   outline: none;
-
   background-color: #0d1219;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235eead4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 14px;
-
   color: #e5e7eb;
   font-family: inherit;
   font-size: 13px;
-
+  line-height: 1.5;
   cursor: pointer;
-
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease,
@@ -1354,7 +1330,8 @@
   color: #545e6b;
 }
 
-/* Mobile */
+
+/* Portfolio Projects Mobile */
 
 @media (max-width: 640px) {
   .admin-project-card {
@@ -1366,11 +1343,25 @@
   }
 
   .admin-project-skills-add {
-    flex-direction: column;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .admin-project-skills-add input {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .admin-project-skills-add select {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
   }
 
   .admin-project-skills-add button {
-    width: 100%;
+    flex: 0 0 auto;
+    width: auto;
   }
 
   .admin-project-card-actions {
@@ -1394,32 +1385,26 @@
   }
 }
 
- /* ========================================
-    Portfolio Dashboard
- ======================================== */
+
+/* ========================================
+   Portfolio Dashboard
+======================================== */
 
 .admin-dashboard-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
-
   margin-top: 32px;
 }
 
 .admin-dashboard-card {
   position: relative;
-
   min-height: 190px;
-
   padding: 24px;
-
   border: 1px solid #1f2933;
   border-radius: 10px;
-
   background: #11161f;
-
   overflow: hidden;
-
   transition:
     border-color 0.2s ease,
     transform 0.2s ease,
@@ -1428,19 +1413,13 @@
 
 .admin-dashboard-card::before {
   content: '';
-
   position: absolute;
-
   top: 0;
   left: 0;
-
   width: 3px;
   height: 100%;
-
   background: #26313d;
-
-  transition:
-    background 0.2s ease;
+  transition: background 0.2s ease;
 }
 
 .admin-dashboard-card:hover {
@@ -1455,9 +1434,7 @@
 
 .admin-dashboard-card-label {
   margin: 0 0 12px;
-
   color: #545e6b;
-
   font-family: 'DM Mono', monospace;
   font-size: 11px;
   letter-spacing: 0.12em;
@@ -1465,57 +1442,33 @@
 
 .admin-dashboard-card h2 {
   margin: 0 0 12px;
-
   color: #e5e7eb;
-
   font-size: 20px;
   font-weight: 600;
 }
 
 .admin-dashboard-card p:last-child {
   max-width: 420px;
-
   margin: 0;
-
   color: #8b95a3;
-
   font-size: 13px;
   line-height: 1.7;
 }
 
 
-/* ========================================
-   Portfolio Dashboard Card Variants
- ======================================== */
+/* Portfolio Dashboard Card Variants */
 
-.admin-dashboard-card:nth-child(1)::before {
-  background: #c084fc;
-}
-
+.admin-dashboard-card:nth-child(1)::before,
 .admin-dashboard-card:nth-child(1):hover::before {
   background: #c084fc;
 }
 
-.admin-dashboard-card:nth-child(2)::before {
-  background: #5eead4;
-}
-
+.admin-dashboard-card:nth-child(2)::before,
 .admin-dashboard-card:nth-child(2):hover::before {
   background: #5eead4;
 }
 
-.admin-dashboard-card:nth-child(3)::before {
-  background: #4ade80;
-}
-
-.admin-dashboard-card:nth-child(3):hover::before {
-  background: #4ade80;
-}
-
-.admin-dashboard-card:nth-child(3)::before {
-  background: #f472b6;
-}
-
+.admin-dashboard-card:nth-child(3)::before,
 .admin-dashboard-card:nth-child(3):hover::before {
   background: #f472b6;
 }
@@ -1538,16 +1491,12 @@
   justify-content: space-between;
   width: 100%;
   padding: 28px 8px 28px 4px;
-
   border: 0;
   border-bottom: 1px solid #1f2933;
-
   background: transparent;
   color: inherit;
-
   text-align: left;
   cursor: pointer;
-
   transition:
     padding 0.2s ease,
     background 0.2s ease;
@@ -1565,9 +1514,7 @@
 
 .admin-management-label {
   margin: 0 0 8px;
-
   color: #545e6b;
-
   font-family: 'DM Mono', monospace;
   font-size: 11px;
   letter-spacing: 0.12em;
@@ -1575,18 +1522,14 @@
 
 .admin-management-item h2 {
   margin: 0 0 8px;
-
   color: #e5e7eb;
-
   font-size: 20px;
   font-weight: 600;
 }
 
 .admin-management-item p:last-child {
   margin: 0;
-
   color: #8b95a3;
-
   font-size: 13px;
   line-height: 1.7;
 }
@@ -1594,12 +1537,9 @@
 .admin-management-arrow {
   flex-shrink: 0;
   margin-left: 24px;
-
   color: #545e6b;
-
   font-family: 'DM Mono', monospace;
   font-size: 20px;
-
   transition:
     color 0.2s ease,
     transform 0.2s ease;
@@ -1609,8 +1549,6 @@
   color: #5eead4;
   transform: translateX(4px);
 }
-
-/* Mobile */
 
 @media (max-width: 640px) {
   .admin-management-item {
@@ -1630,6 +1568,7 @@
   }
 }
 
+
 /* ========================================
    Project Features
 ======================================== */
@@ -1646,9 +1585,7 @@
 
 .admin-project-features-header h3 {
   margin: 0;
-
   color: #e5e7eb;
-
   font-size: 14px;
   font-weight: 600;
 }
@@ -1663,13 +1600,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   min-height: 40px;
   padding: 8px 10px;
-
   border: 1px solid #1f2933;
   border-radius: 6px;
-
   background: #0d1219;
 }
 
@@ -1681,12 +1615,9 @@
 .admin-project-feature-item button {
   border: 0;
   background: transparent;
-
   color: #f472b6;
-
   font-family: 'DM Mono', monospace;
   font-size: 11px;
-
   cursor: pointer;
 }
 
@@ -1703,17 +1634,12 @@
 .admin-project-features-add input {
   flex: 1;
   min-width: 0;
-
   padding: 9px 10px;
-
   border: 1px solid #26313d;
   border-radius: 6px;
-
   outline: none;
-
   background: #0d1219;
   color: #e5e7eb;
-
   font-size: 13px;
 }
 
@@ -1727,18 +1653,13 @@
 
 .admin-project-features-add button {
   flex-shrink: 0;
-
   padding: 9px 14px;
-
   border: 1px solid #5eead4;
   border-radius: 6px;
-
   background: transparent;
   color: #5eead4;
-
   font-family: 'DM Mono', monospace;
   font-size: 11px;
-
   cursor: pointer;
 }
 
@@ -1756,6 +1677,7 @@
   }
 }
 
+
 /* ========================================
    Project Challenges
 ======================================== */
@@ -1772,9 +1694,7 @@
 
 .admin-project-challenges-header h3 {
   margin: 0;
-
   color: #e5e7eb;
-
   font-size: 14px;
   font-weight: 600;
 }
@@ -1789,13 +1709,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   min-height: 40px;
   padding: 8px 10px;
-
   border: 1px solid #1f2933;
   border-radius: 6px;
-
   background: #0d1219;
 }
 
@@ -1807,12 +1724,9 @@
 .admin-project-challenge-item button {
   border: 0;
   background: transparent;
-
   color: #f472b6;
-
   font-family: 'DM Mono', monospace;
   font-size: 11px;
-
   cursor: pointer;
 }
 
@@ -1829,17 +1743,12 @@
 .admin-project-challenges-add input {
   flex: 1;
   min-width: 0;
-
   padding: 9px 10px;
-
   border: 1px solid #26313d;
   border-radius: 6px;
-
   outline: none;
-
   background: #0d1219;
   color: #e5e7eb;
-
   font-size: 13px;
 }
 
@@ -1853,18 +1762,13 @@
 
 .admin-project-challenges-add button {
   flex-shrink: 0;
-
   padding: 9px 14px;
-
   border: 1px solid #5eead4;
   border-radius: 6px;
-
   background: transparent;
   color: #5eead4;
-
   font-family: 'DM Mono', monospace;
   font-size: 11px;
-
   cursor: pointer;
 }
 
@@ -1882,6 +1786,7 @@
   }
 }
 
+
 /* ========================================
    Project Technical Highlights
 ======================================== */
@@ -1898,9 +1803,7 @@
 
 .admin-project-technical-highlights-header h3 {
   margin: 0;
-
   color: #e5e7eb;
-
   font-size: 14px;
   font-weight: 600;
 }
@@ -1915,14 +1818,10 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-
   gap: 16px;
-
   padding: 12px;
-
   border: 1px solid #1f2933;
   border-radius: 6px;
-
   background: #0d1219;
 }
 
@@ -1932,18 +1831,14 @@
 
 .admin-project-technical-highlight-content h4 {
   margin: 0 0 6px;
-
   color: #e5e7eb;
-
   font-size: 13px;
   font-weight: 600;
 }
 
 .admin-project-technical-highlight-content p {
   margin: 0;
-
   color: #8b95a3;
-
   font-size: 12px;
   line-height: 1.7;
   white-space: pre-wrap;
@@ -1951,15 +1846,11 @@
 
 .admin-project-technical-highlight-item button {
   flex-shrink: 0;
-
   border: 0;
   background: transparent;
-
   color: #f472b6;
-
   font-family: 'DM Mono', monospace;
   font-size: 11px;
-
   cursor: pointer;
 }
 
@@ -1970,9 +1861,7 @@
 .admin-project-technical-highlights-add {
   display: flex;
   flex-direction: column;
-
   gap: 8px;
-
   margin-top: 12px;
 }
 
@@ -1980,25 +1869,18 @@
 .admin-project-technical-highlights-add textarea {
   width: 100%;
   box-sizing: border-box;
-
   padding: 9px 10px;
-
   border: 1px solid #26313d;
   border-radius: 6px;
-
   outline: none;
-
   background: #0d1219;
   color: #e5e7eb;
-
   font-size: 13px;
-
   font-family: inherit;
 }
 
 .admin-project-technical-highlights-add textarea {
   resize: vertical;
-
   line-height: 1.6;
 }
 
@@ -2014,18 +1896,13 @@
 
 .admin-project-technical-highlights-add button {
   align-self: flex-start;
-
   padding: 9px 14px;
-
   border: 1px solid #5eead4;
   border-radius: 6px;
-
   background: transparent;
   color: #5eead4;
-
   font-family: 'DM Mono', monospace;
   font-size: 11px;
-
   cursor: pointer;
 }
 
@@ -2047,6 +1924,7 @@
   }
 }
 
+
 /* ========================================
    Project Content Accordion
 ======================================== */
@@ -2054,15 +1932,12 @@
 .admin-project-content {
   margin-top: 24px;
   padding-top: 20px;
-
   border-top: 1px solid #1f2933;
 }
 
 .admin-project-content-label {
   margin: 0 0 10px;
-
   color: #545e6b;
-
   font-family: 'DM Mono', monospace;
   font-size: 10px;
   letter-spacing: 0.12em;
@@ -2076,18 +1951,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   width: 100%;
   padding: 14px 4px;
-
   border: 0;
   background: transparent;
   color: #cbd5e1;
-
   text-align: left;
-
   cursor: pointer;
-
   transition:
     color 0.2s ease,
     padding 0.2s ease;
@@ -2100,12 +1970,9 @@
 
 .admin-project-content-arrow {
   flex-shrink: 0;
-
   color: #545e6b;
-
   font-family: 'DM Mono', monospace;
   font-size: 16px;
-
   transition: color 0.2s ease;
 }
 
