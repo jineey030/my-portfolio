@@ -20,7 +20,8 @@ class ProjectSkillController(
             .map { projectSkill ->
                 ProjectSkillResponse(
                     id = requireNotNull(projectSkill.skill.id),
-                    name = projectSkill.skill.name
+                    name = projectSkill.skill.name,
+                    category = projectSkill.skill.category
                 )
             }
     }
