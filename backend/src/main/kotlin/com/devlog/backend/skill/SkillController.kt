@@ -35,7 +35,8 @@ class SkillController(
         @RequestBody request: CreateSkillRequest
     ): Skill {
         return skillService.createSkill(
-            name = request.name
+            name = request.name,
+            category = request.category
         )
     }
 
@@ -46,7 +47,8 @@ class SkillController(
     ): Skill {
         return skillService.updateSkill(
             id = id,
-            name = request.name
+            name = request.name,
+            category = request.category
         )
     }
 
@@ -60,9 +62,11 @@ class SkillController(
 }
 
 data class CreateSkillRequest(
-    val name: String
+    val name: String,
+    val category: String
 )
 
 data class UpdateSkillRequest(
-    val name: String
+    val name: String,
+    val category: String
 )
