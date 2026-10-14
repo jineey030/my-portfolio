@@ -1,8 +1,10 @@
+
 package com.devlog.backend.project
 
 import com.devlog.backend.skill.Skill
 import com.devlog.backend.skill.SkillRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ProjectSkillService(
@@ -10,87 +12,63 @@ class ProjectSkillService(
     private val projectRepository: ProjectRepository,
     private val skillRepository: SkillRepository
 ) {
-
-    fun getSkillsByProject(
-        projectId: Long
-    ): List<ProjectSkill> {
-
+    @Transactional(readOnly = true)
+    fun getSkillsByProject(projectId: Long): List<ProjectSkill> {
         if (!projectRepository.existsById(projectId)) {
-            throw IllegalArgumentException(
-                "Project not found: $projectId"
-            )
+            throw IllegalArgumentException("Project not found: $projectId")
         }
 
-        return projectSkillRepository
-            .findAllByProjectId(projectId)
+        return projectSkillRepository.findAllByProjectId(projectId)
     }
 
+    @Transactional
     fun addSkillToProject(
         projectId: Long,
         skillId: Long
     ): ProjectSkill {
+        val project = projectRepository.findById(projectId).orElseThrow {
+            IllegalArgumentException("Project not found: $projectId")
+        }
 
-        val project = projectRepository.findById(projectId)
-            .orElseThrow {
-                IllegalArgumentException(
-                    "Project not found: $projectId"
-                )
-            }
+        val skill = skillRepository.findById(skillId).orElseThrow {
+            IllegalArgumentException("Skill not found: $skillId")
+        }
 
-        val skill = skillRepository.findById(skillId)
-            .orElseThrow {
-                IllegalArgumentException(
-                    "Skill not found: $skillId"
-                )
-            }
-
-        if (
-            projectSkillRepository.existsByProjectIdAndSkillId(
-                projectId,
-                skillId
-            )
-        ) {
+        if (projectSkillRepository.existsByProjectIdAndSkillId(projectId, skillId)) {
             throw IllegalArgumentException(
                 "Skill is already connected to this project."
             )
         }
 
-        val projectSkill = ProjectSkill(
-            project = project,
-            skill = skill
+        return projectSkillRepository.save(
+            ProjectSkill(
+                project = project,
+                skill = skill
+            )
         )
-
-        return projectSkillRepository.save(projectSkill)
     }
 
+    @Transactional
     fun createAndAddSkillToProject(
         projectId: Long,
         name: String,
         category: String
     ): ProjectSkill {
-
-        val project = projectRepository.findById(projectId)
-            .orElseThrow {
-                IllegalArgumentException(
-                    "Project not found: $projectId"
-                )
-            }
+        val project = projectRepository.findById(projectId).orElseThrow {
+            IllegalArgumentException("Project not found: $projectId")
+        }
 
         val trimmedName = name.trim()
         val trimmedCategory = category.trim()
-        
-        if (trimmedName.isBlank()) {
-            throw IllegalArgumentException(
-                "Skill name cannot be blank."
-            )
+
+        require(trimmedName.isNotBlank()) {
+            "Skill name cannot be blank."
         }
-        
-        if (trimmedCategory.isBlank()) {
-            throw IllegalArgumentException(
-                "Skill category cannot be blank."
-            )
+
+        require(trimmedCategory.isNotBlank()) {
+            "Skill category cannot be blank."
         }
-            
+
         val skill = skillRepository.findByName(trimmedName)
             ?: skillRepository.save(
                 Skill(
@@ -99,38 +77,35 @@ class ProjectSkillService(
                 )
             )
 
-        if (
-            projectSkillRepository.existsByProjectIdAndSkillId(
-                projectId,
-                skill.id!!
-            )
-        ) {
+        val skillId = requireNotNull(skill.id) {
+            "Saved skill has no ID."
+        }
+
+        if (projectSkillRepository.existsByProjectIdAndSkillId(projectId, skillId)) {
             throw IllegalArgumentException(
                 "Skill is already connected to this project."
             )
         }
 
-        val projectSkill = ProjectSkill(
-            project = project,
-            skill = skill
+        return projectSkillRepository.save(
+            ProjectSkill(
+                project = project,
+                skill = skill
+            )
         )
-
-        return projectSkillRepository.save(projectSkill)
     }
 
+    @Transactional
     fun removeSkillFromProject(
         projectId: Long,
         skillId: Long
     ) {
-
-        val projectSkills =
-            projectSkillRepository.findAllByProjectId(projectId)
-
-        val projectSkill = projectSkills.find {
-            it.skill.id == skillId
-        } ?: throw IllegalArgumentException(
-            "Project skill connection not found."
-        )
+        val projectSkill = projectSkillRepository
+            .findAllByProjectId(projectId)
+            .find { it.skill.id == skillId }
+            ?: throw IllegalArgumentException(
+                "Project skill connection not found."
+            )
 
         projectSkillRepository.delete(projectSkill)
     }

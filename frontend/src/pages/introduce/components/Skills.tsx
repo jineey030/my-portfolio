@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import SectionTitle from '../../../components/ui/SectionTitle';
 import { apiFetch } from '../../../api/api';
@@ -12,38 +13,44 @@ function Skills() {
   const [skills, setSkills] = useState<PortfolioSkill[]>([]);
 
   useEffect(() => {
+    let cancelled = false;
+
     const fetchSkills = async () => {
       try {
-        const response = await apiFetch(
-          '/api/portfolio-skills'
-        );
+        const response = await apiFetch('/api/portfolio-skills');
 
         if (!response.ok) {
           throw new Error('Skills를 불러오지 못했습니다.');
         }
 
         const data: PortfolioSkill[] = await response.json();
-        
-        setSkills(data);
+
+        if (!cancelled) {
+          setSkills(data);
+        }
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchSkills();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const groupedSkills = skills.reduce<
-    Record<string, PortfolioSkill[]>
-  >((groups, skill) => {
-    if (!groups[skill.category]) {
-      groups[skill.category] = [];
-    }
+  const groupedSkills = skills.reduce<Record<string, PortfolioSkill[]>>(
+    (groups, skill) => {
+      if (!groups[skill.category]) {
+        groups[skill.category] = [];
+      }
 
-    groups[skill.category].push(skill);
-
-    return groups;
-  }, {});
+      groups[skill.category].push(skill);
+      return groups;
+    },
+    {}
+  );
 
   return (
     <section id="skills">
@@ -52,33 +59,18 @@ function Skills() {
       <div className="skills-code">
         <span className="code-keyword">const</span> skills = {'{'}
 
-        {Object.entries(groupedSkills).map(
-          ([category, categorySkills]) => (
-            <div
-              key={category}
-              className="skills-line"
-            >
-              <span className="code-key">
-                {category}
+        {Object.entries(groupedSkills).map(([category, categorySkills]) => (
+          <div key={category} className="skills-line">
+            <span className="code-key">{category}</span>: [
+            {categorySkills.map((skill, index) => (
+              <span key={skill.id}>
+                <span className="code-string">'{skill.name}'</span>
+                {index < categorySkills.length - 1 ? ', ' : ''}
               </span>
-              : [
-
-              {categorySkills.map((skill, i) => (
-                <span key={skill.id}>
-                  <span className="code-string">
-                    '{skill.name}'
-                  </span>
-
-                  {i < categorySkills.length - 1
-                    ? ', '
-                    : ''}
-                </span>
-              ))}
-
-              ],
-            </div>
-          )
-        )}
+            ))}
+            ],
+          </div>
+        ))}
 
         {'}'}
       </div>
