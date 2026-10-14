@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../../../api/api';
+import { useAdminRefresh } from '../../../api/adminRefresh';
 import type { Project } from '../../../types/project';
 
 import ProjectSkills from './ProjectSkills';
@@ -55,9 +56,11 @@ function PortfolioProjects() {
   });
 };
 
-  const fetchProjects = async () => {
+  const fetchProjects = async (
+    { silent = false }: { silent?: boolean } = {}
+  ) => {
     try {
-      setIsLoading(true);
+      if (!silent) setIsLoading(true);
       setError('');
 
       const response = await apiFetch(
@@ -88,6 +91,9 @@ function PortfolioProjects() {
   useEffect(() => {
     fetchProjects();
   }, []);
+
+  // 데이터 추가/수정/삭제 후 화면 자동 새로고침 (열린 패널은 유지)
+  useAdminRefresh(() => fetchProjects({ silent: true }));
 
   const handleChange = (
     field: keyof typeof form,
@@ -177,7 +183,7 @@ function PortfolioProjects() {
 
             setMessage('프로젝트가 삭제되었습니다.');
 
-            await fetchProjects();
+            await fetchProjects({ silent: true });
         } catch (error) {
             console.error(error);
 
@@ -244,7 +250,7 @@ function PortfolioProjects() {
           : '프로젝트가 생성되었습니다.'
       );
 
-      await fetchProjects();
+      await fetchProjects({ silent: true });
     } catch (error) {
       console.error(error);
 
