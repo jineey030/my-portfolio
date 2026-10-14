@@ -4,6 +4,7 @@ import { apiFetch } from '../../../api/api';
 interface ProjectSkill {
   id: number;
   name: string;
+  category: string;
 }
 
 interface ProjectSkillsProps {
@@ -74,6 +75,20 @@ function ProjectSkills({
     setIsLoading(true);
     fetchSkills();
   }, [projectId]);
+
+  const groupedSkills = skills.reduce<
+    Record<string, ProjectSkill[]>
+  >((result, skill) => {
+    const key = skill.category || 'Frontend';
+  
+    if (!result[key]) {
+      result[key] = [];
+    }
+  
+    result[key].push(skill);
+  
+    return result;
+  }, {});
 
   const handleAddSkill = async () => {
     const name = skillName.trim();
