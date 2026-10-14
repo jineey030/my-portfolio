@@ -87,7 +87,8 @@ function ProjectSkills({
               'application/json'
           },
           body: JSON.stringify({
-            name
+            name,
+            category
           })
         }
       );
