@@ -1,6 +1,7 @@
-```tsx
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../../../api/api';
+import { useAdminRefresh } from '../../../api/adminRefresh';
+import AdminSelect from '../../../components/admin/AdminSelect';
 
 interface ProjectSkill {
   id: number;
@@ -18,6 +19,8 @@ const SKILL_CATEGORIES = [
   'DB',
   'Infra'
 ] as const;
+
+const FALLBACK_CATEGORY = 'Etc';
 
 function ProjectSkills({
   projectId
@@ -77,18 +80,21 @@ function ProjectSkills({
     fetchSkills();
   }, [projectId]);
 
-  // 카테고리별로 스킬 그룹화
+  // 다른 곳에서 데이터가 바뀌어도 목록 자동 새로고침
+  useAdminRefresh(fetchSkills);
+
   const groupedSkills = skills.reduce<
     Record<string, ProjectSkill[]>
   >((result, skill) => {
-    const skillCategory = skill.category;
-
-    if (!result[skillCategory]) {
-      result[skillCategory] = [];
+    const key =
+      skill.category?.trim() || FALLBACK_CATEGORY;
+  
+    if (!result[key]) {
+      result[key] = [];
     }
-
-    result[skillCategory].push(skill);
-
+  
+    result[key].push(skill);
+  
     return result;
   }, {});
 
@@ -126,7 +132,6 @@ function ProjectSkills({
 
       if (!response.ok) {
         const errorText = await response.text();
-
         console.error(
           'Skill 추가 실패:',
           response.status,
@@ -138,10 +143,19 @@ function ProjectSkills({
         );
       }
 
+      const saved: ProjectSkill =
+        await response.json();
+
+      const alreadyConnected = skills.some(
+        (skill) => skill.id === saved.id
+      );
+
       setSkillName('');
 
       setMessage(
-        'Skill이 추가되었습니다.'
+        alreadyConnected
+          ? `${saved.name}의 카테고리를 ${saved.category}(으)로 변경했습니다.`
+          : `${saved.name}이(가) ${saved.category}에 추가되었습니다.`
       );
 
       await fetchSkills();
@@ -227,50 +241,54 @@ function ProjectSkills({
         {skills.length === 0 ? (
           <p>등록된 Skill이 없습니다.</p>
         ) : (
-          SKILL_CATEGORIES.map(
-            (categoryName) => {
-              const categorySkills =
-                groupedSkills[categoryName] ?? [];
-
-              if (categorySkills.length === 0) {
-                return null;
-              }
-
-              return (
-                <div
-                  key={categoryName}
-                  className="admin-project-skill-category"
-                >
-                  <h4>{categoryName}</h4>
-
-                  <div className="admin-project-skill-items">
-                    {categorySkills.map((skill) => (
-                      <div
-                        key={skill.id}
-                        className="admin-project-skill-item"
-                      >
-                        <span>{skill.name}</span>
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleDeleteSkill(skill.id)
-                          }
-                          disabled={
-                            deletingSkillId === skill.id
-                          }
-                        >
-                          {deletingSkillId === skill.id
-                            ? 'Deleting...'
-                            : 'Remove'}
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              );
+          [
+            ...SKILL_CATEGORIES,
+            ...Object.keys(groupedSkills).filter(
+              (key) =>
+                !(SKILL_CATEGORIES as readonly string[]).includes(key)
+            )
+          ].map((categoryName) => {
+            const categorySkills =
+              groupedSkills[categoryName] ?? [];
+      
+            if (categorySkills.length === 0) {
+              return null;
             }
-          )
+      
+            return (
+              <div
+                key={categoryName}
+                className="admin-project-skill-category"
+              >
+                <h4>{categoryName}</h4>
+      
+                <div className="admin-project-skill-items">
+                  {categorySkills.map((skill) => (
+                    <div
+                      key={skill.id}
+                      className="admin-project-skill-item"
+                    >
+                      <span>{skill.name}</span>
+      
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleDeleteSkill(skill.id)
+                        }
+                        disabled={
+                          deletingSkillId === skill.id
+                        }
+                      >
+                        {deletingSkillId === skill.id
+                          ? 'Deleting...'
+                          : 'Remove'}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })
         )}
       </div>
 
@@ -284,19 +302,13 @@ function ProjectSkills({
           placeholder="예: React, Kotlin, MySQL"
         />
 
-        <select
+        <AdminSelect
           value={category}
-          onChange={(event) =>
-            setCategory(event.target.value)
-          }
-          aria-label="Skill 카테고리"
-        >
-          {SKILL_CATEGORIES.map((item) => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))}
-        </select>
+          options={SKILL_CATEGORIES}
+          onChange={setCategory}
+          ariaLabel="Skill 카테고리"
+          disabled={isAdding}
+        />
 
         <button
           type="button"
@@ -311,4 +323,3 @@ function ProjectSkills({
 }
 
 export default ProjectSkills;
-```
