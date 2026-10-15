@@ -848,6 +848,13 @@
   box-shadow: var(--glow-cyan);
 }
 
+.study-log-search-result {
+  margin: -8px 0 20px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
 /* =========================
    Pagination
    ========================= */
