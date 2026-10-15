@@ -240,6 +240,9 @@ html {
 .code-string {
   color: var(--neon-green);
 }
+.code-comment {
+  color: var(--text-muted);
+}
 
 /* Contact 컴포넌트 */
 .contact-links {
