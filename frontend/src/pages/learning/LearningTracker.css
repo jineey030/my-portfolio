@@ -889,6 +889,19 @@
     background 0.2s ease;
 }
 
+/* 페이지 번호 생략 표시 (…) */
+.pagination-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 30px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  user-select: none;
+}
+
 /* =========================
    Todo Pagination
    ========================= */
