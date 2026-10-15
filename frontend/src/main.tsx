@@ -6,7 +6,7 @@ import './App.css'
 
 import './pages/introduce/introduce.css'
 import './pages/project/ProjectDetail.css'
-import './pages/learning/LearningTracker.css'
+import './pages/admin/Workspace.css'
 import './pages/not-found/NotFound.css'
 import './pages/admin/Admin.css'
 
