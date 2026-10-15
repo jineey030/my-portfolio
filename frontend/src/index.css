@@ -164,7 +164,8 @@ code {
   border-radius: 6px;
 }
 
-.contact-message {
+.contact-message,
+.projects-message {
   margin: 0;
   color: var(--text-secondary);
   font-size: 15px;
