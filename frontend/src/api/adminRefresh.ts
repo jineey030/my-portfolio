@@ -25,13 +25,18 @@ export function notifyAdminDataChanged() {
   }, 150);
 }
 
+// '/admin' 또는 '/admin/...'만 관리자 화면으로 본다. ('/administrator' 같은 주소 제외)
+function isAdminPath(pathname: string) {
+  return pathname === '/admin' || pathname.startsWith('/admin/');
+}
+
 export function shouldNotifyAdminChange(
   path: string,
   method: string | undefined,
   ok: boolean
 ) {
   if (!ok || typeof window === 'undefined') return false;
-  if (!window.location.pathname.startsWith('/admin')) return false;
+  if (!isAdminPath(window.location.pathname)) return false;
   if (!MUTATION_METHODS.includes((method ?? 'GET').toUpperCase())) {
     return false;
   }
