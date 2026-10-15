@@ -1042,4 +1042,9 @@
   .study-log-search select {
     width: 100%;
   }
+
+  .pagination {
+    flex-wrap: wrap;
+  }
 }
+
