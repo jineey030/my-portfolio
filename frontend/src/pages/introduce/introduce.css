@@ -36,6 +36,20 @@ html {
   z-index: 100;
 
   background: transparent;
+  border-bottom: 1px solid transparent;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+/* 스크롤하면 배경을 깔아서 아래 내용과 겹쳐 보이지 않게 */
+.header.is-scrolled {
+  background: rgba(10, 14, 20, 0.85);
+  border-bottom-color: var(--border-subtle);
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .header-nav {
@@ -90,7 +104,16 @@ html {
   padding: 80px 24px;
 }
 
-.introduce nav {
+/* 메뉴로 이동했을 때 섹션 제목이 고정 헤더에 가려지지 않게 */
+.introduce section[id] {
+  scroll-margin-top: 72px;
+}
+
+/*
+  예전 nav 스타일. Header의 nav(.header-nav)에는 적용되지 않도록 제외한다.
+  (적용되면 헤더 여백·정렬이 바뀌고 모바일 스타일도 덮어씀)
+*/
+.introduce nav:not(.header-nav) {
   max-width: 960px;
   margin: 0 auto;
 
@@ -101,7 +124,7 @@ html {
   gap: 40px;
 }
 
-.introduce nav a {
+.introduce nav:not(.header-nav) a {
   font-family: var(--font-mono);
   color: var(--text-secondary);
   text-decoration: none;
@@ -109,7 +132,7 @@ html {
   transition: color 0.2s;
 }
 
-.introduce nav a:hover {
+.introduce nav:not(.header-nav) a:hover {
   color: var(--neon-cyan);
 }
 
@@ -389,5 +412,46 @@ html {
 
   .project-description {
     font-size: 13px;
+  }
+}
+
+
+/* =========================
+   Mobile (≤ 640px)
+   ========================= */
+
+@media (max-width: 640px) {
+  /* Header */
+  .header-nav {
+    height: 56px;
+    padding: 0 16px;
+    gap: 12px;
+  }
+
+  .header-logo {
+    flex-shrink: 0;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  /* 화면이 아주 좁으면 메뉴만 가로 스크롤 (페이지 전체가 넘치지 않게) */
+  .header-links {
+    gap: 14px;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .header-links::-webkit-scrollbar {
+    display: none;
+  }
+
+  .header-links a {
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .introduce section[id] {
+    scroll-margin-top: 64px;
   }
 }
