@@ -221,6 +221,7 @@ html {
 /* Contact 컴포넌트 */
 .contact-links {
   display: flex;
+  flex-wrap: wrap;
   gap: 16px;
 }
 
