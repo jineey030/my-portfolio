@@ -1,11 +1,28 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { apiFetch } from '../../api/api';
 import { useAdminRefreshKey } from '../../api/adminRefresh';
-import './Admin.css';
+
+// CSS는 main.tsx에서 한 번에 불러온다. (Admin.css)
 
 interface AdminProfile {
   username: string;
   role: string;
+}
+
+/**
+ * 실패 응답에서 서버가 보낸 message를 꺼낸다.
+ * 응답 본문이 비어 있거나 JSON이 아니면 기본 메시지를 쓴다.
+ */
+async function getErrorMessage(
+  response: Response,
+  fallback: string
+) {
+  try {
+    const data = await response.json();
+    return data?.message || fallback;
+  } catch {
+    return fallback;
+  }
 }
 
 function AdminSettings() {
@@ -16,6 +33,9 @@ function AdminSettings() {
     useState(true);
 
   const [error, setError] =
+    useState('');
+
+  const [successMessage, setSuccessMessage] =
     useState('');
 
   const [isAccountOpen, setIsAccountOpen] =
@@ -30,9 +50,6 @@ function AdminSettings() {
 
   const [isSavingUsername, setIsSavingUsername] =
     useState(false);
-
-  const [successMessage, setSuccessMessage] =
-    useState('');
 
   // admin profile 변경 - password
   const [currentPassword, setCurrentPassword] =
@@ -52,8 +69,6 @@ function AdminSettings() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        setError('');
-
         const response = await apiFetch(
           '/api/admin/profile'
         );
@@ -64,11 +79,13 @@ function AdminSettings() {
           );
         }
 
-        const data =
+        const data: AdminProfile =
           await response.json();
 
         setProfile(data);
       } catch (error) {
+        console.error(error);
+
         setError(
           error instanceof Error
             ? error.message
@@ -82,45 +99,70 @@ function AdminSettings() {
     fetchProfile();
   }, [refreshKey]);
 
-  const handleUpdateUsername = async () => {
-    if (!newUsername.trim()) {
+  // 입력을 다시 시작하면 이전 안내 문구 제거
+  const clearNotice = () => {
+    setError('');
+    setSuccessMessage('');
+  };
+
+  const handleUpdateUsername = async (
+    event: FormEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault();
+
+    if (isSavingUsername) {
+      return;
+    }
+
+    clearNotice();
+
+    const username = newUsername.trim();
+
+    if (!username) {
       setError('⚠️ Username을 입력해주세요.');
       return;
     }
 
-    if (newUsername === profile?.username) {
+    if (username === profile?.username) {
       setError('⚠️ 현재 Username과 동일합니다.');
       return;
     }
 
     try {
-      setError('');
-      setSuccessMessage('');
       setIsSavingUsername(true);
 
       const response = await apiFetch(
         '/api/admin/profile',
         {
           method: 'PUT',
-          body: JSON.stringify({
-            username: newUsername.trim(),
-          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username }),
         }
       );
 
-      const data = await response.json();
-
+      // 실패 응답은 본문이 비어 있을 수 있으므로 ok 여부를 먼저 확인
       if (!response.ok) {
         throw new Error(
-          data.message ||
-          'Username 변경에 실패했습니다.'
+          await getErrorMessage(
+            response,
+            '❌ Username 변경에 실패했습니다.'
+          )
         );
       }
 
-      localStorage.setItem(
-        'admin_token',
-        data.token
-      );
+      const data: AdminProfile & {
+        token?: string;
+      } = await response.json();
+
+      // Username이 바뀌면 서버가 새 토큰을 준다. 없으면 기존 토큰 유지
+      if (data.token) {
+        localStorage.setItem(
+          'admin_token',
+          data.token
+        );
+      }
 
       setProfile({
         username: data.username,
@@ -133,6 +175,8 @@ function AdminSettings() {
         '👤 Username이 성공적으로 변경되었습니다.'
       );
     } catch (error) {
+      console.error(error);
+
       setError(
         error instanceof Error
           ? error.message
@@ -143,9 +187,16 @@ function AdminSettings() {
     }
   };
 
-  const handleChangePassword = async () => {
-    setError('');
-    setSuccessMessage('');
+  const handleChangePassword = async (
+    event: FormEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault();
+
+    if (isChangingPassword) {
+      return;
+    }
+
+    clearNotice();
 
     if (!currentPassword) {
       setError('⚠️ 현재 비밀번호를 입력해주세요.');
@@ -162,6 +213,11 @@ function AdminSettings() {
       return;
     }
 
+    if (newPassword === currentPassword) {
+      setError('⚠️ 새 비밀번호가 현재 비밀번호와 같습니다.');
+      return;
+    }
+
     if (newPassword !== confirmPassword) {
       setError('❌ 새 비밀번호가 일치하지 않습니다.');
       return;
@@ -174,6 +230,9 @@ function AdminSettings() {
         '/api/admin/profile/password',
         {
           method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({
             currentPassword,
             newPassword,
@@ -182,20 +241,12 @@ function AdminSettings() {
       );
 
       if (!response.ok) {
-        let message =
-          '비밀번호 변경에 실패했습니다.';
-
-        try {
-          const data = await response.json();
-
-          if (data.message) {
-            message = data.message;
-          }
-        } catch {
-          // 응답 본문이 없는 경우 기본 메시지 사용
-        }
-
-        throw new Error(message);
+        throw new Error(
+          await getErrorMessage(
+            response,
+            '비밀번호 변경에 실패했습니다.'
+          )
+        );
       }
 
       setCurrentPassword('');
@@ -206,6 +257,8 @@ function AdminSettings() {
         '🔐 비밀번호가 성공적으로 변경되었습니다.'
       );
     } catch (error) {
+      console.error(error);
+
       setError(
         error instanceof Error
           ? error.message
@@ -216,34 +269,32 @@ function AdminSettings() {
     }
   };
 
+  const pageHeader = (
+    <header className="admin-page-header">
+      <p className="admin-page-label">
+        ADMIN / SETTINGS
+      </p>
+
+      <h1>Settings</h1>
+
+      <p className="admin-page-description">
+        관리자 계정 정보를 관리합니다.
+      </p>
+    </header>
+  );
+
   if (isLoading) {
     return (
-      <div className="admin-page">
-        <div className="admin-page-header">
-          <p className="admin-recent-label">
-            ADMIN
-          </p>
-          <h1>Settings</h1>
-        </div>
-
-        <p>Loading...</p>
-      </div>
+      <main className="admin-page">
+        {pageHeader}
+        <p>관리자 정보를 불러오는 중...</p>
+      </main>
     );
   }
 
   return (
-    <div className="admin-page">
-      <div className="admin-page-header">
-        <p className="admin-recent-label">
-          ADMIN
-        </p>
-
-        <h1>Settings</h1>
-
-        <p>
-          관리자 계정 정보를 관리합니다.
-        </p>
-      </div>
+    <main className="admin-page">
+      {pageHeader}
 
       <section className="admin-settings-section">
         <h2>Profile</h2>
@@ -252,27 +303,33 @@ function AdminSettings() {
           <div>
             <span>Username</span>
             <strong>
-              {profile?.username}
+              {profile?.username ?? '-'}
             </strong>
           </div>
 
           <div>
             <span>Role</span>
             <strong>
-              {profile?.role}
+              {profile?.role ?? '-'}
             </strong>
           </div>
         </div>
       </section>
 
       {error && (
-        <p className="admin-settings-error">
+        <p
+          className="admin-settings-error"
+          role="alert"
+        >
           {error}
         </p>
       )}
 
       {successMessage && (
-        <p className="admin-settings-success">
+        <p
+          className="admin-settings-success"
+          role="status"
+        >
           {successMessage}
         </p>
       )}
@@ -291,6 +348,7 @@ function AdminSettings() {
             className={`admin-settings-arrow ${
               isAccountOpen ? 'open' : ''
             }`}
+            aria-hidden="true"
           >
             ›
           </span>
@@ -298,30 +356,38 @@ function AdminSettings() {
 
         {isAccountOpen && (
           <div className="admin-settings-accordion-content">
-            <div className="admin-settings-form">
+            {/* form으로 감싸서 Enter로도 저장되게 함 */}
+            <form
+              className="admin-settings-form"
+              onSubmit={handleUpdateUsername}
+            >
               <label>
                 <span>New Username</span>
 
                 <input
                   type="text"
                   value={newUsername}
-                  onChange={(event) =>
-                    setNewUsername(event.target.value)
-                  }
+                  onChange={(event) => {
+                    setNewUsername(event.target.value);
+                    clearNotice();
+                  }}
                   placeholder={profile?.username}
+                  autoComplete="username"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
                 />
               </label>
 
               <button
-                type="button"
-                onClick={handleUpdateUsername}
+                type="submit"
                 disabled={isSavingUsername}
               >
                 {isSavingUsername
                   ? 'Saving...'
                   : 'Save Username'}
               </button>
-            </div>
+            </form>
           </div>
         )}
       </section>
@@ -340,6 +406,7 @@ function AdminSettings() {
             className={`admin-settings-arrow ${
               isPasswordOpen ? 'open' : ''
             }`}
+            aria-hidden="true"
           >
             ›
           </span>
@@ -347,16 +414,20 @@ function AdminSettings() {
 
         {isPasswordOpen && (
           <div className="admin-settings-accordion-content">
-            <div className="admin-settings-form">
+            <form
+              className="admin-settings-form"
+              onSubmit={handleChangePassword}
+            >
               <label>
                 <span>Current Password</span>
 
                 <input
                   type="password"
                   value={currentPassword}
-                  onChange={(event) =>
-                    setCurrentPassword(event.target.value)
-                  }
+                  onChange={(event) => {
+                    setCurrentPassword(event.target.value);
+                    clearNotice();
+                  }}
                   autoComplete="current-password"
                 />
               </label>
@@ -367,10 +438,12 @@ function AdminSettings() {
                 <input
                   type="password"
                   value={newPassword}
-                  onChange={(event) =>
-                    setNewPassword(event.target.value)
-                  }
+                  onChange={(event) => {
+                    setNewPassword(event.target.value);
+                    clearNotice();
+                  }}
                   autoComplete="new-password"
+                  minLength={8}
                 />
               </label>
 
@@ -380,27 +453,27 @@ function AdminSettings() {
                 <input
                   type="password"
                   value={confirmPassword}
-                  onChange={(event) =>
-                    setConfirmPassword(event.target.value)
-                  }
+                  onChange={(event) => {
+                    setConfirmPassword(event.target.value);
+                    clearNotice();
+                  }}
                   autoComplete="new-password"
                 />
               </label>
 
               <button
-                type="button"
-                onClick={handleChangePassword}
+                type="submit"
                 disabled={isChangingPassword}
               >
                 {isChangingPassword
                   ? 'Changing...'
                   : 'Change Password'}
               </button>
-            </div>
+            </form>
           </div>
         )}
       </section>
-    </div>
+    </main>
   );
 }
 
