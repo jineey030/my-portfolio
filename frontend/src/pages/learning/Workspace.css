@@ -254,6 +254,16 @@
   cursor: wait;
 }
 
+/* 읽기 전용(공개 페이지): 체크박스는 완료 여부 표시용이라 흐리게 하지 않는다 */
+.todo-item.is-readonly label {
+  cursor: default;
+}
+
+.todo-item.is-readonly input[type='checkbox']:disabled {
+  opacity: 1;
+  cursor: default;
+}
+
 .todo-actions {
   display: flex;
   flex-shrink: 0;
@@ -674,6 +684,11 @@
   overflow-wrap: anywhere;
 }
 
+/* 읽기 전용: 수정·삭제 버튼 자리를 비워둘 필요가 없다 */
+.study-log-item.is-readonly p {
+  padding-right: 0;
+}
+
 /* =========================
    Study Log 수정
    ========================= */
@@ -1063,6 +1078,10 @@
   .study-log-item p {
     padding-right: 0;
     padding-bottom: 36px;
+  }
+
+  .study-log-item.is-readonly p {
+    padding-bottom: 0;
   }
 
   .study-log-item > textarea {
