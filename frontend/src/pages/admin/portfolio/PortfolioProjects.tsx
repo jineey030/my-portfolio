@@ -46,39 +46,42 @@ function PortfolioProjects() {
   const [editingProjectId, setEditingProjectId] =
     useState<number | null>(null);
 
-  const [openContent, setOpenContent] =
-    useState<{
-      projectId: number;
-      section: ContentSectionKey;
-    } | null>(null);
+  // 열려 있는 아코디언 목록 ("프로젝트ID:섹션" 형태로 저장)
+  // 여러 개를 동시에 펼칠 수 있다.
+  const [openContents, setOpenContents] =
+    useState<Set<string>>(() => new Set());
 
   const [form, setForm] = useState(EMPTY_FORM);
 
   const formRef = useRef<HTMLFormElement>(null);
 
+  const getContentKey = (
+    projectId: number,
+    section: ContentSectionKey
+  ) => `${projectId}:${section}`;
+
   const isContentOpen = (
     projectId: number,
     section: ContentSectionKey
-  ) =>
-    openContent?.projectId === projectId &&
-    openContent.section === section;
+  ) => openContents.has(getContentKey(projectId, section));
 
   const toggleContent = (
     projectId: number,
     section: ContentSectionKey
   ) => {
-    setOpenContent((current) => {
-      if (
-        current?.projectId === projectId &&
-        current.section === section
-      ) {
-        return null;
+    const key = getContentKey(projectId, section);
+
+    setOpenContents((current) => {
+      // Set은 직접 수정하면 React가 변경을 감지하지 못하므로 복사본을 만든다.
+      const next = new Set(current);
+
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
       }
 
-      return {
-        projectId,
-        section
-      };
+      return next;
     });
   };
 
@@ -213,10 +216,18 @@ function PortfolioProjects() {
         setIsFormOpen(false);
       }
 
-      // 삭제한 프로젝트의 콘텐츠 패널이 열려 있었다면 닫기
-      if (openContent?.projectId === project.id) {
-        setOpenContent(null);
-      }
+      // 삭제한 프로젝트의 열린 아코디언 정리
+      setOpenContents((current) => {
+        const next = new Set(current);
+
+        for (const key of current) {
+          if (key.startsWith(`${project.id}:`)) {
+            next.delete(key);
+          }
+        }
+
+        return next;
+      });
 
       setMessage('프로젝트가 삭제되었습니다.');
 
