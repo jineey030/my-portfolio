@@ -43,9 +43,12 @@ html {
   padding: 80px 24px;
 }
 
-/* 메뉴로 이동했을 때 섹션 제목이 고정 Navbar에 가려지지 않게 */
+/*
+  메뉴로 이동했을 때 섹션 제목이 고정 Navbar에 가려지지 않게
+  (Navbar 높이 72px + 여유 16px. 모바일은 64px + 16px)
+*/
 .introduce section[id] {
-  scroll-margin-top: 72px;
+  scroll-margin-top: 88px;
 }
 
 /* Hero 컴포넌트 */
@@ -344,7 +347,7 @@ html {
   }
 
   .introduce section[id] {
-    scroll-margin-top: 64px;
+    scroll-margin-top: 80px;
   }
 
   /* Hero */
