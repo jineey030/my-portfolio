@@ -105,3 +105,54 @@ code {
   font-style: normal;
   font-display: swap;
 }
+
+/* =========================
+   Skeleton (로딩 자리 표시)
+   ========================= */
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.skeleton-line {
+  display: block;
+  height: 14px;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--bg-secondary) 25%,
+    var(--bg-elevated) 37%,
+    var(--bg-secondary) 63%
+  );
+  background-size: 400% 100%;
+  animation: skeleton-shimmer 1.4s ease infinite;
+}
+
+@keyframes skeleton-shimmer {
+  from {
+    background-position: 100% 50%;
+  }
+
+  to {
+    background-position: 0 50%;
+  }
+}
+
+/* 애니메이션을 줄이도록 설정한 사용자에게는 반짝임 없이 표시 */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-line {
+    animation: none;
+  }
+}
+
+/* About: 실제 소개 문단(17px, 줄간격 1.8)과 비슷한 높이와 길이 */
+.about-skeleton {
+  max-width: 800px;
+}
+
+.about-skeleton .skeleton-line:nth-child(1) { width: 100%; }
+.about-skeleton .skeleton-line:nth-child(2) { width: 94%; }
+.about-skeleton .skeleton-line:nth-child(3) { width: 97%; }
+.about-skeleton .skeleton-line:nth-child(4) { width: 58%; }
