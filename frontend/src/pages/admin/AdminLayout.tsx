@@ -5,6 +5,8 @@ import {
   useNavigate
 } from 'react-router';
 
+// CSS는 main.tsx에서 한 번에 불러온다. (Admin.css, LearningTracker.css)
+
 function AdminLayout() {
   const navigate = useNavigate();
 

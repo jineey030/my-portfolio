@@ -68,6 +68,11 @@ function ProjectChallenges({
   useAdminRefresh(fetchChallenges);
 
   const handleAddChallenge = async () => {
+    // 추가 중에 Enter를 연타해도 중복 요청하지 않음
+    if (isAdding) {
+      return;
+    }
+
     const name = challengeName.trim();
 
     if (!name) {
@@ -120,15 +125,23 @@ function ProjectChallenges({
   };
 
   const handleDeleteChallenge = async (
-    challengeId: number
+    challenge: ProjectChallenge
   ) => {
+    const confirmed = window.confirm(
+      `"${challenge.name}" Challenge를 삭제하시겠습니까?`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
     try {
-      setDeletingChallengeId(challengeId);
+      setDeletingChallengeId(challenge.id);
       setError('');
       setMessage('');
 
       const response = await apiFetch(
-        `/api/projects/${projectId}/challenges/${challengeId}`,
+        `/api/projects/${projectId}/challenges/${challenge.id}`,
         {
           method: 'DELETE'
         }
@@ -185,9 +198,12 @@ function ProjectChallenges({
 
       <div className="admin-project-challenges-list">
         {challenges.length === 0 ? (
-          <p>
-            등록된 Challenge가 없습니다.
-          </p>
+          // 불러오기에 실패한 경우에는 "없음" 문구를 표시하지 않음
+          !error && (
+            <p>
+              등록된 Challenge가 없습니다.
+            </p>
+          )
         ) : (
           challenges.map((challenge) => (
             <div
@@ -199,9 +215,7 @@ function ProjectChallenges({
               <button
                 type="button"
                 onClick={() =>
-                  handleDeleteChallenge(
-                    challenge.id
-                  )
+                  handleDeleteChallenge(challenge)
                 }
                 disabled={
                   deletingChallengeId ===
@@ -222,9 +236,23 @@ function ProjectChallenges({
         <input
           type="text"
           value={challengeName}
-          onChange={(event) =>
-            setChallengeName(event.target.value)
-          }
+          onChange={(event) => {
+            setChallengeName(event.target.value);
+
+            // 다시 입력하기 시작하면 이전 안내 문구 제거
+            setError('');
+            setMessage('');
+          }}
+          onKeyDown={(event) => {
+            // 한글 조합 중 Enter는 무시 (마지막 글자 중복 입력 방지)
+            if (
+              event.key === 'Enter' &&
+              !event.nativeEvent.isComposing
+            ) {
+              event.preventDefault();
+              handleAddChallenge();
+            }
+          }}
           placeholder="예: 상태 관리 구조 설계"
         />
 

@@ -68,6 +68,11 @@ function ProjectFeatures({
   useAdminRefresh(fetchFeatures);
 
   const handleAddFeature = async () => {
+    // 추가 중에 Enter를 연타해도 중복 요청하지 않음
+    if (isAdding) {
+      return;
+    }
+
     const name = featureName.trim();
 
     if (!name) {
@@ -120,15 +125,23 @@ function ProjectFeatures({
   };
 
   const handleDeleteFeature = async (
-    featureId: number
+    feature: ProjectFeature
   ) => {
+    const confirmed = window.confirm(
+      `"${feature.name}" Feature를 삭제하시겠습니까?`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
     try {
-      setDeletingFeatureId(featureId);
+      setDeletingFeatureId(feature.id);
       setError('');
       setMessage('');
 
       const response = await apiFetch(
-        `/api/projects/${projectId}/features/${featureId}`,
+        `/api/projects/${projectId}/features/${feature.id}`,
         {
           method: 'DELETE'
         }
@@ -185,9 +198,12 @@ function ProjectFeatures({
 
       <div className="admin-project-features-list">
         {features.length === 0 ? (
-          <p>
-            등록된 Feature가 없습니다.
-          </p>
+          // 불러오기에 실패한 경우에는 "없음" 문구를 표시하지 않음
+          !error && (
+            <p>
+              등록된 Feature가 없습니다.
+            </p>
+          )
         ) : (
           features.map((feature) => (
             <div
@@ -199,7 +215,7 @@ function ProjectFeatures({
               <button
                 type="button"
                 onClick={() =>
-                  handleDeleteFeature(feature.id)
+                  handleDeleteFeature(feature)
                 }
                 disabled={
                   deletingFeatureId === feature.id
@@ -218,9 +234,23 @@ function ProjectFeatures({
         <input
           type="text"
           value={featureName}
-          onChange={(event) =>
-            setFeatureName(event.target.value)
-          }
+          onChange={(event) => {
+            setFeatureName(event.target.value);
+
+            // 다시 입력하기 시작하면 이전 안내 문구 제거
+            setError('');
+            setMessage('');
+          }}
+          onKeyDown={(event) => {
+            // 한글 조합 중 Enter는 무시 (마지막 글자 중복 입력 방지)
+            if (
+              event.key === 'Enter' &&
+              !event.nativeEvent.isComposing
+            ) {
+              event.preventDefault();
+              handleAddFeature();
+            }
+          }}
           placeholder="예: Todo CRUD"
         />
 
