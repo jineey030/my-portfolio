@@ -77,10 +77,13 @@
   opacity: 0.7;
 }
 
-.learning-summary-card:hover {
-  border-color: rgba(94, 234, 212, 0.35);
-  transform: translateY(-3px);
-  box-shadow: var(--glow-cyan);
+/* 마우스 환경에서만 hover 효과 (터치 기기에서 hover 고착 방지) */
+@media (hover: hover) {
+  .learning-summary-card:hover {
+    border-color: rgba(94, 234, 212, 0.35);
+    transform: translateY(-3px);
+    box-shadow: var(--glow-cyan);
+  }
 }
 
 .learning-summary-label {
@@ -134,14 +137,6 @@
   transition: width 0.4s ease;
 }
 
-.dashboard-progress > span {
-  min-width: 32px;
-  color: var(--neon-cyan);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  text-align: right;
-}
-
 /* =========================
    Todo
    ========================= */
@@ -187,7 +182,7 @@
     color 0.2s ease;
 }
 
-.learning-section-header button:hover {
+.learning-section-header button:hover:not(:disabled) {
   background: var(--neon-cyan);
   color: var(--bg-primary);
 }
@@ -216,8 +211,10 @@
 
 .todo-item label {
   display: flex;
+  flex: 1;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 
   color: var(--text-secondary);
   font-size: 14px;
@@ -228,19 +225,38 @@
   color: var(--text-secondary);
 }
 
+/* 긴 제목(띄어쓰기 없는 URL 등)이 버튼을 밀어내지 않도록 */
+.todo-item label span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .todo-item.is-completed label span {
   color: var(--text-muted);
   text-decoration: line-through;
 }
 
-.todo-item input {
+/*
+  체크박스만 지정한다.
+  (그냥 input으로 쓰면 수정용 텍스트 입력칸(.todo-edit-input)까지 16px로 줄어든다)
+*/
+.todo-item input[type='checkbox'] {
+  flex-shrink: 0;
   width: 16px;
   height: 16px;
+  margin: 0;
   accent-color: var(--neon-cyan);
+  cursor: pointer;
+}
+
+.todo-item input[type='checkbox']:disabled {
+  opacity: 0.5;
+  cursor: wait;
 }
 
 .todo-actions {
   display: flex;
+  flex-shrink: 0;
   gap: 8px;
 }
 
@@ -258,7 +274,7 @@
     color 0.2s ease;
 }
 
-.todo-actions button:hover {
+.todo-actions button:hover:not(:disabled) {
   border-color: var(--neon-cyan);
   color: var(--neon-cyan);
 }
@@ -460,7 +476,7 @@
   color: var(--neon-cyan);
 }
 
-.todo-add-form button:hover {
+.todo-add-form button:hover:not(:disabled) {
   border-color: var(--neon-cyan);
   color: var(--neon-cyan);
 }
@@ -609,7 +625,7 @@
     color 0.2s ease;
 }
 
-.study-log-form button:hover {
+.study-log-form button:hover:not(:disabled) {
   background: var(--neon-cyan);
   color: var(--bg-primary);
 }
@@ -655,6 +671,7 @@
   line-height: 1.8;
 
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 /* =========================
@@ -723,9 +740,23 @@
     color 0.2s ease;
 }
 
-.study-log-actions button:hover {
+.study-log-actions button:hover:not(:disabled) {
   border-color: var(--neon-cyan);
   color: var(--neon-cyan);
+}
+
+/* =========================
+   Disabled Buttons
+   (처리 중이거나 입력이 비어 있을 때)
+   ========================= */
+
+.learning-section-header button:disabled,
+.todo-actions button:disabled,
+.todo-add-form button:disabled,
+.study-log-form button:disabled,
+.study-log-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .study-log-empty {
@@ -993,11 +1024,32 @@
   }
 
   .todo-item {
+    flex-wrap: wrap;
     align-items: flex-start;
+    gap: 12px;
+    padding: 16px 4px;
   }
 
-  .todo-actions {
-    flex-shrink: 0;
+  /* 수정 모드: 입력칸은 한 줄 전체, 우선순위와 버튼은 다음 줄 */
+  .todo-edit-input {
+    flex: 1 1 100%;
+  }
+
+  .todo-item > select {
+    flex: 1;
+  }
+
+  /* Todo 추가 폼: 입력칸은 한 줄 전체, 우선순위와 버튼은 다음 줄 */
+  .todo-add-form {
+    flex-wrap: wrap;
+  }
+
+  .todo-add-form input {
+    flex: 1 1 100%;
+  }
+
+  .todo-add-form select {
+    flex: 1;
   }
 
   .study-log-form button {
@@ -1054,4 +1106,3 @@
     flex-wrap: wrap;
   }
 }
-
