@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { apiFetch } from '../../../api/api';
 import { useAdminRefresh } from '../../../api/adminRefresh';
 
@@ -36,6 +36,10 @@ function ProjectTechnicalHighlights({
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
 
+  // 제목에서 Enter를 누르면 설명 입력칸으로 이동
+  const descriptionRef =
+    useRef<HTMLTextAreaElement>(null);
+
   const fetchHighlights = async () => {
     try {
       setError('');
@@ -71,7 +75,17 @@ function ProjectTechnicalHighlights({
 
   useAdminRefresh(fetchHighlights);
 
+  const clearNotice = () => {
+    setError('');
+    setMessage('');
+  };
+
   const handleAddHighlight = async () => {
+    // 추가 중에 연타해도 중복 요청하지 않음
+    if (isAdding) {
+      return;
+    }
+
     const trimmedTitle = title.trim();
     const trimmedDescription =
       description.trim();
@@ -87,6 +101,7 @@ function ProjectTechnicalHighlights({
       setError(
         'Technical Highlight 설명을 입력해주세요.'
       );
+      descriptionRef.current?.focus();
       return;
     }
 
@@ -136,15 +151,23 @@ function ProjectTechnicalHighlights({
   };
 
   const handleDeleteHighlight = async (
-    highlightId: number
+    highlight: TechnicalHighlight
   ) => {
+    const confirmed = window.confirm(
+      `"${highlight.title}" Technical Highlight를 삭제하시겠습니까?`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
     try {
-      setDeletingHighlightId(highlightId);
+      setDeletingHighlightId(highlight.id);
       setError('');
       setMessage('');
 
       const response = await apiFetch(
-        `/api/projects/${projectId}/technical-highlights/${highlightId}`,
+        `/api/projects/${projectId}/technical-highlights/${highlight.id}`,
         {
           method: 'DELETE'
         }
@@ -203,9 +226,12 @@ function ProjectTechnicalHighlights({
 
       <div className="admin-project-technical-highlights-list">
         {highlights.length === 0 ? (
-          <p>
-            등록된 Technical Highlight가 없습니다.
-          </p>
+          // 불러오기에 실패한 경우에는 "없음" 문구를 표시하지 않음
+          !error && (
+            <p>
+              등록된 Technical Highlight가 없습니다.
+            </p>
+          )
         ) : (
           highlights.map((highlight) => (
             <div
@@ -223,9 +249,7 @@ function ProjectTechnicalHighlights({
               <button
                 type="button"
                 onClick={() =>
-                  handleDeleteHighlight(
-                    highlight.id
-                  )
+                  handleDeleteHighlight(highlight)
                 }
                 disabled={
                   deletingHighlightId ===
@@ -247,18 +271,42 @@ function ProjectTechnicalHighlights({
         <input
           type="text"
           value={title}
-          onChange={(event) =>
-            setTitle(event.target.value)
-          }
+          onChange={(event) => {
+            setTitle(event.target.value);
+            clearNotice();
+          }}
+          onKeyDown={(event) => {
+            // 제목에서 Enter → 설명 입력칸으로 이동 (한글 조합 중에는 무시)
+            if (
+              event.key === 'Enter' &&
+              !event.nativeEvent.isComposing
+            ) {
+              event.preventDefault();
+              descriptionRef.current?.focus();
+            }
+          }}
           placeholder="예: 상태 관리 구조 설계"
         />
 
         <textarea
+          ref={descriptionRef}
           value={description}
-          onChange={(event) =>
-            setDescription(event.target.value)
-          }
-          placeholder="기술적으로 어떤 방식으로 구현했는지 설명해주세요."
+          onChange={(event) => {
+            setDescription(event.target.value);
+            clearNotice();
+          }}
+          onKeyDown={(event) => {
+            // Enter는 줄바꿈, Ctrl(⌘) + Enter로 추가
+            if (
+              event.key === 'Enter' &&
+              (event.ctrlKey || event.metaKey) &&
+              !event.nativeEvent.isComposing
+            ) {
+              event.preventDefault();
+              handleAddHighlight();
+            }
+          }}
+          placeholder="기술적으로 어떤 방식으로 구현했는지 설명해주세요. (Ctrl + Enter로 추가)"
           rows={4}
         />
 
