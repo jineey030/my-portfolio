@@ -156,3 +156,17 @@ code {
 .about-skeleton .skeleton-line:nth-child(2) { width: 94%; }
 .about-skeleton .skeleton-line:nth-child(3) { width: 97%; }
 .about-skeleton .skeleton-line:nth-child(4) { width: 58%; }
+
+/* Contact: 실제 버튼(.btn-outline)과 같은 크기 */
+.contact-skeleton-button {
+  width: 92px;
+  height: 42px;
+  border-radius: 6px;
+}
+
+.contact-message {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.8;
+}
