@@ -88,17 +88,31 @@ function ProjectSkills({
   >((result, skill) => {
     const key =
       skill.category?.trim() || FALLBACK_CATEGORY;
-  
+
     if (!result[key]) {
       result[key] = [];
     }
-  
+
     result[key].push(skill);
-  
+
     return result;
   }, {});
 
+  // 기본 카테고리 순서 → 그 외 카테고리 순으로 표시
+  const categoryOrder = [
+    ...SKILL_CATEGORIES,
+    ...Object.keys(groupedSkills).filter(
+      (key) =>
+        !(SKILL_CATEGORIES as readonly string[]).includes(key)
+    )
+  ];
+
   const handleAddSkill = async () => {
+    // 추가 중에 Enter를 연타해도 중복 요청하지 않음
+    if (isAdding) {
+      return;
+    }
+
     const name = skillName.trim();
 
     if (!name) {
@@ -146,17 +160,26 @@ function ProjectSkills({
       const saved: ProjectSkill =
         await response.json();
 
-      const alreadyConnected = skills.some(
+      const existing = skills.find(
         (skill) => skill.id === saved.id
       );
 
       setSkillName('');
 
-      setMessage(
-        alreadyConnected
-          ? `${saved.name}의 카테고리를 ${saved.category}(으)로 변경했습니다.`
-          : `${saved.name}이(가) ${saved.category}에 추가되었습니다.`
-      );
+      // 새로 추가 / 카테고리 변경 / 이미 같은 카테고리에 있음을 구분
+      if (!existing) {
+        setMessage(
+          `${saved.name}이(가) ${saved.category}에 추가되었습니다.`
+        );
+      } else if (existing.category !== saved.category) {
+        setMessage(
+          `${saved.name}의 카테고리를 ${saved.category}(으)로 변경했습니다.`
+        );
+      } else {
+        setMessage(
+          `${saved.name}은(는) 이미 ${saved.category}에 등록되어 있습니다.`
+        );
+      }
 
       await fetchSkills();
     } catch (error) {
@@ -173,15 +196,23 @@ function ProjectSkills({
   };
 
   const handleDeleteSkill = async (
-    skillId: number
+    skill: ProjectSkill
   ) => {
+    const confirmed = window.confirm(
+      `"${skill.name}" Skill을 이 프로젝트에서 삭제하시겠습니까?`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
     try {
-      setDeletingSkillId(skillId);
+      setDeletingSkillId(skill.id);
       setError('');
       setMessage('');
 
       const response = await apiFetch(
-        `/api/projects/${projectId}/skills/${skillId}`,
+        `/api/projects/${projectId}/skills/${skill.id}`,
         {
           method: 'DELETE'
         }
@@ -239,29 +270,24 @@ function ProjectSkills({
 
       <div className="admin-project-skills-list">
         {skills.length === 0 ? (
-          <p>등록된 Skill이 없습니다.</p>
+          // 불러오기에 실패한 경우에는 "없음" 문구를 표시하지 않음
+          !error && <p>등록된 Skill이 없습니다.</p>
         ) : (
-          [
-            ...SKILL_CATEGORIES,
-            ...Object.keys(groupedSkills).filter(
-              (key) =>
-                !(SKILL_CATEGORIES as readonly string[]).includes(key)
-            )
-          ].map((categoryName) => {
+          categoryOrder.map((categoryName) => {
             const categorySkills =
               groupedSkills[categoryName] ?? [];
-      
+
             if (categorySkills.length === 0) {
               return null;
             }
-      
+
             return (
               <div
                 key={categoryName}
                 className="admin-project-skill-category"
               >
                 <h4>{categoryName}</h4>
-      
+
                 <div className="admin-project-skill-items">
                   {categorySkills.map((skill) => (
                     <div
@@ -269,15 +295,16 @@ function ProjectSkills({
                       className="admin-project-skill-item"
                     >
                       <span>{skill.name}</span>
-      
+
                       <button
                         type="button"
                         onClick={() =>
-                          handleDeleteSkill(skill.id)
+                          handleDeleteSkill(skill)
                         }
                         disabled={
                           deletingSkillId === skill.id
                         }
+                        aria-label={`${skill.name} 삭제`}
                       >
                         {deletingSkillId === skill.id
                           ? 'Deleting...'
@@ -296,9 +323,23 @@ function ProjectSkills({
         <input
           type="text"
           value={skillName}
-          onChange={(event) =>
-            setSkillName(event.target.value)
-          }
+          onChange={(event) => {
+            setSkillName(event.target.value);
+
+            // 다시 입력하기 시작하면 이전 안내 문구 제거
+            setError('');
+            setMessage('');
+          }}
+          onKeyDown={(event) => {
+            // 한글 조합 중 Enter는 무시 (마지막 글자 중복 입력 방지)
+            if (
+              event.key === 'Enter' &&
+              !event.nativeEvent.isComposing
+            ) {
+              event.preventDefault();
+              handleAddSkill();
+            }
+          }}
           placeholder="예: React, Kotlin, MySQL"
         />
 
