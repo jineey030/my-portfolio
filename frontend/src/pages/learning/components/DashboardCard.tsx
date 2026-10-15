@@ -13,6 +13,12 @@ function DashboardCard({
   type,
   progress,
 }: DashboardCardProps) {
+  // 계산 오류로 NaN이나 0~100 밖의 값이 들어와도 막대가 깨지지 않도록
+  const safeProgress =
+    progress === undefined || Number.isNaN(progress)
+      ? undefined
+      : Math.min(100, Math.max(0, Math.round(progress)));
+
   return (
     <div
       className={`learning-summary-card dashboard-card dashboard-card-${type}`}
@@ -23,16 +29,21 @@ function DashboardCard({
 
       <strong>{value}</strong>
 
-      {progress !== undefined && (
+      {safeProgress !== undefined && (
         <div className="dashboard-progress">
-          <div className="dashboard-progress-track">
+          <div
+            className="dashboard-progress-track"
+            role="progressbar"
+            aria-label={`${label} 진행률`}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={safeProgress}
+          >
             <div
               className="dashboard-progress-bar"
-              style={{ width: `${progress}%` }}
+              style={{ width: `${safeProgress}%` }}
             />
           </div>
-
-          <span>{progress}%</span>
         </div>
       )}
 
