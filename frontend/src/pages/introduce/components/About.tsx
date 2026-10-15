@@ -1,52 +1,9 @@
-import { useEffect, useState } from 'react';
-import type { PortfolioProfile } from '../../../types/portfolioProfile';
 import SectionTitle from '../../../components/ui/SectionTitle';
-import { apiFetch } from '../../../api/api';
+import { usePortfolioProfile } from '../../../hooks/usePortfolioProfile';
 
 function About() {
-  const [profile, setProfile] = useState<PortfolioProfile | null>(null);
-
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
-
-  useEffect(() => {
-    // 화면을 빨리 벗어나도 끝난 요청이 상태를 바꾸지 않도록
-    let active = true;
-
-    const fetchProfile = async () => {
-      try {
-        const response = await apiFetch(
-          '/api/portfolio-profile'
-        );
-
-        if (!response.ok) {
-          throw new Error('프로필을 불러오지 못했습니다.');
-        }
-
-        const data: PortfolioProfile = await response.json();
-
-        if (active) {
-          setProfile(data);
-        }
-      } catch (error) {
-        console.error(error);
-
-        if (active) {
-          setHasError(true);
-        }
-      } finally {
-        if (active) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    fetchProfile();
-
-    return () => {
-      active = false;
-    };
-  }, []);
+  const { profile, isLoading, hasError } =
+    usePortfolioProfile();
 
   // 실패 / 내용 없음일 때는 빈 섹션 대신 안내 문구를 보여준다
   const aboutText = hasError
