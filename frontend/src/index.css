@@ -190,3 +190,34 @@ code {
 
 .hero-skeleton .hero-skeleton-tagline:nth-child(2) { width: 92%; }
 .hero-skeleton .hero-skeleton-tagline:nth-child(3) { width: 64%; }
+
+/* Projects: 스켈레톤 카드 (hover 효과 없음) */
+.project-card-skeleton {
+  pointer-events: none;
+}
+
+.project-card-skeleton .project-skeleton-title {
+  width: 55%;
+  height: 20px;
+  margin-bottom: 8px;
+}
+
+.project-card-skeleton .project-skeleton-text {
+  height: 13px;
+}
+
+.project-card-skeleton .project-skeleton-text:nth-child(2) { width: 100%; }
+.project-card-skeleton .project-skeleton-text:nth-child(3) { width: 92%; }
+.project-card-skeleton .project-skeleton-text:nth-child(4) { width: 68%; }
+
+.project-skeleton-tags {
+  display: flex;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.project-skeleton-tag {
+  width: 56px;
+  height: 24px;
+  border-radius: 4px;
+}
