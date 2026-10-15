@@ -229,3 +229,28 @@ code {
   height: 12px;
   vertical-align: middle;
 }
+
+/* Project Detail: 라벨 + 큰 제목 + 설명 2줄 */
+.project-detail-skeleton {
+  max-width: 720px;
+}
+
+.project-detail-skeleton .project-detail-skeleton-label {
+  width: 140px;
+  height: 12px;
+  margin-bottom: 8px;
+}
+
+.project-detail-skeleton .project-detail-skeleton-title {
+  width: min(420px, 85%);
+  height: 52px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+}
+
+.project-detail-skeleton .project-detail-skeleton-text {
+  height: 16px;
+}
+
+.project-detail-skeleton .project-detail-skeleton-text:nth-child(3) { width: 100%; }
+.project-detail-skeleton .project-detail-skeleton-text:nth-child(4) { width: 72%; }
