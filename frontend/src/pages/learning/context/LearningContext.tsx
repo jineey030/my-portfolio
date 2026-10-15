@@ -1,6 +1,7 @@
 import {
   createContext,
   useContext,
+  useMemo,
   useState,
   type ReactNode
 } from 'react';
@@ -37,20 +38,27 @@ export function LearningProvider({
   const [studyLogs, setStudyLogs] =
     useState<StudyLogData[]>([]);
 
+  // Provider가 다시 렌더링될 때마다 새 객체가 만들어지면
+  // 이 Context를 쓰는 모든 컴포넌트가 불필요하게 다시 렌더링된다.
+  // todos / studyLogs가 실제로 바뀔 때만 새 값을 만든다.
+  const value = useMemo(
+    () => ({
+      todos,
+      studyLogs,
+      setTodos,
+      setStudyLogs
+    }),
+    [todos, studyLogs]
+  );
+
   return (
-    <LearningContext.Provider
-      value={{
-        todos,
-        studyLogs,
-        setTodos,
-        setStudyLogs
-      }}
-    >
+    <LearningContext.Provider value={value}>
       {children}
     </LearningContext.Provider>
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useLearning() {
   const context =
     useContext(LearningContext);

@@ -9,51 +9,60 @@ interface TodoListProps {
   onTodosChange: (todos: Todo[]) => void;
 }
 
+type Priority = 'high' | 'medium' | 'low';
+type StatusFilter = 'all' | 'active' | 'completed';
+type PriorityFilter = 'all' | Priority;
+
+const ITEMS_PER_PAGE = 5;
+
+const PRIORITY_LABELS: Record<Priority, string> = {
+  high: 'HIGH',
+  medium: 'MEDIUM',
+  low: 'LOW'
+};
+
+const PRIORITY_OPTIONS: { value: Priority; label: string }[] = [
+  { value: 'high', label: '높음' },
+  { value: 'medium', label: '보통' },
+  { value: 'low', label: '낮음' }
+];
+
 function TodoList({
   onTodosChange
 }: TodoListProps) {
   const [todos, setTodos] = useState<Todo[]>([]);
 
+  // 추가 폼
   const [isAdding, setIsAdding] = useState(false);
   const [newTodo, setNewTodo] = useState('');
+  const [newPriority, setNewPriority] = useState<Priority>('medium');
+  const [isCreating, setIsCreating] = useState(false);
 
+  // 수정
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
+  const [editingPriority, setEditingPriority] = useState<Priority>('medium');
+  const [isSavingEdit, setIsSavingEdit] = useState(false);
 
-  const [newPriority, setNewPriority] =
-    useState<'high' | 'medium' | 'low'>('medium');
-
-  const [editingPriority, setEditingPriority] =
-    useState<'high' | 'medium' | 'low'>('medium');
-
-  const [priorityFilter, setPriorityFilter] =
-    useState<'all' | 'high' | 'medium' | 'low'>('all');
-
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
+  // 완료 체크 / 삭제 중인 Todo
+  const [togglingTodoId, setTogglingTodoId] = useState<number | null>(null);
   const [deletingTodoId, setDeletingTodoId] = useState<number | null>(null);
 
-  const [filter, setFilter] =
-    useState<'all' | 'active' | 'completed'>('all');
-
-  // 상태 필터 변경 시 첫 페이지로 이동
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [filter]);
-
-  // 우선순위 필터 변경 시 첫 페이지로 이동
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [priorityFilter]);
+  // 필터
+  const [filter, setFilter] = useState<StatusFilter>('all');
+  const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>('all');
 
   // 페이지네이션
   const [currentPage, setCurrentPage] = useState(1);
 
-  const ITEMS_PER_PAGE = 5;
+  // 목록 불러오기 실패(목록 자리에 표시) / 추가·수정·삭제 실패(목록 위에 표시)를 분리
+  const [loadError, setLoadError] = useState('');
+  const [actionError, setActionError] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
-  const filteredTodos = todos.filter((todo) => {
+  const refreshKey = useAdminRefreshKey();
+
+  const matchesFilters = (todo: Todo) => {
     if (filter === 'active' && todo.completed) {
       return false;
     }
@@ -70,7 +79,9 @@ function TodoList({
     }
 
     return true;
-  });
+  };
+
+  const filteredTodos = todos.filter(matchesFilters);
 
   const totalPages = Math.ceil(
     filteredTodos.length / ITEMS_PER_PAGE
@@ -88,11 +99,7 @@ function TodoList({
     (todo) => !todo.completed
   ).length;
 
-  const completedCount = todos.filter(
-    (todo) => todo.completed
-  ).length;
-
-  const refreshKey = useAdminRefreshKey();
+  const completedCount = todos.length - activeCount;
 
   // [GET] Todo list 가져오기
   useEffect(() => {
@@ -112,13 +119,14 @@ function TodoList({
           await response.json();
 
         setTodos(data);
+        setLoadError('');
       } catch (error) {
         console.error(
           'Todo 조회 실패:',
           error
         );
 
-        setError(
+        setLoadError(
           'Todo를 불러오지 못했습니다.'
         );
       } finally {
@@ -134,40 +142,53 @@ function TodoList({
     onTodosChange(todos);
   }, [todos, onTodosChange]);
 
-  // 삭제 후 페이지네이션
+  // 삭제나 필터로 페이지 수가 줄면 마지막 페이지로 이동
   useEffect(() => {
-    const nextTotalPages = Math.max(
-      1,
-      Math.ceil(
-        filteredTodos.length /
-          ITEMS_PER_PAGE
-      )
-    );
+    const lastPage = Math.max(1, totalPages);
 
-    if (
-      currentPage > nextTotalPages
-    ) {
-      setCurrentPage(nextTotalPages);
+    if (currentPage > lastPage) {
+      setCurrentPage(lastPage);
     }
-  }, [
-    filteredTodos.length,
-    currentPage
-  ]);
+  }, [totalPages, currentPage]);
+
+  // 필터를 바꾸면 첫 페이지로
+  const changeFilter = (nextFilter: StatusFilter) => {
+    setFilter(nextFilter);
+    setCurrentPage(1);
+  };
+
+  const changePriorityFilter = (
+    nextFilter: PriorityFilter
+  ) => {
+    setPriorityFilter(nextFilter);
+    setCurrentPage(1);
+  };
+
+  const closeAddForm = () => {
+    setNewTodo('');
+    setNewPriority('medium');
+    setIsAdding(false);
+  };
 
   // [PUT] 완료 상태 체크
   const handleToggleTodo = async (
     id: number
   ) => {
+    // 같은 Todo를 빠르게 여러 번 눌러도 요청은 한 번만
+    if (togglingTodoId !== null) {
+      return;
+    }
+
     const todo = todos.find(
-      (todo) => todo.id === id
+      (item) => item.id === id
     );
 
     if (!todo) {
       return;
     }
 
-    setError('');
-    setIsSubmitting(true);
+    setActionError('');
+    setTogglingTodoId(id);
 
     try {
       const response = await apiFetch(
@@ -175,8 +196,7 @@ function TodoList({
         {
           method: 'PUT',
           headers: {
-            'Content-Type':
-              'application/json',
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             title: todo.title,
@@ -196,10 +216,10 @@ function TodoList({
         await response.json();
 
       setTodos((prev) =>
-        prev.map((todo) =>
-          todo.id === id
+        prev.map((item) =>
+          item.id === id
             ? updatedTodo
-            : todo
+            : item
         )
       );
     } catch (error) {
@@ -208,26 +228,20 @@ function TodoList({
         error
       );
 
-      setError(
-        'Todo 상태 변경 실패하였습니다.'
+      setActionError(
+        'Todo 상태 변경에 실패했습니다.'
       );
     } finally {
-      setIsSubmitting(false);
+      setTogglingTodoId(null);
     }
   };
 
   // [SET] 수정 대상 체크
-  const handleStartEdit = (
-    id: number,
-    title: string,
-    priority:
-      | 'high'
-      | 'medium'
-      | 'low'
-  ) => {
-    setEditingId(id);
-    setEditingTitle(title);
-    setEditingPriority(priority);
+  const handleStartEdit = (todo: Todo) => {
+    setActionError('');
+    setEditingId(todo.id);
+    setEditingTitle(todo.title);
+    setEditingPriority(todo.priority ?? 'medium');
   };
 
   const handleCancelEdit = () => {
@@ -240,23 +254,22 @@ function TodoList({
   const handleSaveEdit = async (
     id: number
   ) => {
-    const title =
-      editingTitle.trim();
+    const title = editingTitle.trim();
 
-    if (!title) {
+    if (!title || isSavingEdit) {
       return;
     }
 
     const todo = todos.find(
-      (todo) => todo.id === id
+      (item) => item.id === id
     );
 
     if (!todo) {
       return;
     }
 
-    setError('');
-    setIsSubmitting(true);
+    setActionError('');
+    setIsSavingEdit(true);
 
     try {
       const response = await apiFetch(
@@ -264,14 +277,12 @@ function TodoList({
         {
           method: 'PUT',
           headers: {
-            'Content-Type':
-              'application/json',
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             title,
             completed: todo.completed,
-            priority:
-              editingPriority
+            priority: editingPriority
           }),
         }
       );
@@ -286,10 +297,10 @@ function TodoList({
         await response.json();
 
       setTodos((prev) =>
-        prev.map((todo) =>
-          todo.id === id
+        prev.map((item) =>
+          item.id === id
             ? updatedTodo
-            : todo
+            : item
         )
       );
 
@@ -300,29 +311,27 @@ function TodoList({
         error
       );
 
-      setError(
-        'Todo 수정 실패하였습니다.'
+      setActionError(
+        'Todo 수정에 실패했습니다.'
       );
     } finally {
-      setIsSubmitting(false);
+      setIsSavingEdit(false);
     }
   };
 
-  
   // [DELETE] Todo 삭제
   const handleDeleteTodo = async (
     id: number
   ) => {
-    const shouldDelete =
-      window.confirm(
-        '이 Todo를 삭제하시겠습니까?'
-      );
+    const shouldDelete = window.confirm(
+      '이 Todo를 삭제하시겠습니까?'
+    );
 
     if (!shouldDelete) {
       return;
     }
 
-    setError('');
+    setActionError('');
     setDeletingTodoId(id);
 
     try {
@@ -341,17 +350,22 @@ function TodoList({
 
       setTodos((prev) =>
         prev.filter(
-          (todo) => todo.id !== id
+          (item) => item.id !== id
         )
       );
+
+      // 수정 중이던 Todo를 삭제했다면 수정 상태도 정리
+      if (editingId === id) {
+        handleCancelEdit();
+      }
     } catch (error) {
       console.error(
         'Todo 삭제 실패:',
         error
       );
 
-      setError(
-        'Todo 삭제 실패하였습니다.'
+      setActionError(
+        'Todo 삭제에 실패했습니다.'
       );
     } finally {
       setDeletingTodoId(null);
@@ -360,15 +374,14 @@ function TodoList({
 
   // [POST] Todo 추가
   const handleAddTodo = async () => {
-    const title =
-      newTodo.trim();
+    const title = newTodo.trim();
 
-    if (!title) {
+    if (!title || isCreating) {
       return;
     }
 
-    setError('');
-    setIsSubmitting(true);
+    setActionError('');
+    setIsCreating(true);
 
     try {
       const response = await apiFetch(
@@ -376,8 +389,7 @@ function TodoList({
         {
           method: 'POST',
           headers: {
-            'Content-Type':
-              'application/json',
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             title,
@@ -400,22 +412,54 @@ function TodoList({
         createdTodo,
       ]);
 
-      setNewTodo('');
-      setNewPriority('medium');
-      setIsAdding(false);
+      // 방금 추가한 Todo가 보이도록 (목록 맨 뒤에 붙으므로 마지막 페이지로)
+      // 지금 필터에 안 맞으면(예: "완료" 필터) 필터를 풀어준다
+      if (matchesFilters(createdTodo)) {
+        setCurrentPage(
+          Math.ceil((filteredTodos.length + 1) / ITEMS_PER_PAGE)
+        );
+      } else {
+        setFilter('all');
+        setPriorityFilter('all');
+        setCurrentPage(
+          Math.ceil((todos.length + 1) / ITEMS_PER_PAGE)
+        );
+      }
+
+      closeAddForm();
     } catch (error) {
       console.error(
         'Todo 추가 실패:',
         error
       );
 
-      setError(
-        'Todo 추가 실패하였습니다.'
+      setActionError(
+        'Todo 추가에 실패했습니다.'
       );
     } finally {
-      setIsSubmitting(false);
+      setIsCreating(false);
     }
   };
+
+  const renderPrioritySelect = (
+    value: Priority,
+    onChange: (value: Priority) => void
+  ) => (
+    <select
+      className={`todo-priority-select ${value}`}
+      value={value}
+      onChange={(event) =>
+        onChange(event.target.value as Priority)
+      }
+      aria-label="우선순위"
+    >
+      {PRIORITY_OPTIONS.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+  );
 
   return (
     <section className="learning-todo">
@@ -427,9 +471,10 @@ function TodoList({
         {!isAdding && (
           <button
             type="button"
-            onClick={() =>
-              setIsAdding(true)
-            }
+            onClick={() => {
+              setActionError('');
+              setIsAdding(true);
+            }}
           >
             + Todo 추가
           </button>
@@ -447,47 +492,21 @@ function TodoList({
             상태
           </span>
 
-          <button
-            type="button"
-            className={
-              filter === 'all'
-                ? 'active'
-                : ''
-            }
-            onClick={() =>
-              setFilter('all')
-            }
-          >
-            전체 {todos.length}
-          </button>
-
-          <button
-            type="button"
-            className={
-              filter === 'active'
-                ? 'active'
-                : ''
-            }
-            onClick={() =>
-              setFilter('active')
-            }
-          >
-            미완료 {activeCount}
-          </button>
-
-          <button
-            type="button"
-            className={
-              filter === 'completed'
-                ? 'active'
-                : ''
-            }
-            onClick={() =>
-              setFilter('completed')
-            }
-          >
-            완료 {completedCount}
-          </button>
+          {([
+            ['all', `전체 ${todos.length}`],
+            ['active', `미완료 ${activeCount}`],
+            ['completed', `완료 ${completedCount}`]
+          ] as [StatusFilter, string][]).map(([value, label]) => (
+            <button
+              key={value}
+              type="button"
+              className={filter === value ? 'active' : ''}
+              aria-pressed={filter === value}
+              onClick={() => changeFilter(value)}
+            >
+              {label}
+            </button>
+          ))}
         </div>
 
         {/* 우선순위 필터 */}
@@ -496,61 +515,22 @@ function TodoList({
             우선순위
           </span>
 
-          <button
-            type="button"
-            className={
-              priorityFilter === 'all'
-                ? 'active'
-                : ''
-            }
-            onClick={() =>
-              setPriorityFilter('all')
-            }
-          >
-            전체
-          </button>
-
-          <button
-            type="button"
-            className={
-              priorityFilter === 'high'
-                ? 'active'
-                : ''
-            }
-            onClick={() =>
-              setPriorityFilter('high')
-            }
-          >
-            높음
-          </button>
-
-          <button
-            type="button"
-            className={
-              priorityFilter === 'medium'
-                ? 'active'
-                : ''
-            }
-            onClick={() =>
-              setPriorityFilter('medium')
-            }
-          >
-            보통
-          </button>
-
-          <button
-            type="button"
-            className={
-              priorityFilter === 'low'
-                ? 'active'
-                : ''
-            }
-            onClick={() =>
-              setPriorityFilter('low')
-            }
-          >
-            낮음
-          </button>
+          {([
+            ['all', '전체'],
+            ...PRIORITY_OPTIONS.map(
+              (option) => [option.value, option.label]
+            )
+          ] as [PriorityFilter, string][]).map(([value, label]) => (
+            <button
+              key={value}
+              type="button"
+              className={priorityFilter === value ? 'active' : ''}
+              aria-pressed={priorityFilter === value}
+              onClick={() => changePriorityFilter(value)}
+            >
+              {label}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -563,72 +543,55 @@ function TodoList({
           <input
             type="text"
             value={newTodo}
-            onChange={(event) =>
-              setNewTodo(
-                event.target.value
-              )
-            }
+            onChange={(event) => {
+              setNewTodo(event.target.value);
+              setActionError('');
+            }}
             placeholder="할 일을 입력하세요"
+            aria-label="새 Todo"
             autoFocus
             onKeyDown={(event) => {
+              // 한글 조합 중 Enter는 무시 (같은 Todo가 두 번 추가되는 문제 방지)
+              if (event.nativeEvent.isComposing) {
+                return;
+              }
+
               if (event.key === 'Enter') {
+                event.preventDefault();
                 handleAddTodo();
               }
 
               if (event.key === 'Escape') {
-                setNewTodo('');
-                setIsAdding(false);
+                closeAddForm();
               }
             }}
           />
 
-          <select
-            className={`todo-priority-select ${newPriority}`}
-            value={newPriority}
-            onChange={(event) =>
-              setNewPriority(
-                event.target
-                  .value as
-                  | 'high'
-                  | 'medium'
-                  | 'low'
-              )
-            }
-          >
-            <option value="high">
-              높음
-            </option>
-
-            <option value="medium">
-              보통
-            </option>
-
-            <option value="low">
-              낮음
-            </option>
-          </select>
+          {renderPrioritySelect(newPriority, setNewPriority)}
 
           <button
             type="button"
             onClick={handleAddTodo}
-            disabled={isSubmitting}
+            disabled={isCreating || !newTodo.trim()}
           >
-            {isSubmitting
-              ? '추가 중...'
-              : '추가'}
+            {isCreating ? '추가 중...' : '추가'}
           </button>
 
           <button
             type="button"
-            onClick={() => {
-              setNewTodo('');
-              setNewPriority('medium');
-              setIsAdding(false);
-            }}
+            onClick={closeAddForm}
+            disabled={isCreating}
           >
             취소
           </button>
         </div>
+      )}
+
+      {/* 추가/수정/삭제 실패는 목록을 가리지 않고 위에 표시 */}
+      {actionError && (
+        <p className="todo-error" role="alert">
+          {actionError}
+        </p>
       )}
 
       {/* =========================
@@ -640,9 +603,9 @@ function TodoList({
           <p className="todo-loading">
             Todo를 불러오는 중...
           </p>
-        ) : error ? (
+        ) : loadError ? (
           <p className="todo-error">
-            {error}
+            {loadError}
           </p>
         ) : todos.length === 0 ? (
           <p className="todo-empty">
@@ -652,172 +615,130 @@ function TodoList({
           </p>
         ) : filteredTodos.length === 0 ? (
           <p className="todo-empty">
-            선택한 조건에 해당하는
-            Todo가 없습니다.
+            선택한 조건에 해당하는 Todo가 없습니다.
             <br />
             다른 필터를 선택해보세요.
           </p>
         ) : (
-          currentTodos.map((todo) => (
-            <div
-              key={todo.id}
-              className={`todo-item ${
-                todo.completed
-                  ? 'is-completed'
-                  : ''
-              }`}
-            >
-              {editingId ===
-              todo.id ? (
-                <>
-                  <input
-                    type="text"
-                    className="todo-edit-input"
-                    value={editingTitle}
-                    onChange={(event) =>
-                      setEditingTitle(
-                        event.target
-                          .value
-                      )
-                    }
-                    autoFocus
-                    onKeyDown={(event) => {
-                      if (
-                        event.key ===
-                        'Enter'
-                      ) {
-                        handleSaveEdit(
-                          todo.id
-                        );
-                      }
+          currentTodos.map((todo) => {
+            const isEditing = editingId === todo.id;
+            const priority: Priority = todo.priority ?? 'medium';
 
-                      if (
-                        event.key ===
-                        'Escape'
-                      ) {
-                        handleCancelEdit();
-                      }
-                    }}
-                  />
-
-                  <select
-                    className={`todo-priority-select ${editingPriority}`}
-                    value={
-                      editingPriority
-                    }
-                    onChange={(event) =>
-                      setEditingPriority(
-                        event.target
-                          .value as
-                          | 'high'
-                          | 'medium'
-                          | 'low'
-                      )
-                    }
-                  >
-                    <option value="high">
-                      높음
-                    </option>
-
-                    <option value="medium">
-                      보통
-                    </option>
-
-                    <option value="low">
-                      낮음
-                    </option>
-                  </select>
-
-                  <div className="todo-actions">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handleSaveEdit(
-                          todo.id
-                        )
-                      }
-                      disabled={
-                        isSubmitting
-                      }
-                    >
-                      {isSubmitting
-                        ? '저장 중...'
-                        : '저장'}
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={
-                        handleCancelEdit
-                      }
-                    >
-                      취소
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <label>
+            return (
+              <div
+                key={todo.id}
+                className={`todo-item ${
+                  todo.completed ? 'is-completed' : ''
+                }`}
+              >
+                {isEditing ? (
+                  <>
                     <input
-                      type="checkbox"
-                      checked={
-                        todo.completed
+                      type="text"
+                      className="todo-edit-input"
+                      value={editingTitle}
+                      onChange={(event) =>
+                        setEditingTitle(event.target.value)
                       }
-                      onChange={() =>
-                        handleToggleTodo(
-                          todo.id
-                        )
-                      }
+                      aria-label="Todo 수정"
+                      autoFocus
+                      onKeyDown={(event) => {
+                        if (event.nativeEvent.isComposing) {
+                          return;
+                        }
+
+                        if (event.key === 'Enter') {
+                          event.preventDefault();
+                          handleSaveEdit(todo.id);
+                        }
+
+                        if (event.key === 'Escape') {
+                          handleCancelEdit();
+                        }
+                      }}
                     />
 
-                    <span
-                      className={`todo-priority ${todo.priority}`}
-                    >
-                      {todo.priority ===
-                      'high'
-                        ? 'HIGH'
-                        : todo.priority ===
-                            'medium'
-                          ? 'MEDIUM'
-                          : 'LOW'}
-                    </span>
+                    {renderPrioritySelect(
+                      editingPriority,
+                      setEditingPriority
+                    )}
 
-                    <span>
-                      {todo.title}
-                    </span>
-                  </label>
+                    <div className="todo-actions">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleSaveEdit(todo.id)
+                        }
+                        disabled={
+                          isSavingEdit ||
+                          !editingTitle.trim()
+                        }
+                      >
+                        {isSavingEdit
+                          ? '저장 중...'
+                          : '저장'}
+                      </button>
 
-                  <div className="todo-actions">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handleStartEdit(
-                          todo.id,
-                          todo.title,
-                          todo.priority
-                        )
-                      }
-                    >
-                      수정
-                    </button>
+                      <button
+                        type="button"
+                        onClick={handleCancelEdit}
+                        disabled={isSavingEdit}
+                      >
+                        취소
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={todo.completed}
+                        onChange={() =>
+                          handleToggleTodo(todo.id)
+                        }
+                        // 상태 변경 요청 중에는 다시 누를 수 없게
+                        disabled={togglingTodoId === todo.id}
+                      />
 
-                    
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handleDeleteTodo(todo.id)
-                      }
-                      disabled={deletingTodoId !== null}
-                    >
-                      {deletingTodoId === todo.id
-                        ? '삭제 중...'
-                        : '삭제'}
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-          ))
+                      <span
+                        className={`todo-priority ${priority}`}
+                      >
+                        {PRIORITY_LABELS[priority]}
+                      </span>
+
+                      <span>
+                        {todo.title}
+                      </span>
+                    </label>
+
+                    <div className="todo-actions">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleStartEdit(todo)
+                        }
+                      >
+                        수정
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleDeleteTodo(todo.id)
+                        }
+                        disabled={deletingTodoId !== null}
+                      >
+                        {deletingTodoId === todo.id
+                          ? '삭제 중...'
+                          : '삭제'}
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            );
+          })
         )}
       </div>
 

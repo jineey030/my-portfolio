@@ -1,44 +1,52 @@
-import { useEffect, useState } from 'react';
-import type { PortfolioProfile } from '../../../types/portfolioProfile';
-import { apiFetch } from '../../../api/api';
+import { usePortfolioProfile } from '../../../hooks/usePortfolioProfile';
+
+// 프로필을 불러오지 못했을 때 보여줄 기본 이름
+const FALLBACK_NAME = 'YeJin';
 
 function Hero() {
-  const [profile, setProfile] = useState<PortfolioProfile | null>(null);
+  const { profile, isLoading, hasError } =
+    usePortfolioProfile();
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await apiFetch(
-          '/api/portfolio-profile'
-        );
+  const name = profile?.name?.trim() || FALLBACK_NAME;
 
-        if (!response.ok) {
-          throw new Error('프로필을 불러오지 못했습니다.');
-        }
-
-        const data: PortfolioProfile = await response.json();
-
-        setProfile(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchProfile();
-  }, []);
+  const tagline = hasError
+    ? '프로필을 불러오지 못했습니다. 잠시 후 다시 확인해 주세요.'
+    : profile?.tagline?.trim() || '';
 
   return (
-    <section id="hero" className="hero">
+    <section
+      id="hero"
+      className="hero"
+      aria-busy={isLoading}
+    >
       <p className="hero-greeting">$ whoami</p>
 
-      <h1 className="hero-name">
-        {profile?.name}
-      </h1>
+      {isLoading ? (
+        // 이름 1줄 + 소개 2줄 모양의 스켈레톤
+        <div
+          className="skeleton hero-skeleton"
+          role="status"
+          aria-label="프로필을 불러오는 중"
+        >
+          <span className="skeleton-line hero-skeleton-name" />
+          <span className="skeleton-line hero-skeleton-tagline" />
+          <span className="skeleton-line hero-skeleton-tagline" />
+        </div>
+      ) : (
+        <>
+          <h1 className="hero-name">
+            {name}
+          </h1>
 
-      <p className="hero-tagline">
-        {profile?.tagline}
-      </p>
+          {tagline && (
+            <p className="hero-tagline">
+              {tagline}
+            </p>
+          )}
+        </>
+      )}
 
+      {/* 버튼은 데이터와 상관없이 항상 보여준다 */}
       <div className="hero-cta">
         <a
           href="#projects"

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { apiFetch } from '../../../api/api';
 import { useAdminRefresh } from '../../../api/adminRefresh';
 import type { Project } from '../../../types/project';
@@ -7,6 +7,31 @@ import ProjectSkills from './ProjectSkills';
 import ProjectFeatures from './ProjectFeatures';
 import ProjectChallenges from './ProjectChallenges';
 import ProjectTechnicalHighlights from './ProjectTechnicalHighlights';
+
+// 프로젝트 콘텐츠 아코디언 섹션 목록
+// 섹션을 추가할 때는 여기에 한 줄만 추가하면 된다.
+const CONTENT_SECTIONS = [
+  { key: 'skills', label: 'Skills', Component: ProjectSkills },
+  { key: 'features', label: 'Features', Component: ProjectFeatures },
+  { key: 'challenges', label: 'Challenges', Component: ProjectChallenges },
+  {
+    key: 'technical-highlights',
+    label: 'Technical Highlights',
+    Component: ProjectTechnicalHighlights
+  }
+] as const;
+
+type ContentSectionKey = (typeof CONTENT_SECTIONS)[number]['key'];
+
+const EMPTY_FORM = {
+  name: '',
+  slug: '',
+  description: '',
+  githubUrl: '',
+  deployUrl: '',
+  imageUrl: '',
+  role: ''
+};
 
 function PortfolioProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -21,40 +46,44 @@ function PortfolioProjects() {
   const [editingProjectId, setEditingProjectId] =
     useState<number | null>(null);
 
-  const [openContent, setOpenContent] =
-  useState<{
-    projectId: number;
-    section: string;
-  } | null>(null);
+  // 열려 있는 아코디언 목록 ("프로젝트ID:섹션" 형태로 저장)
+  // 여러 개를 동시에 펼칠 수 있다.
+  const [openContents, setOpenContents] =
+    useState<Set<string>>(() => new Set());
 
-  const [form, setForm] = useState({
-    name: '',
-    slug: '',
-    description: '',
-    githubUrl: '',
-    deployUrl: '',
-    imageUrl: '',
-    role: ''
-  });
+  const [form, setForm] = useState(EMPTY_FORM);
+
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const getContentKey = (
+    projectId: number,
+    section: ContentSectionKey
+  ) => `${projectId}:${section}`;
+
+  const isContentOpen = (
+    projectId: number,
+    section: ContentSectionKey
+  ) => openContents.has(getContentKey(projectId, section));
 
   const toggleContent = (
-  projectId: number,
-  section: string
-) => {
-  setOpenContent((current) => {
-    if (
-      current?.projectId === projectId &&
-      current.section === section
-    ) {
-      return null;
-    }
+    projectId: number,
+    section: ContentSectionKey
+  ) => {
+    const key = getContentKey(projectId, section);
 
-    return {
-      projectId,
-      section
-    };
-  });
-};
+    setOpenContents((current) => {
+      // Set은 직접 수정하면 React가 변경을 감지하지 못하므로 복사본을 만든다.
+      const next = new Set(current);
+
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+
+      return next;
+    });
+  };
 
   const fetchProjects = async (
     { silent = false }: { silent?: boolean } = {}
@@ -95,30 +124,31 @@ function PortfolioProjects() {
   // 데이터 추가/수정/삭제 후 화면 자동 새로고침 (열린 패널은 유지)
   useAdminRefresh(() => fetchProjects({ silent: true }));
 
+  // 폼이 열리거나 다른 프로젝트를 수정하기 시작하면 폼으로 스크롤
+  useEffect(() => {
+    if (isFormOpen) {
+      formRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  }, [isFormOpen, editingProjectId]);
+
   const handleChange = (
-    field: keyof typeof form,
+    field: keyof typeof EMPTY_FORM,
     value: string
   ) => {
-    setForm({
-      ...form,
+    setForm((current) => ({
+      ...current,
       [field]: value
-    });
+    }));
 
     setMessage('');
     setError('');
   };
 
   const resetForm = () => {
-    setForm({
-      name: '',
-      slug: '',
-      description: '',
-      githubUrl: '',
-      deployUrl: '',
-      imageUrl: '',
-      role: ''
-    });
-
+    setForm(EMPTY_FORM);
     setEditingProjectId(null);
   };
 
@@ -152,59 +182,77 @@ function PortfolioProjects() {
     setIsFormOpen(true);
   };
 
+  const handleDelete = async (
+    project: Project
+  ) => {
+    const confirmed = window.confirm(
+      `"${project.name}" 프로젝트를 삭제하시겠습니까?`
+    );
 
-    const handleDelete = async (
-        project: Project
-        ) => {
-        const confirmed = window.confirm(
-            `"${project.name}" 프로젝트를 삭제하시겠습니까?`
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setMessage('');
+      setError('');
+
+      const response = await apiFetch(
+        `/api/projects/${project.id}`,
+        {
+          method: 'DELETE'
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          '프로젝트 삭제에 실패했습니다.'
         );
+      }
 
-        if (!confirmed) {
-            return;
+      // 수정 중이던 프로젝트를 삭제했다면 폼 닫기
+      if (editingProjectId === project.id) {
+        resetForm();
+        setIsFormOpen(false);
+      }
+
+      // 삭제한 프로젝트의 열린 아코디언 정리
+      setOpenContents((current) => {
+        const next = new Set(current);
+
+        for (const key of current) {
+          if (key.startsWith(`${project.id}:`)) {
+            next.delete(key);
+          }
         }
 
-        try {
-            setMessage('');
-            setError('');
+        return next;
+      });
 
-            const response = await apiFetch(
-            `/api/projects/${project.id}`,
-            {
-                method: 'DELETE'
-            }
-            );
+      setMessage('프로젝트가 삭제되었습니다.');
 
-            if (!response.ok) {
-            throw new Error(
-                '프로젝트 삭제에 실패했습니다.'
-            );
-            }
+      await fetchProjects({ silent: true });
+    } catch (error) {
+      console.error(error);
 
-            setMessage('프로젝트가 삭제되었습니다.');
-
-            await fetchProjects({ silent: true });
-        } catch (error) {
-            console.error(error);
-
-            setError(
-            '프로젝트 삭제에 실패했습니다.'
-            );
-        }
-    };
+      setError(
+        '프로젝트 삭제에 실패했습니다.'
+      );
+    }
+  };
 
   const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
 
+    const isEditing =
+      editingProjectId !== null;
+
     try {
       setIsSaving(true);
       setMessage('');
       setError('');
-
-      const isEditing =
-        editingProjectId !== null;
 
       const url = isEditing
         ? `/api/projects/${editingProjectId}`
@@ -255,7 +303,7 @@ function PortfolioProjects() {
       console.error(error);
 
       setError(
-        editingProjectId !== null
+        isEditing
           ? '프로젝트 수정에 실패했습니다.'
           : '프로젝트 생성에 실패했습니다.'
       );
@@ -305,6 +353,7 @@ function PortfolioProjects() {
 
       {isFormOpen && (
         <form
+          ref={formRef}
           className="admin-form"
           onSubmit={handleSubmit}
         >
@@ -475,9 +524,12 @@ function PortfolioProjects() {
 
       <section className="admin-project-list">
         {projects.length === 0 ? (
-          <p>
-            등록된 프로젝트가 없습니다.
-          </p>
+          // 불러오기에 실패한 경우에는 "없음" 문구를 표시하지 않음
+          !error && (
+            <p>
+              등록된 프로젝트가 없습니다.
+            </p>
+          )
         ) : (
           projects.map((project) => (
             <article
@@ -497,170 +549,69 @@ function PortfolioProjects() {
               </div>
 
               <div className="admin-project-content">
-
                 <p className="admin-project-content-label">
                   PROJECT CONTENT
                 </p>
 
-                <div className="admin-project-content-section">
+                {CONTENT_SECTIONS.map(
+                  ({ key, label, Component }) => {
+                    const isOpen = isContentOpen(
+                      project.id,
+                      key
+                    );
 
-                  <button
-                    type="button"
-                    className="admin-project-content-toggle"
-                    onClick={() =>
-                      toggleContent(
-                        project.id,
-                        'skills'
-                      )
-                    }
-                  >
-                    <span>Skills</span>
+                    return (
+                      <div
+                        key={key}
+                        className="admin-project-content-section"
+                      >
+                        <button
+                          type="button"
+                          className="admin-project-content-toggle"
+                          onClick={() =>
+                            toggleContent(project.id, key)
+                          }
+                          aria-expanded={isOpen}
+                        >
+                          <span>{label}</span>
 
-                    <span className="admin-project-content-arrow">
-                      {openContent?.projectId === project.id &&
-                      openContent.section === 'skills'
-                        ? '−'
-                        : '+'}
-                    </span>
-                  </button>
+                          <span className="admin-project-content-arrow">
+                            {isOpen ? '−' : '+'}
+                          </span>
+                        </button>
 
-                  {openContent?.projectId === project.id &&
-                    openContent.section === 'skills' && (
-                      <div className="admin-project-content-body">
-                        <ProjectSkills
-                          projectId={project.id}
-                        />
+                        {isOpen && (
+                          <div className="admin-project-content-body">
+                            <Component
+                              projectId={project.id}
+                            />
+                          </div>
+                        )}
                       </div>
-                    )}
-
-                </div>
-
-                <div className="admin-project-content-section">
-
-                  <button
-                    type="button"
-                    className="admin-project-content-toggle"
-                    onClick={() =>
-                      toggleContent(
-                        project.id,
-                        'features'
-                      )
-                    }
-                  >
-                    <span>Features</span>
-
-                    <span className="admin-project-content-arrow">
-                      {openContent?.projectId === project.id &&
-                      openContent.section === 'features'
-                        ? '−'
-                        : '+'}
-                    </span>
-                  </button>
-
-                  {openContent?.projectId === project.id &&
-                    openContent.section === 'features' && (
-                      <div className="admin-project-content-body">
-                        <ProjectFeatures
-                          projectId={project.id}
-                        />
-                      </div>
-                    )}
-
-                </div>
-
-                <div className="admin-project-content-section">
-
-                  <button
-                    type="button"
-                    className="admin-project-content-toggle"
-                    onClick={() =>
-                      toggleContent(
-                        project.id,
-                        'challenges'
-                      )
-                    }
-                  >
-                    <span>Challenges</span>
-
-                    <span className="admin-project-content-arrow">
-                      {openContent?.projectId === project.id &&
-                      openContent.section === 'challenges'
-                        ? '−'
-                        : '+'}
-                    </span>
-                  </button>
-
-                  {openContent?.projectId === project.id &&
-                    openContent.section === 'challenges' && (
-                      <div className="admin-project-content-body">
-                        <ProjectChallenges
-                          projectId={project.id}
-                        />
-                      </div>
-                    )}
-
-                </div>
-
-                <div className="admin-project-content-section">
-
-                  <button
-                    type="button"
-                    className="admin-project-content-toggle"
-                    onClick={() =>
-                      toggleContent(
-                        project.id,
-                        'technical-highlights'
-                      )
-                    }
-                  >
-                    <span>
-                      Technical Highlights
-                    </span>
-
-                    <span className="admin-project-content-arrow">
-                      {openContent?.projectId === project.id &&
-                      openContent.section ===
-                        'technical-highlights'
-                        ? '−'
-                        : '+'}
-                    </span>
-                  </button>
-
-                  {openContent?.projectId === project.id &&
-                    openContent.section ===
-                      'technical-highlights' && (
-                      <div className="admin-project-content-body">
-                        <ProjectTechnicalHighlights
-                          projectId={project.id}
-                        />
-                      </div>
-                    )}
-
-                </div>
-
+                    );
+                  }
+                )}
               </div>
 
               <div className="admin-project-card-actions">
-                    <button
-                        type="button"
-                        onClick={() =>
-                        handleEditClick(project)
-                        }
-                    >
-                        Edit
-                    </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleEditClick(project)
+                  }
+                >
+                  Edit
+                </button>
 
-                    <button
-                        type="button"
-                        onClick={() =>
-                        handleDelete(project)
-                        }
-                    >
-                        Delete
-                    </button>
-                </div>
-
-                
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleDelete(project)
+                  }
+                >
+                  Delete
+                </button>
+              </div>
             </article>
           ))
         )}

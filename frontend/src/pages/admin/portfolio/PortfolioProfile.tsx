@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { apiFetch } from '../../../api/api';
 import { useAdminRefreshKey } from '../../../api/adminRefresh';
 import type { PortfolioProfile as PortfolioProfileType } from '../../../types/portfolioProfile';
@@ -15,7 +15,16 @@ function PortfolioProfile() {
 
   const refreshKey = useAdminRefreshKey();
 
+  // 저장하지 않은 수정 내용이 있는지 표시
+  // (state가 아닌 ref라서 값이 바뀌어도 다시 불러오지 않음)
+  const isDirtyRef = useRef(false);
+
   useEffect(() => {
+    // 수정 중일 때는 자동 새로고침으로 입력 내용을 덮어쓰지 않음
+    if (refreshKey !== 0 && isDirtyRef.current) {
+      return;
+    }
+
     const fetchProfile = async () => {
       try {
         // 자동 새로고침 때는 로딩 화면 없이 갱신
@@ -32,6 +41,11 @@ function PortfolioProfile() {
 
         const data: PortfolioProfileType =
           await response.json();
+
+        // 요청 중에 수정을 시작했다면 덮어쓰지 않음
+        if (isDirtyRef.current) {
+          return;
+        }
 
         setProfile(data);
       } catch (error) {
@@ -52,6 +66,8 @@ function PortfolioProfile() {
     if (!profile) {
       return;
     }
+
+    isDirtyRef.current = true;
 
     setProfile({
       ...profile,
@@ -100,6 +116,9 @@ function PortfolioProfile() {
 
       const updatedProfile: PortfolioProfileType =
         await response.json();
+
+      // 저장 완료 → 다시 자동 새로고침 허용
+      isDirtyRef.current = false;
 
       setProfile(updatedProfile);
       setMessage('프로필이 저장되었습니다.');

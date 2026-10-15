@@ -21,60 +21,13 @@
   --font-mono: 'DM Mono', 'Galmuri11', monospace;
 }
 
-/* Header */
+/*
+  상단 메뉴는 App의 Navbar 하나만 사용한다. (스타일은 App.css)
+  예전 Header 컴포넌트와 그 스타일(.header*)은 삭제했다.
+*/
 
 html {
   scroll-behavior: smooth;
-}
-
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-
-  z-index: 100;
-
-  background: transparent;
-}
-
-.header-nav {
-  max-width: 960px;
-  height: 64px;
-  margin: 0 auto;
-  padding: 0 24px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.header-logo {
-  font-family: var(--font-mono);
-  font-size: 14px;
-  color: var(--neon-cyan);
-
-  text-decoration: none;
-}
-
-.header-links {
-  display: flex;
-  align-items: center;
-  gap: 36px;
-}
-
-.header-links a {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--text-secondary);
-
-  text-decoration: none;
-
-  transition: color 0.2s ease;
-}
-
-.header-links a:hover {
-  color: var(--neon-cyan);
 }
 
 .introduce {
@@ -90,27 +43,12 @@ html {
   padding: 80px 24px;
 }
 
-.introduce nav {
-  max-width: 960px;
-  margin: 0 auto;
-
-  padding: 20px 24px;
-
-  display: flex;
-  justify-content: flex-end;
-  gap: 40px;
-}
-
-.introduce nav a {
-  font-family: var(--font-mono);
-  color: var(--text-secondary);
-  text-decoration: none;
-
-  transition: color 0.2s;
-}
-
-.introduce nav a:hover {
-  color: var(--neon-cyan);
+/*
+  메뉴로 이동했을 때 섹션 제목이 고정 Navbar에 가려지지 않게
+  (Navbar 높이 72px + 여유 16px. 모바일은 64px + 16px)
+*/
+.introduce section[id] {
+  scroll-margin-top: 88px;
 }
 
 /* Hero 컴포넌트 */
@@ -218,9 +156,15 @@ html {
   color: var(--neon-green);
 }
 
+/* Skills 로딩 실패 / 빈 목록 안내 (주석 모양) */
+.code-comment {
+  color: var(--text-muted);
+}
+
 /* Contact 컴포넌트 */
 .contact-links {
   display: flex;
+  flex-wrap: wrap;
   gap: 16px;
 }
 
@@ -388,5 +332,57 @@ html {
 
   .project-description {
     font-size: 13px;
+  }
+}
+
+
+/* =========================
+   Mobile (≤ 640px)
+   ========================= */
+
+@media (max-width: 640px) {
+  /* 섹션 좌우 여백을 줄여서 폰에서 내용 폭 확보 */
+  .introduce section {
+    padding: 56px 16px;
+  }
+
+  .introduce section[id] {
+    scroll-margin-top: 80px;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 80vh;
+    padding-top: 120px;
+  }
+
+  .hero-name {
+    font-size: 36px;
+    overflow-wrap: anywhere;
+  }
+
+  .hero-tagline {
+    font-size: 17px;
+  }
+
+  /* 버튼 두 개가 좁은 화면에서 넘치지 않게 */
+  .hero-cta {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  /* About */
+  .about-text {
+    font-size: 15px;
+  }
+
+  /* Skills: 코드 블록 안쪽 여백 축소 */
+  .skills-code {
+    padding: 18px 16px;
+    font-size: 13px;
+  }
+
+  .skills-line {
+    padding-left: 16px;
   }
 }
