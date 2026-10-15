@@ -1931,8 +1931,22 @@
     display: contents;
   }
 
+  /*
+    섹션 제목을 숨기면 Dashboard가 두 개라 구분이 안 되므로,
+    가로 메뉴 안에서 작은 구분 라벨로 보여준다.
+  */
   .admin-nav-section-title {
-    display: none;
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    margin: 0 0 0 10px;
+    padding: 0 4px;
+    font-size: 9px;
+    white-space: nowrap;
+  }
+
+  .admin-nav-section:first-child .admin-nav-section-title {
+    margin-left: 0;
   }
 
   /* 사이드바 푸터 한 줄로 */
