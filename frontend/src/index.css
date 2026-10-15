@@ -222,3 +222,10 @@ code {
   height: 24px;
   border-radius: 4px;
 }
+
+/* Skills: 코드 블록 한 줄(줄간격 2) 안에 들어가는 스켈레톤 */
+.skills-skeleton-line {
+  display: inline-block;
+  height: 12px;
+  vertical-align: middle;
+}
