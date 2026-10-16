@@ -5,8 +5,6 @@ import {
   useLocation
 } from 'react-router';
 
-// CSS는 main.tsx에서 한 번에 불러온다. (App.css 포함)
-
 // pages
 import Introduce from './pages/introduce/pages';
 import ProjectDetail from './pages/project/ProjectDetail';
@@ -32,6 +30,7 @@ import ScrollToHash from './components/ScrollToHash';
 import Footer from './components/Footer';
 import WelcomeNotice from './components/WelcomeNotice';
 import ServerStatusBanner from './components/ServerStatusBanner';
+import { useWarmUpAiServer } from './hooks/useWarmUpAiServer';
 
 // context
 // (공개 Learning 페이지는 삭제했지만, 관리자 Workspace 화면들이 이 Context를 쓴다)
@@ -45,6 +44,8 @@ function AppContent() {
   const isAdmin =
     location.pathname === '/admin' ||
     location.pathname.startsWith('/admin/');
+
+  useWarmUpAiServer(!isAdmin);
 
   return (
     <>
