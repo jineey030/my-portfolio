@@ -1,7 +1,7 @@
-
 import os
 import json
 import re
+import time
 
 import httpx
 from dotenv import load_dotenv
@@ -573,12 +573,29 @@ class ChatMessage(BaseModel):
     role: str
     content: str
 
-
 class ChatRequest(BaseModel):
     message: str
     messages: list[ChatMessage] = []
 
+# =========================================================
+# Timing (단계별 소요 시간 측정)
+# =========================================================
 
+def timed(label, fn, *args):
+    """함수를 실행하고 걸린 시간을 로그로 남긴다."""
+    start = time.perf_counter()
+    result = fn(*args)
+    elapsed = time.perf_counter() - start
+    print(f"[Timing] {label}: {elapsed:.2f}s", flush=True)
+    return result
+
+# =========================================================
+# AI Server Health Check
+# =========================================================
+
+@app.get("/health")
+def health():
+    return {"status": "UP"}
 
 # =========================================================
 # Chat API
@@ -595,16 +612,17 @@ def chat(request: ChatRequest):
         }
 
     provider = get_llm_provider()
+    total_start = time.perf_counter()
 
     # 1. 예진님 포트폴리오와 관련 있는 질문인지 확인
-    if not is_portfolio_related(user_input):
+    if not timed("1. relevance check", is_portfolio_related, user_input):
         return {
             "answer": "예진님과 관련된 질문을 해주세요",
             "provider": provider
         }
 
     # 2. 필요한 Tool 선택
-    llm_result = ask_llm_to_select_tools(user_input)
+    llm_result = timed("2. tool select", ask_llm_to_select_tools, user_input)
 
     # 3. Tool 선택 결과 파싱
     selected_tools = parse_tool_selection(llm_result)
@@ -622,16 +640,23 @@ def chat(request: ChatRequest):
     results = {}
 
     for tool_name in selected_tools:
-        results[tool_name] = execute_tool(tool_name)
+        results[tool_name] = timed(
+            f"3. tool {tool_name}", execute_tool, tool_name
+        )
 
     # 5. 실제 조회 결과를 바탕으로 답변 생성
-    answer = generate_final_answer(
-        user_input,
-        results
+    answer = timed(
+        "4. final answer", generate_final_answer, user_input, results
+    )
+
+    total = time.perf_counter() - total_start
+    print(
+        f"[Timing] TOTAL: {total:.2f}s "
+        f"(tools={selected_tools}, answer_length={len(answer)})",
+        flush=True
     )
 
     return {
         "answer": answer,
         "provider": provider
     }
-
